@@ -566,13 +566,8 @@ class Tfs(object):
         elif S < self.smin:
             raise ValueError("S is out of bounds.")
 
-        for i in range(1, self.nitems + 1):
-            sLow = self[i - 1]['S']
-            sHigh = self[i]['S']
-
-            if (S >= sLow and S < sHigh):
-                return i
-        raise ValueError("S is out of bounds.")
+        i = _np.digitize(s, self.GetColumn("S"))
+        return i - 1 # digitize "quirk": starts from 1.
 
     def _EnsureItsAnIndex(self, value):
         if type(value) == str:
