@@ -1392,9 +1392,15 @@ class Aperture(Tfs):
         returns x,y where x and y are 1D numpy arrays
         """
         aper1 = self.GetColumn('APER_1')
-        aper2 = self.GetColumn('APER_2')
-        aper3 = self.GetColumn('APER_3')
-        aper4 = self.GetColumn('APER_4')
+        aper2 = _np.zeros_like(aper1)
+        aper3 = _np.zeros_like(aper1)
+        aper4 = _np.zeros_like(aper1)
+        if 'APER_2' in self.columns:
+            aper2 = self.GetColumn('APER_2')
+        if 'APER_3' in self.columns:
+            aper3 = self.GetColumn('APER_3')
+        if 'APER_4' in self.columns:
+            aper4 = self.GetColumn('APER_4')
         apertureType = self.GetColumn('APERTYPE')
 
         x = []
@@ -1480,21 +1486,26 @@ def GetApertureExtent(aper1, aper2, aper3, aper4, aper_type):
 
     return x,y
 
-
 def _NonZeroAperture(item):
     tolerance = 1e-9
-    test1 = item['APER_1'] > tolerance
-    test2 = item['APER_2'] > tolerance
-    test3 = item['APER_3'] > tolerance
-    test4 = item['APER_4'] > tolerance
-
-    return test1 or test2 or test3 or test4
+    #result = False
+    result = item['APER_1'] > tolerance
+    if item.has_key('APER_2'):
+        result = result or item['APER_2'] > tolerance
+    if item.has_key('APER_3'):
+        result = result or item['APER_3'] > tolerance
+    if item.has_key('APER_4'):
+        result = result or item['APER_4'] > tolerance
+    return result
 
 def _ZeroAperture(item):
     tolerance = 1e-9
-    test1 = item['APER_1'] < tolerance
-    test2 = item['APER_2'] < tolerance
-    test3 = item['APER_3'] < tolerance
-    test4 = item['APER_4'] < tolerance
-
-    return test1 and test2 and test3 and test4
+    #result = True
+    result = item['APER_1'] < tolerance
+    if item.has_key('APER_2'):
+        result = result or item['APER_2'] < tolerance
+    if item.has_key('APER_3'):
+        result = result or item['APER_3'] < tolerance
+    if item.has_key('APER_4'):
+        result = result or item['APER_4'] < tolerance
+    return result
