@@ -555,9 +555,6 @@ class Tfs(object):
         Note:  For small values beyond smax, the index returned will
         be -1 (i.e. the last element).
 
-        If multiple elements have the same S position, the index returned will be the highest
-        index for those elements.
-
         """
         if S > self.smax and S < self.smax + 10:
             # allow some margin (+10) in case point is only just beyond the
@@ -569,7 +566,7 @@ class Tfs(object):
         elif S < self.smin:
             raise ValueError("S is out of bounds.")
 
-        i = _np.digitize(S, self.GetColumn("S")) - 1
+        i = _np.digitize(S, self.GetColumn("S"))
         return i
 
     def _EnsureItsAnIndex(self, value):
