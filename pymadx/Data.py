@@ -1484,7 +1484,7 @@ def GetApertureExtent(aper1, aper2, aper3, aper4, aper_type):
         x = min(aper1, aper3)
         y = min(aper2, aper4)
     elif aper_type == 'RACETRACK':
-        x = aper3 + aper1
+        x = aper1 + aper3
         y = aper2 + aper3
 
     return x,y
