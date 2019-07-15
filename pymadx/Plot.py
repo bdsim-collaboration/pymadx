@@ -318,11 +318,11 @@ def _HexToRGB(h):
     return tuple(int(h[i:i+2], 16) for i in (0, 2 ,4))
 
 def _ApertureTypeToColour(apertype, cmap=_ApertureTypeColourMap()):
-    color = (0,0,0)
+    colour = (0,0,0)
     try:
-        color = cmap[apertype.upper()]
+        colour = cmap[apertype.upper()]
     except:
-        color =(0.8,0.8,0.8) # greyish
+        colour =(0.8,0.8,0.8) # greyish
 
     return color
 
