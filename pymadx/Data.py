@@ -530,6 +530,47 @@ class Tfs(object):
             self._AppendDataEntry(key,other.data[key])
         return self
 
+    def Write(self, outputfilename, columns=None, removePymadxColumns=True):
+        """
+        Write this instance to file in MADX TFS format.
+        
+        Specify column names with columns=['S', 'L'] for example.
+        """
+
+        if not outputfilename.endswith('.tfs'):
+            outputfilename += '.tfs'
+        f = open(outputfilename, 'w')
+        # header
+        for k,v in self.header.iteritems():
+            try:
+                f.write('@ ' + k.ljust(17) + self.headerformats[k] + "{:20.6f}".format(v) + "\n")
+            except ValueError: # if it's a string just write it as a string
+                f.write('@ ' + k.ljust(17) + self.headerformats[k] + str(v).rjust(19) + "\n")
+
+        # copy the columns otherwise we may inadvertently mangle members of this instance
+        cols = _copy.deepcopy(self.columns if columns is None else columns)
+        # remove columns we've added by default
+        if columns is None:
+            for k in ['SEGMENT', 'SEGMENTNAME', 'SORIGINAL', 'SMID', 'UNIQUENAME', 'INDEX']:
+                try:
+                    cols.remove(k)
+                except ValueError:
+                    pass # tolerate some might be missing and keep going
+        # format lines
+        f.write('* ' + ''.join([c.ljust(20) for c in cols]) + '\n')
+        formats = [self.formats[self.columns.index(k)] for k in cols]
+        f.write('$ ' + ''.join([fr.ljust(20) for fr in formats]) + '\n')
+
+        # data
+        formatdict = {'%s' : '{:<19}',
+                      '%le': "{:20.6f}",
+                      '%d' : "{:20.6f}"}
+        formatstring = ''.join([formatdict[self.formats[self.columns.index(k)]] for k in cols])
+        for line in self:
+            f.write(formatstring.format(*[line[k] for k in cols]) + '\n')
+        
+        f.close()
+
     def NameFromIndex(self,index):
         """
         NameFromIndex(integerindex)
