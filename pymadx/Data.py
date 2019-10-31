@@ -61,6 +61,7 @@ class Tfs(object):
         object.__init__(self) #this allows type comparison for this class
         self.index       = []
         self.header      = {}
+        self.headerformats = {}
         self.columns     = []
         self.formats     = []
         self.data        = {}
@@ -155,6 +156,7 @@ class Tfs(object):
             if line[0] == '@':
                 # Header
                 self.header[sl[1]] = CastAndStrip(sl[-1])
+                self.headerformats[sl[1]] = sl[2]
             elif line[0] == '*':
                 #name
                 self.columns.extend(sl[1:]) #miss *
@@ -496,7 +498,7 @@ class Tfs(object):
             return name
 
     def _CopyMetaData(self,instance):
-        params = ["header","columns","formats","filename"]
+        params = ["header","headerformats","columns","formats","filename"]
         for param in params:
             setattr(self,param,getattr(instance,param))
         #calculate the maximum s position - could be different based on the slice
