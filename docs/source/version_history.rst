@@ -2,6 +2,25 @@
 Version History
 ===============
 
+v 1.7.2 - 2019 / ?? / ??
+========================
+
+New Features
+------------
+
+* Ability to write out a Tfs instance permitting comlete loading, editing and writing.
+* Plus operator for Tfs instances to add them together.
+
+Bug Fixes
+---------
+
+* Use exact Hamiltonian for PTC jobs prepared from pymadx as we commonly
+  use it to compare larger amplitude particle tracking where the approximate
+  Hamiltonian can be quite wrong.
+* Tolerate minimal aperture columns. i.e. only APER_1. Have to do this
+  as there's no standard in writing out apertures and everyone picks their
+  own with missing bits of information.
+
 v 1.7.1 - 2019 / 04 / 20
 ========================
 
