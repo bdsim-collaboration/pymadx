@@ -530,6 +530,12 @@ class Tfs(object):
             self._AppendDataEntry(key,other.data[key])
         return self
 
+    def __add__(self, other):
+        a = Tfs()
+        a._DeepCopy(self)
+        a.ConcatenateMachine(other)
+        return a
+    
     def Write(self, outputfilename, columns=None, removePymadxColumns=True):
         """
         Write this instance to file in MADX TFS format.
