@@ -61,6 +61,7 @@ class Tfs(object):
         object.__init__(self) #this allows type comparison for this class
         self.index       = []
         self.header      = {}
+        self.headerformats = {}
         self.columns     = []
         self.formats     = []
         self.data        = {}
@@ -155,6 +156,7 @@ class Tfs(object):
             if line[0] == '@':
                 # Header
                 self.header[sl[1]] = CastAndStrip(sl[-1])
+                self.headerformats[sl[1]] = sl[2]
             elif line[0] == '*':
                 #name
                 self.columns.extend(sl[1:]) #miss *
@@ -496,7 +498,7 @@ class Tfs(object):
             return name
 
     def _CopyMetaData(self,instance):
-        params = ["header","columns","formats","filename"]
+        params = ["header","headerformats","columns","formats","filename"]
         for param in params:
             setattr(self,param,getattr(instance,param))
         #calculate the maximum s position - could be different based on the slice
@@ -527,6 +529,53 @@ class Tfs(object):
             key = other.sequence[i]
             self._AppendDataEntry(key,other.data[key])
         return self
+
+    def __add__(self, other):
+        a = Tfs()
+        a._DeepCopy(self)
+        a.ConcatenateMachine(other)
+        return a
+    
+    def Write(self, outputfilename, columns=None, removePymadxColumns=True):
+        """
+        Write this instance to file in MADX TFS format.
+        
+        Specify column names with columns=['S', 'L'] for example.
+        """
+
+        if not outputfilename.endswith('.tfs'):
+            outputfilename += '.tfs'
+        f = open(outputfilename, 'w')
+        # header
+        for k,v in self.header.iteritems():
+            try:
+                f.write('@ ' + k.ljust(17) + self.headerformats[k] + "{:20.6f}".format(v) + "\n")
+            except ValueError: # if it's a string just write it as a string
+                f.write('@ ' + k.ljust(17) + self.headerformats[k] + str(v).rjust(19) + "\n")
+
+        # copy the columns otherwise we may inadvertently mangle members of this instance
+        cols = _copy.deepcopy(self.columns if columns is None else columns)
+        # remove columns we've added by default
+        if columns is None:
+            for k in ['SEGMENT', 'SEGMENTNAME', 'SORIGINAL', 'SMID', 'UNIQUENAME', 'INDEX']:
+                try:
+                    cols.remove(k)
+                except ValueError:
+                    pass # tolerate some might be missing and keep going
+        # format lines
+        f.write('* ' + ''.join([c.ljust(20) for c in cols]) + '\n')
+        formats = [self.formats[self.columns.index(k)] for k in cols]
+        f.write('$ ' + ''.join([fr.ljust(20) for fr in formats]) + '\n')
+
+        # data
+        formatdict = {'%s' : '{:<19}',
+                      '%le': "{:20.6f}",
+                      '%d' : "{:20.6f}"}
+        formatstring = ''.join([formatdict[self.formats[self.columns.index(k)]] for k in cols])
+        for line in self:
+            f.write(formatstring.format(*[line[k] for k in cols]) + '\n')
+        
+        f.close()
 
     def NameFromIndex(self,index):
         """
@@ -566,13 +615,8 @@ class Tfs(object):
         elif S < self.smin:
             raise ValueError("S is out of bounds.")
 
-        for i in range(1, self.nitems + 1):
-            sLow = self[i - 1]['S']
-            sHigh = self[i]['S']
-
-            if (S >= sLow and S < sHigh):
-                return i
-        raise ValueError("S is out of bounds.")
+        i = _np.digitize(S, self.GetColumn("S"))
+        return i
 
     def _EnsureItsAnIndex(self, value):
         if type(value) == str:
@@ -1239,10 +1283,10 @@ class Aperture(Tfs):
         a = Aperture(verbose=False)
         a._CopyMetaData(self)
         for item in self:
-            apervals = _np.array([item[key] for key in aperkeys])
-            abovelimit = apervals < limitvals
-            abovelimittotal = abovelimit.any() # if any are true
-            if not abovelimittotal:
+            apervals   = _np.array([item[key] for key in aperkeys])
+            aboveLimit = apervals > limitvals
+            if aboveLimit.any():
+                # something finite so is specified
                 key = self.sequence[self._iterindex]
                 a._AppendDataEntry(key, self.data[key])
         if self.cache:
@@ -1397,9 +1441,15 @@ class Aperture(Tfs):
         returns x,y where x and y are 1D numpy arrays
         """
         aper1 = self.GetColumn('APER_1')
-        aper2 = self.GetColumn('APER_2')
-        aper3 = self.GetColumn('APER_3')
-        aper4 = self.GetColumn('APER_4')
+        aper2 = _np.zeros_like(aper1)
+        aper3 = _np.zeros_like(aper1)
+        aper4 = _np.zeros_like(aper1)
+        if 'APER_2' in self.columns:
+            aper2 = self.GetColumn('APER_2')
+        if 'APER_3' in self.columns:
+            aper3 = self.GetColumn('APER_3')
+        if 'APER_4' in self.columns:
+            aper4 = self.GetColumn('APER_4')
         apertureType = self.GetColumn('APERTYPE')
 
         x = []
@@ -1480,26 +1530,31 @@ def GetApertureExtent(aper1, aper2, aper3, aper4, aper_type):
         x = min(aper1, aper3)
         y = min(aper2, aper4)
     elif aper_type == 'RACETRACK':
-        x = aper3 + aper1
+        x = aper1 + aper3
         y = aper2 + aper3
 
     return x,y
 
-
 def _NonZeroAperture(item):
     tolerance = 1e-9
-    test1 = item['APER_1'] > tolerance
-    test2 = item['APER_2'] > tolerance
-    test3 = item['APER_3'] > tolerance
-    test4 = item['APER_4'] > tolerance
-
-    return test1 or test2 or test3 or test4
+    #result = False
+    result = item['APER_1'] > tolerance
+    if item.has_key('APER_2'):
+        result = result or item['APER_2'] > tolerance
+    if item.has_key('APER_3'):
+        result = result or item['APER_3'] > tolerance
+    if item.has_key('APER_4'):
+        result = result or item['APER_4'] > tolerance
+    return result
 
 def _ZeroAperture(item):
     tolerance = 1e-9
-    test1 = item['APER_1'] < tolerance
-    test2 = item['APER_2'] < tolerance
-    test3 = item['APER_3'] < tolerance
-    test4 = item['APER_4'] < tolerance
-
-    return test1 and test2 and test3 and test4
+    #result = True
+    result = item['APER_1'] < tolerance
+    if item.has_key('APER_2'):
+        result = result or item['APER_2'] < tolerance
+    if item.has_key('APER_3'):
+        result = result or item['APER_3'] < tolerance
+    if item.has_key('APER_4'):
+        result = result or item['APER_4'] < tolerance
+    return result

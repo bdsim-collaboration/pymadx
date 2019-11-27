@@ -226,7 +226,7 @@ def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertyp
 
     if plotapertype:
         t = aper.GetColumn('APERTYPE')
-        c = map(_ApertypeToColor, t)
+        c = map(_ApertureTypeToColour, t)
 
     if "x" in plot.lower():
         line1, = _plt.plot(s, x, 'b-', label='X', alpha=0.6)
@@ -242,7 +242,7 @@ def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertyp
     _plt.ylabel('Aperture (m)')
 
     if plotapertype:
-        _AddColorLegend(c)
+        _AddColourLegend(c)
 
     _plt.legend(loc='best', numpoints=1, scatterpoints=1, fontsize='small')
 
@@ -286,7 +286,7 @@ def ApertureN1(aperture, machine=None, outputfilename=None):
         _plt.savefig(outputfilename+'.pdf')
         _plt.savefig(outputfilename+'.png')
 
-def _ApertypeColorMap():
+def _ApertureTypeColourMap():
     #Some nice colors
     _colourCodes = ['#C03028',
                     '#F8D030',
@@ -317,17 +317,17 @@ def _HexToRGB(h):
     h = h.strip('#')
     return tuple(int(h[i:i+2], 16) for i in (0, 2 ,4))
 
-def _ApertypeToColor(apertype, cmap=_ApertypeColorMap()):
-    color = (0,0,0)
+def _ApertureTypeToColour(apertype, cmap=_ApertureTypeColourMap()):
+    colour = (0,0,0)
     try:
-        color = cmap[apertype.upper()]
+        colour = cmap[apertype.upper()]
     except:
-        color =(0.8,0.8,0.8) # greyish
+        colour =(0.8,0.8,0.8) # greyish
 
     return color
 
-def _AddColorLegend(colors, cmap=_ApertypeColorMap()):
-    found_cols = set(colors)
+def _AddColourLegend(colours, cmap=_ApertureTypeColourMap()):
+    found_cols = set(colours)
     typemap = dict((v,k) for k,v in cmap.iteritems()) #invert to get apertype from color
     for col in found_cols:
         _plt.scatter(None,None,color=col, label=typemap[col].lower())

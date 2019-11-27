@@ -98,7 +98,7 @@ class Beam(dict):
 
     def ReturnPtcString(self) : 
         s = 'ptc_create_universe;\n' 
-        s+= 'ptc_create_layout,model=2,method=6,nst=10,time=false;\n'
+        s+= 'ptc_create_layout,model=2,method=6,nst=10,time=false,exact=true;\n'
         s+= 'call, file ="'+self['distrFile']+'";\n'
         s+= 'ptc_align;'
         return s
