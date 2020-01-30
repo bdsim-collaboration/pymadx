@@ -10,6 +10,7 @@ import datetime as _datetime
 import matplotlib.pyplot as _plt
 from matplotlib.backends.backend_pdf import PdfPages as _PdfPages
 import os.path as _path
+import six as _six # for backwards compatible string check
 
 import pymadx.Data as _Data
 import pymadx.Plot as _Plot
@@ -44,6 +45,7 @@ def _parse_tfs_input(tfs_in, name):
     to a TFS file or a Tfs instance, and in either case, generate a
     name if None is provided, and return that as well."""
     if isinstance(tfs_in, basestring):
+    if isinstance(tfs_in, _six.string_types):
         if not _path.isfile(tfs_in):
             raise IOError("file \"{}\" not found!".format(tfs_in))
         name = (_path.splitext(_path.basename(tfs_in))[0]

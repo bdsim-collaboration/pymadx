@@ -10,6 +10,7 @@ import re as _re
 import string as _string
 import tarfile as _tarfile
 import os.path as _path
+import six as _six
 
 from _General import Cast as _Cast
 
@@ -75,7 +76,7 @@ class Tfs(object):
         self.ptctwiss    = False # whether data was generated via ptctwiss
         self._verbose    = False
 
-        if isinstance(filename, basestring):
+        if isinstance(filename, _six.string_types):
             self.Load(filename, verbose=verbose)
         elif isinstance(filename, Tfs):
             self._DeepCopy(filename)
@@ -1059,7 +1060,7 @@ class Tfs(object):
         lastSpos = self.GetColumn('S')[-1]
 
         for machineIndex,machine in enumerate(tfs):
-            if isinstance(machine, _np.str):
+            if isinstance(machine, _six.string_types):
                 machine = CheckItsTfs(machine)
 
             # copy the machine. concatenating self to self doesn't update s positions correctly
@@ -1487,7 +1488,7 @@ def CheckItsTfsAperture(tfsfile):
 
     tfsfile can be either a tfs instance or a string.
     """
-    if isinstance(tfsfile, basestring):
+    if isinstance(tfsfile, _six.string_types):
         return Aperture(tfsfile)
     elif isinstance(tfsfile, Aperture):
         return tfsfile
