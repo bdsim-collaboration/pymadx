@@ -15,8 +15,8 @@ Machine - a sequence of elements and associated options and beam etc.
 
 """
 
-import _General
-from   _General import IsFloat as _IsFloat
+from . import _General
+from   ._General import IsFloat as _IsFloat
 from   decimal import Decimal as _Decimal
 import time
 

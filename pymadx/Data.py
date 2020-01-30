@@ -12,7 +12,7 @@ import tarfile as _tarfile
 import os.path as _path
 import six as _six
 
-from _General import Cast as _Cast
+from ._General import Cast as _Cast
 
 class Tfs(object):
     """
