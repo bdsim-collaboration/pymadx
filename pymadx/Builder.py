@@ -158,11 +158,13 @@ class Machine(object):
         self._iterindex = -1
         return self
 
-    def next(self):
+    def __next__(self):
         if self._iterindex == len(self.sequence)-1:
             raise StopIteration
         self._iterindex += 1
         return self.elementsd[self.sequence[self._iterindex]]
+
+    next = __next__ # for python 2
         
     def __getitem__(self,name):
         if _IsFloat(name):
