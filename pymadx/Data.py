@@ -194,7 +194,7 @@ class Tfs(object):
             pass # no name key in header
 
         #additional processing
-        self.index = range(0,len(self.data),1)
+        self.index = list(range(0,len(self.data),1))
         if 'S' in self.columns:
             self.smin = self[0]['S']
             self.smax = self[-1]['S']
@@ -239,9 +239,9 @@ class Tfs(object):
         ey   = 1e-9
         sige = 1e-4
         requiredVariablesH1 = set(['SIGE', 'EX', 'EY'])
-        method1 = requiredVariablesH1.issubset(self.header.keys())
+        method1 = requiredVariablesH1.issubset(list(self.header.keys()))
         requiredVariablesH2 = set(['EXN', 'EYN', 'GAMMA'])
-        method2 = requiredVariablesH2.issubset(self.header.keys())
+        method2 = requiredVariablesH2.issubset(list(self.header.keys()))
         if not (method1 or method2):
             return #no emittance information to calculate sigma
 
@@ -489,11 +489,11 @@ class Tfs(object):
             return self.GetRowDict(index)
 
     def _CheckName(self,name):
-        if self.data.has_key(name):
+        if name in self.data:
             #name already exists - boo degenerate names!
             i = 1
             basename = name
-            while self.data.has_key(name):
+            while name in self.data:
                 name = basename+'_'+str(i)
                 i = i + 1
             return name
@@ -685,13 +685,13 @@ class Tfs(object):
         note not in order
         """
         #no dictionary comprehension in python2.6 on SL6
-        d = dict(zip(self.columns,self.data[elementname]))
+        d = dict(list(zip(self.columns,self.data[elementname])))
         return d
 
     def GetSegment(self,segmentnumber):
         if type(segmentnumber) is str:
             segmentnumber = self.segments.index(segmentnumber)+1
-        if segmentnumber not in range(1,len(self.segments)+1):
+        if segmentnumber not in list(range(1,len(self.segments)+1)):
             raise ValueError("Invalid segment number "+str(segmentnumber))
         a = Tfs()
         a._CopyMetaData(self)
@@ -915,7 +915,7 @@ class Tfs(object):
 
         # these checks may be incomplete..  just the ones i know of.
 
-        for variable in component.keys():
+        for variable in list(component.keys()):
             kls = _re.compile(r'K[0-9]*S?L') # matches all integrated strengths.
             if (_re.match(kls, variable) and
                 abs(component[variable]) > 0):
@@ -1036,10 +1036,10 @@ class Tfs(object):
         self.EditComponent(secondIndex, 'E1', 0.5 * secondRatio * originalAngle)
         self.EditComponent(secondIndex, 'FINT', 0.0)
 
-        for name, value in originalKLs.iteritems():
+        for name, value in originalKLs.items():
             self.EditComponent(firstIndex, name, firstRatio * value)
             self.EditComponent(secondIndex, name, secondRatio * value)
-        for name, value in originalKSLs.iteritems():
+        for name, value in originalKSLs.items():
             self.EditComponent(firstIndex, name, firstRatio * value)
             self.EditComponent(secondIndex, name, secondRatio * value)
 
@@ -1081,7 +1081,7 @@ class Tfs(object):
                 uniqueName = element['UNIQUENAME']
 
                 # check if the element name is already in the sequence
-                if element['UNIQUENAME'] in self.data.keys():
+                if element['UNIQUENAME'] in list(self.data.keys()):
                     uniqueName += "_" + _np.str(machineIndex+1)
 
                 self.data[uniqueName] = machine.data[element['UNIQUENAME']]
@@ -1153,7 +1153,7 @@ class Aperture(Tfs):
         self.cache = {}
         for item in self:
             s = item['S']
-            if s in self.cache.keys():
+            if s in list(self.cache.keys()):
                 #if existing one is zero and other isn't replace it
                 if _ZeroAperture(self.cache[s]) and _NonZeroAperture(item):
                     self.cache[s] = item
@@ -1161,7 +1161,7 @@ class Aperture(Tfs):
                 self.cache[s] = item
 
         # dictionary is not ordered to keep list of ordered s positions
-        self._ssorted = self.cache.keys()
+        self._ssorted = list(self.cache.keys())
         self._ssorted.sort()
 
         # pull out some aperture values for conevience
@@ -1542,11 +1542,11 @@ def _NonZeroAperture(item):
     tolerance = 1e-9
     #result = False
     result = item['APER_1'] > tolerance
-    if item.has_key('APER_2'):
+    if 'APER_2' in item:
         result = result or item['APER_2'] > tolerance
-    if item.has_key('APER_3'):
+    if 'APER_3' in item:
         result = result or item['APER_3'] > tolerance
-    if item.has_key('APER_4'):
+    if 'APER_4' in item:
         result = result or item['APER_4'] > tolerance
     return result
 
@@ -1554,10 +1554,10 @@ def _ZeroAperture(item):
     tolerance = 1e-9
     #result = True
     result = item['APER_1'] < tolerance
-    if item.has_key('APER_2'):
+    if 'APER_2' in item:
         result = result or item['APER_2'] < tolerance
-    if item.has_key('APER_3'):
+    if 'APER_3' in item:
         result = result or item['APER_3'] < tolerance
-    if item.has_key('APER_4'):
+    if 'APER_4' in item:
         result = result or item['APER_4'] < tolerance
     return result

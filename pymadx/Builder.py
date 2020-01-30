@@ -173,7 +173,7 @@ class Machine(object):
             return self.elementsd[name]
 
     def __len__(self):
-        return len(self.elementsd.keys())
+        return len(list(self.elementsd.keys()))
 
     def Append(self,object):
         if type(object) not in (Element,Line):

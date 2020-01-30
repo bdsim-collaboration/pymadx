@@ -2,7 +2,7 @@
 Ploting script for madx TFS files using the pymadx Tfs class
 
 """
-
+from builtins import map as _map
 import numpy as _np
 import matplotlib         as _matplotlib
 import matplotlib.patches as _patches
@@ -226,7 +226,7 @@ def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertyp
 
     if plotapertype:
         t = aper.GetColumn('APERTYPE')
-        c = map(_ApertureTypeToColour, t)
+        c = list(_map(_ApertureTypeToColour, t))
 
     if "x" in plot.lower():
         line1, = _plt.plot(s, x, 'b-', label='X', alpha=0.6)
@@ -310,7 +310,7 @@ def _ApertureTypeColourMap():
                       'RECTELLIPSE',
                       'RACETRACK',
                       'OCTAGON']
-    typeToCol = dict(zip(_madxAperTypes, _colourCodes))
+    typeToCol = dict(list(zip(_madxAperTypes, _colourCodes)))
     return typeToCol
 
 def _HexToRGB(h):
