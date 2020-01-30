@@ -129,4 +129,4 @@ def MADXVsMADX(first, second, first_name=None,
             d = pdf.infodict()
             d['Title'] = "{} VS {} Optical Comparison".format(first_name, second_name)
             d['CreationDate'] = _datetime.datetime.today()
-        print "Written ", output_filename
+        print("Written ", output_filename)

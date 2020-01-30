@@ -95,14 +95,14 @@ class Tfs(object):
         the filename, the file will be opened still compressed.
         """
         if _tarfile.is_tarfile(filename): # assume compressed tarball of 1 file
-            print 'pymadx.Tfs.Load> zipped file'
+            print('pymadx.Tfs.Load> zipped file')
             tar = _tarfile.open(filename, 'r')
             f = tar.extractfile(tar.getmember(tar.getnames()[-1])) # extract the last member
         elif filename.endswith('.gz'): # gzipped file
-            print 'pymadx.Tfs.Load> zipped file'
+            print('pymadx.Tfs.Load> zipped file')
             f = _gzip.open(filename, 'r')
         else:
-            print 'pymadx.Tfs.Load> normal file'
+            print('pymadx.Tfs.Load> normal file')
             f = open(filename, 'r')
 
         #first pass at file - need to check if it has 'NAME' column
@@ -116,8 +116,8 @@ class Tfs(object):
                 #name
                 self.columns.extend(sl[1:]) #miss "*" from column names line
                 if verbose:
-                    print 'Columns will be:'
-                    print self.columns
+                    print('Columns will be:')
+                    print(self.columns)
                 break
         if 'NAME' in self.columns:
             usename = True #use the name
@@ -670,7 +670,7 @@ class Tfs(object):
         try:
             d = self[elementname]
         except KeyError:
-            print 'No such item',elementname,' in this tfs file'
+            print('No such item',elementname,' in this tfs file')
             return None
         return [d[key] for key in self.columns]
 
@@ -718,7 +718,7 @@ class Tfs(object):
         particlular element in the sequence identified by name.
         """
         for i,parameter in enumerate(self.columns):
-            print parameter.ljust(10,'.'),self.data[itemname][i]
+            print(parameter.ljust(10,'.'),self.data[itemname][i])
 
     def GetElementNamesOfType(self,typename):
         """
@@ -799,8 +799,8 @@ class Tfs(object):
         Print out all the population of each type of
         element in the beam line (sequence)
         """
-        print 'Filename >',self.filename
-        print 'Total number of items >',self.nitems
+        print('Filename >',self.filename)
+        print('Total number of items >',self.nitems)
         if 'KEYWORD' in self.columns:
             i = self.ColumnIndex('KEYWORD')
         elif 'APERTYPE' in self.columns:
@@ -810,9 +810,9 @@ class Tfs(object):
 
         keys = set([self.data[name][i] for name in self.sequence])
         populations = [(len(self.GetElementsOfType(key)),key) for key in keys]
-        print 'Type'.ljust(15,'.'),'Population'
+        print('Type'.ljust(15,'.'),'Population')
         for item in sorted(populations)[::-1]:
-            print item[1].ljust(15,'.'),item[0]
+            print(item[1].ljust(15,'.'),item[0])
 
     def PrintBasicBeamProperties(self, elementname):
         """
@@ -826,7 +826,7 @@ class Tfs(object):
         xkeys = [p+'X'+s for p,s in zip(prefixes,suffixes)]
         ykeys = [p+'Y'+s for p,s in zip(prefixes,suffixes)]
         for xk,yk in zip(xkeys,ykeys):
-            print('\t'.join([xk,'{0:.3e}'.format(d[xk]),yk,'{0:.3e}'.format(d[yk])]))
+            print(('\t'.join([xk,'{0:.3e}'.format(d[xk]),yk,'{0:.3e}'.format(d[yk])])))
 
     def Plot(self, title='', outputfilename=None, machine=True, dispersion=False, squareroot=True):
         """
@@ -879,7 +879,7 @@ class Tfs(object):
         if verbose:
             for index in indices:
                 sPos = self.data[self.NameFromIndex(index)][self.ColumnIndex('S')]
-                print " matches at S =", sPos, "@index", index
+                print(" matches at S =", sPos, "@index", index)
         if len(indices) == 1:
             return indices[0]
         elif len(indices) > 1:
@@ -1210,7 +1210,7 @@ class Aperture(Tfs):
                     failed = True
                     msg = ('Warning: Aperture type "{}" '
                            'is not a valid MADX Aperture type. ').format(t)
-                    print msg
+                    print(msg)
 
         if failed:
             PrintMADXApertureTypes()
@@ -1261,7 +1261,7 @@ class Aperture(Tfs):
         any of the aperture values are below value. The default is
         the tolerance as defined by SetZeroTolerance().
         """
-        print 'Aperture> removing any aperture entries below',limits
+        print('Aperture> removing any aperture entries below',limits)
         if keys == 'all':
             aperkeystocheck = ['APER_%s' %n for n in range(1,5)] #prepare #APER_1, APER_2 etc
         elif type(keys) in (float, int, str):
@@ -1277,7 +1277,7 @@ class Aperture(Tfs):
             if key in self.columns:
                 aperkeys.append(key)
             else:
-                print key,' will be ignored as not in this aperture Tfs file'
+                print(key,' will be ignored as not in this aperture Tfs file')
 
         # 'verbose = False' stops it complaining about not finding metadata
         a = Aperture(verbose=False)
@@ -1294,7 +1294,7 @@ class Aperture(Tfs):
         return a
 
     def RemoveAboveValue(self, limits=8, keys='all'):
-        print 'Aperture> removing any aperture entries above',limits
+        print('Aperture> removing any aperture entries above',limits)
         if keys == 'all':
             aperkeystocheck = ['APER_%s' %n for n in [1,2,3,4]]
         elif type(keys) in (float, int, str):
@@ -1311,7 +1311,7 @@ class Aperture(Tfs):
             if key in self.columns:
                 aperkeys.append(key)
             else:
-                print key,' will be ignored as not in this aperture Tfs file'
+                print(key,' will be ignored as not in this aperture Tfs file')
 
         if len(aperkeys) == 0:
             print('No aperture values to check')
@@ -1364,7 +1364,7 @@ class Aperture(Tfs):
         Takes the first aperture value for entries with degenerate S positions and
         removes the others.
         """
-        print 'Aperture> removing entries with duplicate S positions'
+        print('Aperture> removing entries with duplicate S positions')
         # check if required at all
         if len(self) == len(self._ssorted):
             # no duplicates!
@@ -1465,13 +1465,13 @@ class Aperture(Tfs):
         return x,y
 
     def ReplaceType(self, existingType, replacementType):
-        print 'Aperture> replacing',existingType,'with',replacementType
+        print('Aperture> replacing',existingType,'with',replacementType)
         et = existingType    #shortcut
         rt = replacementType #shortcut
         try:
             index = self.columns.index('APERTYPE')
         except ValueError:
-            print 'No apertype column, therefore no type to replace'
+            print('No apertype column, therefore no type to replace')
             return
         for item in self:
             try:
@@ -1495,9 +1495,9 @@ def CheckItsTfsAperture(tfsfile):
 
 
 def PrintMADXApertureTypes():
-    print 'Valid MADX aperture types are:'
+    print('Valid MADX aperture types are:')
     for t in _madxAperTypes:
-        print t
+        print(t)
 
 
 def GetApertureExtent(aper1, aper2, aper3, aper4, aper_type):

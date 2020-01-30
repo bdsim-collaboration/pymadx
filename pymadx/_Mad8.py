@@ -16,8 +16,8 @@ def Mad8ToMadX(inputName) :
     outputName  = inputName[inputName.rfind('/')+1:inputName.rfind('.')]+".xsifx"
     outputFile = open(outputName,'w')
     
-    print 'Mad8ToMadX, input > ',inputName
-    print 'Mad8ToMadX, output> ',outputName
+    print('Mad8ToMadX, input > ',inputName)
+    print('Mad8ToMadX, output> ',outputName)
 
 
     ml = '' # merged line 
@@ -54,7 +54,7 @@ def Mad8ToMadX(inputName) :
             pl = l 
         else : # comment present 
             if len(l) == 0 : 
-                print ci
+                print(ci)
             # split line on comment 
             bcl = l[0:ci] # before comment
             acl = l[ci:]  # after comment
@@ -119,11 +119,11 @@ def Mad8ToMadX(inputName) :
 #            print pl
             m = _re.search('(\w+)\s*:\s*CONSTANT\s*=\s*([A-Za-z0-9+-/*.()]+)',pl)
             pl = '   const '+m.group(1)+'='+m.group(2)+';'
-            print pl
+            print(pl)
 
         # multipole 
         if pl.find('MULTIPOLE') != -1: 
-            print pl
+            print(pl)
             n  = _re.search('([A-Za-z0-9.]+)\s*:\s*MULTIPOLE',pl)
             m0 = _re.search('K0L\s*=\s*([A-Za-z0-9+-/*.()]+),',pl)
             m1 = _re.search('K1L\s*=\s*([A-Za-z0-9+-/*.()]+),',pl)
@@ -199,7 +199,7 @@ def Mad8ToMadX(inputName) :
 
             pl = pl+';'
 
-            print pl
+            print(pl)
                 
         # attributes 
         def maFunc(m) : 
