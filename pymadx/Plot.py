@@ -2,7 +2,11 @@
 Ploting script for madx TFS files using the pymadx Tfs class
 
 """
-from builtins import map as _map
+try:
+    from builtins import map as _map
+except ImportError:
+    from __builtin__ import map as _map
+
 import numpy as _np
 import matplotlib         as _matplotlib
 import matplotlib.patches as _patches
