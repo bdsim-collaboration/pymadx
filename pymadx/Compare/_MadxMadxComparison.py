@@ -41,10 +41,11 @@ _MEAN = [("X", r"$\bar{x}$"),
 
 
 def _parse_tfs_input(tfs_in, name):
-    """Return tfs_in as a Tfs instance, which should either be a path
+    """
+    Return tfs_in as a Tfs instance, which should either be a path
     to a TFS file or a Tfs instance, and in either case, generate a
-    name if None is provided, and return that as well."""
-    if isinstance(tfs_in, basestring):
+    name if None is provided, and return that as well.
+    """
     if isinstance(tfs_in, _six.string_types):
         if not _path.isfile(tfs_in):
             raise IOError("file \"{}\" not found!".format(tfs_in))

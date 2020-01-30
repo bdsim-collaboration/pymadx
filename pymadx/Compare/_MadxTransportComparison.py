@@ -41,10 +41,11 @@ _SIGMA_P = [("SIGMAXP", "Sigma_xp", r"$\sigma_{xp}$"),
 
 
 def _parse_tfs_input(tfs_in, name):
-    """Return tfs_in as a Tfs instance, which should either be a path
+    """
+    Return tfs_in as a Tfs instance, which should either be a path
     to a TFS file or a Tfs instance, and in either case, generate a
-    name if None is provided, and return that as well."""
-    if isinstance(tfs_in, basestring):
+    name if None is provided, and return that as well.
+    """
     if isinstance(tfs_in, _six.string_types):
         if not _path.isfile(tfs_in):
             raise IOError("file \"{}\" not found!".format(tfs_in))
@@ -55,9 +56,8 @@ def _parse_tfs_input(tfs_in, name):
         name = tfs_in.filename if name is None else name
         return tfs_in, name
     except AttributeError:
-        raise TypeError(
-            "Expected Tfs input is neither a "
-            "file path nor a Tfs instance: {}".format(tfs_in))
+        raise TypeError("Expected Tfs input is neither a "
+                        "file path nor a Tfs instance: {}".format(tfs_in))
 
 
 # use closure to avoid tonnes of boilerplate code as happened with
