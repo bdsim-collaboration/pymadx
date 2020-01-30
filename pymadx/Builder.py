@@ -61,7 +61,7 @@ class Element(dict) :
         self['name']     = self.name
         self['category'] = self.category
         self._keysextra = []
-        for key,value in kwargs.iteritems():
+        for key,value in kwargs.items():
             if type(value) == tuple and category != 'multipole':
                 #use a tuple for (value,units)
                 self[key] = (_Decimal(str(value[0])),value[1])

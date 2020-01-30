@@ -328,7 +328,7 @@ def _ApertureTypeToColour(apertype, cmap=_ApertureTypeColourMap()):
 
 def _AddColourLegend(colours, cmap=_ApertureTypeColourMap()):
     found_cols = set(colours)
-    typemap = dict((v,k) for k,v in cmap.iteritems()) #invert to get apertype from color
+    typemap = dict((v,k) for k,v in cmap.items()) #invert to get apertype from color
     for col in found_cols:
         _plt.scatter(None,None,color=col, label=typemap[col].lower())
 

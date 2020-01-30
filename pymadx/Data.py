@@ -547,7 +547,7 @@ class Tfs(object):
             outputfilename += '.tfs'
         f = open(outputfilename, 'w')
         # header
-        for k,v in self.header.iteritems():
+        for k,v in self.header.items():
             try:
                 f.write('@ ' + k.ljust(17) + self.headerformats[k] + "{:20.6f}".format(v) + "\n")
             except ValueError: # if it's a string just write it as a string
@@ -658,7 +658,7 @@ class Tfs(object):
         note not in order
         """
         i = self.ColumnIndex(columnstring)
-        d = dict((k,v[i]) for (k,v) in self.data.iteritems())
+        d = dict((k,v[i]) for (k,v) in self.data.items())
         #note we construct the dictionary comprehension in a weird way
         #here because SL6 uses python2.6 which doesn't have dict comprehension
         return d
