@@ -18,7 +18,7 @@ setup(
                       "numpy >= 1.4",
                       "pytransport"],
     # Some version of python2.7
-    python_requires="==2.7.*",
+    python_requires=">=2.7.*",
 
     author='JAI@RHUL',
     author_email='laurie.nevay@rhul.ac.uk',
