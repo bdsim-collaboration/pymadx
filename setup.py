@@ -14,7 +14,7 @@ setup(
     version='1.7.1',
     packages=find_packages(exclude=["docs", "tests", "obsolete"]),
     # Not sure how strict these need to be...
-    install_requires=["matplotlib==2.2.5",
+    install_requires=["matplotlib>1.7.1",
                       "numpy >= 1.4",
                       "pytransport"],
     # Some version of python2.7
