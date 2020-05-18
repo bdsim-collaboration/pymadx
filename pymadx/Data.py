@@ -110,6 +110,7 @@ class Tfs(object):
         #if it has name, use that, otherwise use an integer
         #find column names line
         for line in f:
+            line = str(line)
             if not line.strip():
                 continue #protection against empty lines being misidentified as column lines
             sl = line.strip('\n').split()
@@ -150,6 +151,7 @@ class Tfs(object):
 
         #read in data
         for line in f:
+            line = str(line)
             if not line.strip():
                 continue #protect against empty lines, although they should not exist
             splitline = line.strip('\n').split()
