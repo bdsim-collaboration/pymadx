@@ -113,6 +113,8 @@ class Tfs(object):
             line = str(line)
             if not line.strip():
                 continue #protection against empty lines being misidentified as column lines
+            if line.startswith("b'"):
+                line = line[2:] # python3 seems to load with some string at the front
             sl = line.strip('\n').split()
             if line[0] == '*':
                 #name
@@ -154,7 +156,12 @@ class Tfs(object):
             line = str(line)
             if not line.strip():
                 continue #protect against empty lines, although they should not exist
-            splitline = line.strip('\n').split()
+            if line.startswith("b'"):
+                line = line[2:]
+            line = line.rstrip("\\'")
+            line = line.rstrip("\n")
+            line = line.rstrip("\\n") #pedantic check for bad loading in python3 tar files
+            splitline = line.split()
             sl        = splitline #shortcut
             if line[0] == '@':
                 # Header
