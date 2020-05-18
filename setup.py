@@ -3,9 +3,8 @@ from setuptools import setup, find_packages
 try:
     import pypandoc
     long_description = pypandoc.convert_file("README.md", "rst")
-except ImportError:
-    print ("Warning: pypandoc module not found, could not convert"
-           " Markdown to reStructuredText." )
+except:
+    print ("Warning: pypandoc module not found, could not convert Markdown to reStructuredText." )
     long_description = ""
 
 
