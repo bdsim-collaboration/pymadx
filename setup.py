@@ -19,6 +19,8 @@ setup(
                       "numpy >= 1.4",
                       "pytransport"],
     # Some version of python2.7
+    setup_requires=["pytest-runner"],
+    tests_require=["pytest"],
     python_requires=">=2.7.*",
 
     author='JAI@RHUL',
