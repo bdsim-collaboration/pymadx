@@ -6,3 +6,5 @@ build/*
 *.whl
 dist/*
 .idea*
+.egg*
+venv*
