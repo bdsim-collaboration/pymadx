@@ -5,3 +5,4 @@ pymadx.egg-info/*
 build/*
 *.whl
 dist/*
+.idea*
