@@ -15,6 +15,7 @@ setup(
     packages=find_packages(exclude=["docs", "tests", "obsolete"]),
     # Not sure how strict these need to be...
     install_requires=["six>1.0",
+                      "future",
                       "matplotlib>=1.7.1",
                       "numpy >= 1.4",
                       "pytransport"],
