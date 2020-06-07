@@ -2,12 +2,14 @@
 Version History
 ===============
 
-v 1.7.2 - 2019 / ?? / ??
+v 1.8.0 - 2019 / 06 / 08
 ========================
 
 New Features
 ------------
 
+* Switch to Python 3. Should be Python 2.7 compatible.
+* Venv support in Makefile thanks to Kyrre Ness Sjoebaek.
 * Ability to write out a Tfs instance permitting comlete loading, editing and writing.
 * Plus operator for Tfs instances to add them together.
 
