@@ -418,6 +418,8 @@ class Tfs(object):
             #test values incase of ':' use
             if step != None and type(step) != int:
                 raise ValueError("Invalid step "+step)
+            if step is None:
+                step = 1
             if start != None and stop != None and step != None:
                 # [start:stop:step]
                 start = self._EnsureItsAnIndex(start)
