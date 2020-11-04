@@ -391,19 +391,24 @@ def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, 
     tfs = _Data.CheckItsTfs(tfsfile) #load the machine description
 
     #check required keys
+    useQuadStrength = True
     requiredKeys = ['KEYWORD', 'S', 'L', 'K1L']
     okToProceed = all([key in tfs.columns for key in requiredKeys])
     if not okToProceed:
-        print("The required columns aren't present in this tfs file")
-        print("The required columns are: ", requiredKeys)
-        raise IOError
+        minimumKeys = ['KEYWORD', 'S', 'L']
+        if not all([key in tfs.columns for key in minimumKeys]):
+            print("The required columns aren't present in this tfs file")
+            print("The required columns are: ", requiredKeys)
+            raise IOError
+        else:
+            useQuadStrength = False
 
     axoptics  = figure.get_axes()[0]
     _AdjustExistingAxes(figure, tightLayout=tightLayout)
     axmachine = _PrepareMachineAxes(figure)
     axmachine.margins(x=0.02)
 
-    _DrawMachineLattice(axmachine,tfs, reverse, offset)
+    _DrawMachineLattice(axmachine,tfs, reverse, offset, useQuadStrength)
 
     #put callbacks for linked scrolling
     def MachineXlim(ax):
@@ -430,7 +435,7 @@ def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, 
     axmachine.callbacks.connect('xlim_changed', MachineXlim)
     figure.canvas.mpl_connect('button_press_event', Click)
 
-def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None):
+def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None, useQuadStrength=True):
     ax  = axesinstance #handy shortcut
     tfs = pymadxtfsobject
 
@@ -441,13 +446,16 @@ def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=Non
     def DrawBend(e,color='b',alpha=1.0):
         return _patches.Rectangle((s0,-0.1),l,0.2,color=color,alpha=alpha)
     def DrawQuad(e,color='r',alpha=1.0):
-        if e['K1L'] > 0 :
-            return _patches.Rectangle((s0,0),l,0.2,color=color,alpha=alpha)
-        elif e['K1L'] < 0:
-            return _patches.Rectangle((s0,-0.2),l,0.2,color=color,alpha=alpha)
+        if useQuadStrength:
+            if e['K1L'] > 0 :
+                return _patches.Rectangle((s0,0),l,0.2,color=color,alpha=alpha)
+            elif e['K1L'] < 0:
+                return _patches.Rectangle((s0,-0.2),l,0.2,color=color,alpha=alpha)
+            else:
+                #quadrupole off
+                return _patches.Rectangle((s0,-0.1),l,0.2,color='#B2B2B2',alpha=0.5) #a nice grey in hex
         else:
-            #quadrupole off
-            return _patches.Rectangle((s0,-0.1),l,0.2,color='#B2B2B2',alpha=0.5) #a nice grey in hex
+            return _patches.Rectangle((s0,-0.2),l,0.4,color=color,alpha=alpha)
     def DrawHex(e,color,alpha=1.0):
         edges = _np.array([[s0,-0.1],[s0,0.1],[s0+l/2.,0.13],[s0+l,0.1],[s0+l,-0.1],[s0+l/2.,-0.13]])
         return _patches.Polygon(edges,color=color,fill=True,alpha=alpha)
