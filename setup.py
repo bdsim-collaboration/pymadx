@@ -10,7 +10,7 @@ except:
 
 setup(
     name='pymadx',
-    version='1.8.0',
+    version='1.8.1',
     packages=find_packages(exclude=["docs", "tests", "obsolete"]),
     # Not sure how strict these need to be...
     install_requires=["six>1.0",

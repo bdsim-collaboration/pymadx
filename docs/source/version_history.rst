@@ -2,6 +2,13 @@
 Version History
 ===============
 
+v 1.8.1 - 2020 / 12 / 16
+========================
+
+* Fix for step size in Tfs slicing.
+* More tolerant plotting for machine diagrams with just keyword, S and L as colums (ignoring K1L).
+* Ensure machine diagram x limit is full machine length by default.
+
 v 1.8.0 - 2019 / 06 / 08
 ========================
 
