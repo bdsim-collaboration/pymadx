@@ -531,3 +531,4 @@ def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=Non
     # set zorder on top
     ax.plot([tfs.smin,tfs.smax],[0,0],'k-',lw=1, zorder=100)
     ax.set_ylim(-0.2,0.2)
+    ax.set_xlim(tfs.smin, tfs.smax)
