@@ -849,8 +849,6 @@ class Tfs(object):
         squareroot -> whether to square root the beta functions or not (default = True)
         """
         import pymadx.Plot as _Plot
-        if outputfilename is None:
-            outputfilename = "{}_beta".format((self.filename.split("."))[0])
         _Plot.Beta(self, title, outputfilename, machine, dispersion, squareroot)
 
     def PlotCentroids(self, title='', outputfilename=None, machine=True):
@@ -858,8 +856,6 @@ class Tfs(object):
         Plot the centroid in the horizontal and vertical from the file if they exist.
         """
         import pymadx.Plot as _Plot
-        if outputfilename is None:
-            outputfilename = "{}_centroid".format((self.filename.split("."))[0])
         _Plot.Centroids(self,title,outputfilename,machine)
 
     def PlotSigma(self, title='', outputfilename=None, machine=True, dispersion=False):
@@ -867,8 +863,6 @@ class Tfs(object):
         Plot the beam size.
         """
         import pymadx.Plot as _Plot
-        if outputfilename is None:
-            outputfilename = "{}_sigma".format((self.filename.split("."))[0])
         _Plot.Sigma(self, title, outputfilename, machine, dispersion)
 
     def IndexFromGmadName(self, gmadname, verbose=False):
@@ -879,7 +873,8 @@ class Tfs(object):
         name match, returns the indices of all the components in a list.
         Arguments:
         gmadname     :    The gmad name of a component to search for.
-        verbose      :    prints out matching name indices and S locations.  Useful for discriminating between identical names.
+        verbose      :    prints out matching name indices and S locations.  
+                          Useful for discriminating between identical names.
         """
         indices = []
         #Because underscores are allowed in gmad names:
