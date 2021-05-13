@@ -490,7 +490,7 @@ def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=Non
         elif kw == 'VKICKER':
             vkickers.append(DrawRect(element, u'#ba55d3')) #medium orchid
         elif kw == 'SOLENOID':
-            solenoids.append(DrawRect(element, u'#ffa500')) #orange
+            solenoids.append(DrawRect(element, u'#ff8800')) #orange
         elif kw == 'RCOLLIMATOR':
             collimators.append(DrawRect(element,'k'))
         elif kw == 'ECOLLIMATOR':
