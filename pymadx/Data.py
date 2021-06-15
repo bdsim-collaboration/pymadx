@@ -874,7 +874,7 @@ class Tfs(object):
         Arguments:
         gmadname     :    The gmad name of a component to search for.
         verbose      :    prints out matching name indices and S locations.  
-                          Useful for discriminating between identical names.
+        .                 Useful for discriminating between identical names.
         """
         indices = []
         #Because underscores are allowed in gmad names:
