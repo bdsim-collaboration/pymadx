@@ -2,8 +2,8 @@
 Version History
 ===============
 
-v 1.8.2 - 2021 / 06. 16
-=======================
+v 1.8.2 - 2021 / 06 / 16
+========================
 
 * Fix for plot name filtering.
 * Tweaked orange for solenoids.
