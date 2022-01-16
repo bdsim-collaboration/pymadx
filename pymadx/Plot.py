@@ -435,6 +435,109 @@ def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, 
     axmachine.callbacks.connect('xlim_changed', MachineXlim)
     figure.canvas.mpl_connect('button_press_event', Click)
 
+def MachineDiagram(tfsfile, title=None, reverse=False):
+    """
+    Plot just a machine diagram on its own. The S axis is shown.
+    
+    :param tfsfile: TFS instance or file name of lattice to plot.
+    :type tfsfile:  pymadx.Data.TFS, str
+    :param title: Title for plot.
+    :type title: None, str
+    :param reverse: Whether to reverse the direction of the machine.
+    :type reverse: bool
+
+    """
+    import pymadx.Data as _Data
+    tfs = _Data.CheckItsTfs(tfsfile) #load the machine description
+
+    #check required keys
+    useQuadStrength = True
+    requiredKeys = ['KEYWORD', 'S', 'L', 'K1L']
+    okToProceed = all([key in tfs.columns for key in requiredKeys])
+    if not okToProceed:
+        minimumKeys = ['KEYWORD', 'S', 'L']
+        if not all([key in tfs.columns for key in minimumKeys]):
+            print("The required columns aren't present in this tfs file")
+            print("The required columns are: ", requiredKeys)
+            raise IOError
+        else:
+            useQuadStrength = False
+
+    f = _plt.figure(figsize=(10,2))
+    ax = f.add_subplot(111)
+    _DrawMachineLattice(ax, tfs, reverse=reverse)
+    _plt.xlabel('S (m)')
+    _plt.ylim(-0.3,0.3)
+    ax.get_yaxis().set_visible(False)
+    ax.spines['top'].set_visible(False)
+    #ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    if title:
+        _plt.title(title)
+    _plt.tight_layout()
+
+
+def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title=None, reverse=False):
+    """
+    Plot just a machine diagram on its own. The S axis is shown.
+    
+    :param tfsfile: TFS instance or file name of lattice to plot.
+    :type tfsfile:  pymadx.Data.TFS, str
+    :param title: Title for plot.
+    :type title: None, str
+    :param reverse: Whether to reverse the direction of the machine.
+    :type reverse: bool
+
+    """
+    import pymadx.Data as _Data
+    tfsT = _Data.CheckItsTfs(tfsTop)
+    tfsB = _Data.CheckItsTfs(tfsBottom)
+
+    #check required keys
+    useQuadStrength = True
+    requiredKeys = ['KEYWORD', 'S', 'L', 'K1L']
+    okToProceedT = all([key in tfsT.columns for key in requiredKeys])
+    okToProceedB = all([key in tfsB.columns for key in requiredKeys])
+    if not okToProceedT and not okToProceedB:
+        minimumKeys = ['KEYWORD', 'S', 'L']
+        if not all([key in tfsT.columns for key in minimumKeys]):
+            print("The required columns aren't present in this tfsTop file")
+            print("The required columns are: ", requiredKeys)
+            raise IOError
+        elif not all([key in tfsB.columns for key in minimumKeys]):
+            print("The required columns aren't present in this tfsBottom file")
+            print("The required columns are: ", requiredKeys)
+            raise IOError
+        else:
+            useQuadStrength = False
+    
+    f,(axt,axb) = _plt.subplots(2,1,sharex=True,figsize=(10,3))
+    _DrawMachineLattice(axt, tfsT, reverse=reverse)
+    _DrawMachineLattice(axb, tfsB, reverse=reverse)
+    axt.set_ylim(-0.3,0.3)
+    axb.set_ylim(-0.3,0.3)
+
+    _plt.subplots_adjust(hspace=0)
+
+    _plt.xlabel('S (m)')
+    
+    axt.get_yaxis().set_visible(False)
+    axb.get_yaxis().set_visible(False)
+    axt.spines['top'].set_visible(False)
+    axb.spines['top'].set_visible(False)
+    #ax.spines['bottom'].set_visible(False)
+    axt.spines['left'].set_visible(False)
+    axt.spines['right'].set_visible(False)
+    axb.spines['left'].set_visible(False)
+    axb.spines['right'].set_visible(False)
+    if title:
+        _plt.title(title)
+    _plt.tight_layout()
+
+    
+    
+
 def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None, useQuadStrength=True):
     ax  = axesinstance #handy shortcut
     tfs = pymadxtfsobject

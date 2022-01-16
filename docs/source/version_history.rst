@@ -2,6 +2,11 @@
 Version History
 ===============
 
+V 1.9.0 - 2022 / 01 / XX
+========================
+
+* Added plot for 1 or 2 machine diagrams only.
+
 v 1.8.2 - 2021 / 06 / 16
 ========================
 
