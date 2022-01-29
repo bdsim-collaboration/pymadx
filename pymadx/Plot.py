@@ -323,9 +323,9 @@ def _ApertureTypeToColour(apertype, cmap=_ApertureTypeColourMap()):
     try:
         colour = cmap[apertype.upper()]
     except:
-        colour =(0.8,0.8,0.8) # greyish
+        colour = '#BCBCBC' # greyish
 
-    return color
+    return colour
 
 def _AddColourLegend(colours, cmap=_ApertureTypeColourMap()):
     found_cols = set(colours)

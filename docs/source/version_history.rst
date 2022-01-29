@@ -6,6 +6,7 @@ V 1.9.0 - 2022 / 01 / XX
 ========================
 
 * Added plot for 1 or 2 machine diagrams only.
+* Fix aperture plots due to typo in code.
 
 v 1.8.2 - 2021 / 06 / 16
 ========================
