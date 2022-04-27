@@ -63,7 +63,7 @@ You may export twiss data from MADX with a choice of columns. We often find it b
 to not specify any columns at all, which results in all available columns being written.
 This large number (~70) makes the file less human-readable but ensures no information is
 omitted. Such an export will also increase the file size, however, we recommend compressing
-the file with tar and gzip as the ASCII files compress very well with a typically compression
+the file with gzip as ASCII files compress very well with a typically compression
 ratio of over 10:1.
 
 The following MADX syntax in a MADX input script will prepare a Tfs file with all columns where
