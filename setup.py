@@ -12,16 +12,12 @@ setup(
     name='pymadx',
     version='1.8.2',
     packages=find_packages(exclude=["docs", "tests", "obsolete"]),
-    # Not sure how strict these need to be...
-    install_requires=["six>1.0",
-                      "future",
-                      "matplotlib>=1.7.1",
+    install_requires=["matplotlib>=1.7.1",
                       "numpy >= 1.4",
                       "pytransport"],
-    # Some version of python2.7
     setup_requires=["pytest-runner"],
     tests_require=["pytest"],
-    python_requires=">=2.7.*",
+    python_requires=">=3.7.*",
 
     author='JAI@RHUL',
     author_email='laurie.nevay@rhul.ac.uk',
@@ -29,5 +25,5 @@ setup(
     long_description=long_description,
     url='https://bitbucket.org/jairhul/pymadx/',
     license='GPL3',
-    keywords='madx accelerator twiss ptc',
+    keywords=['madx', 'accelerator', 'twiss', 'ptc'],
 )
