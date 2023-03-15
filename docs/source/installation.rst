@@ -6,7 +6,7 @@ Installation
 Requirements
 ------------
 
- * pymadx is developed exclusively for Python 2.7.
+ * pymadx is developed exclusively for Python 3. 3.7 is the minimum version.
  * Matplotlib
  * Numpy
 

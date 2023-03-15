@@ -10,7 +10,7 @@ Authors:
  * Jochem Snuverink
  * Stuart Walker
 
-Copyright Royal Holloway, University of London 2020.
+Copyright Royal Holloway, University of London 2023.
 
 """
 
