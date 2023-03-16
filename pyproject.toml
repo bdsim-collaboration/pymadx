@@ -6,7 +6,7 @@ readme = "README.md"
 description = "Package for loading MADX output."
 license = {file = "LICENCE.txt"}
 classifiers = [
-    "Development Status :: 5 - Stable",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Operating System :: MacOS",
