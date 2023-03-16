@@ -2,13 +2,17 @@
 Version History
 ===============
 
-V 1.9.0 - 2023 / 03 / XX
+V 2.0.0 - 2023 / 03 / 16
 ========================
 
+* Move to Python 3 entirely. Require at least Python 3.7.
+* Package layout and build system changed to more modern declarative package.
+  All source code is now in :code:`pymadx/src/pymadx`. The version number
+  throughout the code is dynamically generated from the git tag.
 * Added plot for 1 or 2 machine diagrams only.
 * Fix aperture plots due to typo in code.
 * Fix string type comparison for modern Python (i.e. don't use numpy internal alises).
-* Move to Python 3 entirely. Require at least Python 3.7.
+
 
 v 1.8.2 - 2021 / 06 / 16
 ========================
@@ -16,12 +20,14 @@ v 1.8.2 - 2021 / 06 / 16
 * Fix for plot name filtering.
 * Tweaked orange for solenoids.
 
+
 v 1.8.1 - 2020 / 12 / 16
 ========================
 
 * Fix for step size in Tfs slicing.
 * More tolerant plotting for machine diagrams with just keyword, S and L as colums (ignoring K1L).
 * Ensure machine diagram x limit is full machine length by default.
+
 
 v 1.8.0 - 2019 / 06 / 08
 ========================
@@ -43,6 +49,7 @@ Bug Fixes
 * Tolerate minimal aperture columns. i.e. only APER_1. Have to do this
   as there's no standard in writing out apertures and everyone picks their
   own with missing bits of information.
+
 
 v 1.7.1 - 2019 / 04 / 20
 ========================
