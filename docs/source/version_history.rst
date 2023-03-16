@@ -2,7 +2,7 @@
 Version History
 ===============
 
-V 2.0.0 - 2023 / 03 / 16
+v 2.0.0 - 2023 / 03 / 16
 ========================
 
 * Move to Python 3 entirely. Require at least Python 3.7.
