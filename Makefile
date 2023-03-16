@@ -27,3 +27,8 @@ bump-patch:
 pypi-upload:
 	python setup.py sdist bdist_wheel; \
 	twine upload --repository pypi dist/*
+
+
+# this will print out what the build system will dynamically put as the version
+print-version:
+        python -m setuptools_scm
