@@ -13,7 +13,9 @@ J. Snuverink
 
 ## Setup ##
 
-From within the pymadx root directory:
+pip install pymadx
+
+Or from source, from the main directory:
 
 $ make install
 
@@ -21,6 +23,8 @@ or for development where the local copy of the repository is used
 and can be reloaded with local changes:
 
 $ make develop
+
+Look in the Makefile for the various pip commands (e.g. for with a venv).
 
 
 ```
@@ -34,3 +38,4 @@ $> python
  * matplotlib
  * numpy
  * pytransport (optional)
+

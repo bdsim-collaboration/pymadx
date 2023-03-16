@@ -32,3 +32,10 @@ the root pymadx directory.::
 
 Alternatively, run ``make develop`` from the same directory to ensure
 that any local changes are picked up.
+
+For Developers
+--------------
+
+If you want to create a package that depends on pymadx, it has the optional
+component pytransport that can be requested as :code:`pymadx[pytransport]` in
+the `pyproject.toml`.

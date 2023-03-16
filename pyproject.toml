@@ -28,9 +28,10 @@ maintainers = [
 dependencies = [
   "matplotlib>1.7.1",
   "numpy>=1.4",
-  "pytransport",
   "importlib-metadata"
-]
+
+[project.optional-dependencies]
+pytransport = ["pytransport"]
 
 [project.urls]
 homepage = "http://www.pp.rhul.ac.uk/bdsim/pymadx"
