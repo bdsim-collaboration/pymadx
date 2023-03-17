@@ -29,6 +29,7 @@ dependencies = [
   "matplotlib>1.7.1",
   "numpy>=1.4",
   "importlib-metadata"
+]
 
 [project.optional-dependencies]
 pytransport = ["pytransport"]
