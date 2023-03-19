@@ -33,6 +33,7 @@ dependencies = [
 
 [project.optional-dependencies]
 pytransport = ["pytransport"]
+dev = ["pytest", "sphinx", "sphinx-rtd-theme"]
 
 [project.urls]
 homepage = "http://www.pp.rhul.ac.uk/bdsim/pymadx"
