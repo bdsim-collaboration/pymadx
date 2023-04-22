@@ -239,9 +239,11 @@ class Tfs(object):
             raise ValueError("Malformed TFS.")
 
     def _CalculateSigma(self):
-        """Tries to calculate the sigmas.  If the relevant columns are
+        """
+        Tries to calculate the sigmas.  If the relevant columns are
         not present, e.g. in the case of Tfs Aperture, then this does
-        nothing."""
+        nothing.
+        """
         # check for emittance and energy spread
         ex   = 1e-9
         ey   = 1e-9
