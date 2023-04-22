@@ -44,6 +44,61 @@ def _GetOpticalDataFromTfs(tfsobject, dispersion=True):
     d['sigmayp']   = tfsobject.GetColumn('SIGMAYP')
     return d
 
+def _GetRMatrixDataFromTfs(tfsobject):
+    d = {}
+    for key in ['S', 'RE11', 'RE12', 'RE21', 'RE22', 'RE33', 'RE34', 'RE43', 'RE44', 'RE16', 'RE26', 'RE36', 'RE46']:
+        d[key.lower()] = tfsobject.GetColumn(key)
+    return d
+
+def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True):
+    """
+    Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently.
+    :param dx: displacement in x in mm that is propagated
+    :type dx: float
+    :param dpx: displacement in px (component of unit vector) in 1e-3 (e.g. mrad in small angle).
+    :type dpx: float
+    :param dP: displacement in momentum as a percentage
+    :type dP: float
+    :param dy: displacement in x in mm that is propagated
+    :type dy: float
+    :param dyx: displacement in px (component of unit vector) in 1e-3 (e.g. mrad in small angle).
+    :type dyx: float
+    """
+
+    import pymadx.Data as _Data
+    madx = _Data.CheckItsTfs(tfsfile)
+    d = _GetRMatrixDataFromTfs(madx)
+
+    xlabel   = 'x  = '+str(round(dx,3))+' mm'
+    xplabel  = 'xp = '+str(round(dpx,3))+' mrad'
+    xdplabel = 'dP = '+str(round(dP/1e2,3))+' %'
+
+    f1 = _plt.figure("Horizontal", figsize=(9,5))
+    axx = f1.add_subplot(111)
+    axx.plot(d['s'], d['re11']*dx*1e-3,  '-',  label=xlabel)
+    axx.plot(d['s'], d['re12']*dpx*1e-3, '--', label=xplabel)
+    axx.plot(d['s'], d['re16']*dP/1e2,  '-.', label=xdplabel)
+    _plt.legend()
+    _plt.xlabel('S (m)')
+    _plt.tight_layout()
+    if machine:
+        AddMachineLatticeToFigure(f1, madx)
+    
+    ylabel   = 'y  = '+str(round(dy,3))+' mm'
+    yplabel  = 'yp = '+str(round(dpy,3))+' mrad'
+    ydplabel = 'dP = '+str(round(dP/1e2,3))+' %'
+    
+    f2 = _plt.figure("Vertical", figsize=(9,5))
+    axy = f2.add_subplot(111)
+    axy.plot(d['s'], d['re33']*dy*1e-3,  '-',  label=ylabel)
+    axy.plot(d['s'], d['re34']*dpy*1e-3, '--', label=yplabel)
+    axy.plot(d['s'], d['re36']*dP/1e2,  '-.', label=ydplabel)
+    _plt.legend()
+    _plt.xlabel('S (m)')
+    _plt.tight_layout()
+    if machine:
+        AddMachineLatticeToFigure(f2, madx)
+
 def Centroids(tfsfile, title='', outputfilename=None, machine=True):
     """
     Plot the centroid (mean) x and y from the a Tfs file or pymadx.Tfs instance.
