@@ -2,8 +2,15 @@
 Version History
 ===============
 
-v 2.0.0 - 2023 / 03 / 16
-========================
+v2.0.1 - 2023 / 05 / 15
+=======================
+
+* Reduce Python version requirement to >3.6 instead of 3.7.
+* :code:`pymadx[dev]` installation feature in pip to allow testing / manual requirements.
+* Start of R-Matrix plots - in development.
+
+v2.0.0 - 2023 / 03 / 16
+=======================
 
 * Move to Python 3 entirely. Require at least Python 3.7.
 * Package layout and build system changed to more modern declarative package.
