@@ -14,23 +14,23 @@ v 2.0.0 - 2023 / 03 / 16
 * Fix string type comparison for modern Python (i.e. don't use numpy internal alises).
 
 
-v 1.8.2 - 2021 / 06 / 16
-========================
+v1.8.2 - 2021 / 06 / 16
+=======================
 
 * Fix for plot name filtering.
 * Tweaked orange for solenoids.
 
 
-v 1.8.1 - 2020 / 12 / 16
-========================
+v1.8.1 - 2020 / 12 / 16
+=======================
 
 * Fix for step size in Tfs slicing.
 * More tolerant plotting for machine diagrams with just keyword, S and L as colums (ignoring K1L).
 * Ensure machine diagram x limit is full machine length by default.
 
 
-v 1.8.0 - 2019 / 06 / 08
-========================
+v1.8.0 - 2019 / 06 / 08
+=======================
 
 New Features
 ------------
@@ -51,8 +51,8 @@ Bug Fixes
   own with missing bits of information.
 
 
-v 1.7.1 - 2019 / 04 / 20
-========================
+v1.7.1 - 2019 / 04 / 20
+=======================
 
 Bug Fixes
 ---------
@@ -61,8 +61,8 @@ Bug Fixes
 * Tolerate no pytransport at import.
 
 
-v 1.7 - 2019 / 02 / 27
-======================
+v1.7 - 2019 / 02 / 27
+=====================
 
 New Features
 ------------
@@ -77,8 +77,8 @@ General
 * Update copyright for 2019.
 
 
-v 1.6 - 2018 / 12 / 12
-======================
+v1.6 - 2018 / 12 / 12
+=====================
 
 General
 -------
@@ -91,8 +91,8 @@ General
 * Revised bend conversion for MADX TFS to PTC converter.
   
 
-v 1.5 - 2018 / 08 / 24
-======================
+v1.5 - 2018 / 08 / 24
+=====================
 
 New Features
 ------------
@@ -111,8 +111,8 @@ Bug Fixes
 * Several bugs in Aperture class fixed.
 
 
-v 1.4 - 2018 / 06 / 23
-======================
+v1.4 - 2018 / 06 / 23
+=====================
 
 New Features
 ------------
@@ -124,8 +124,8 @@ General
 
 * Improved SixTrack aperture handling.
 
-v 1.2 - 2018 / 05 / 23
-======================
+v1.2 - 2018 / 05 / 23
+=====================
 
 New Features
 ------------
@@ -150,8 +150,8 @@ Bug Fixes
 * Machine plot now deals with 'COLLIMATOR' type correctly.
 
 
-v 1.1 - 2018 / 04 / 10
-======================
+v1.1 - 2018 / 04 / 10
+=====================
 
 New Features
 ------------
@@ -173,8 +173,8 @@ Bug Fixes
 * Fix PTC analysis.
 * Fix conversion to PTC for fringe fields.
 
-v 1.0 - 2017 / 12 / 05
-======================
+v1.0 - 2017 / 12 / 05
+=====================
 
 New Features
 ------------
