@@ -1,6 +1,6 @@
 [project]
 name = "pymadx"
-requires-python = ">=3.7"
+requires-python = ">=3.6"
 dynamic = ["version"]
 readme = "README.md"
 description = "Package for loading MADX output."
