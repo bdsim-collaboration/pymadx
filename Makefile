@@ -31,4 +31,4 @@ pypi-upload:
 
 # this will print out what the build system will dynamically put as the version
 print-version:
-        python -m setuptools_scm
+	python -m setuptools_scm
