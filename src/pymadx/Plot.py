@@ -71,33 +71,42 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None,
 
     xlabel   = 'x  = '+str(round(dx,3))+' mm'
     xplabel  = 'xp = '+str(round(dpx,3))+' mrad'
-    xdplabel = 'dP = '+str(round(dP/1e2,3))+' %'
+    xdplabel = 'dP = '+str(round(dP,3))+' %'
 
-    f1 = _plt.figure("Horizontal", figsize=(9,5))
+    f1 = _plt.figure(figsize=(9,5))
     axx = f1.add_subplot(111)
-    axx.plot(d['s'], d['re11']*dx*1e-3,  '-',  label=xlabel)
-    axx.plot(d['s'], d['re12']*dpx*1e-3, '--', label=xplabel)
-    axx.plot(d['s'], d['re16']*dP/1e2,  '-.', label=xdplabel)
+    axx.plot(d['s'], d['re11']*dx,  '-',  label=xlabel)
+    axx.plot(d['s'], d['re12']*dpx, '--', label=xplabel)
+    axx.plot(d['s'], d['re16']*dP*10.0,  '-.', label=xdplabel)
     _plt.legend()
-    _plt.xlabel('S (m)')
+    _plt.xlabel('S in m')
+    _plt.ylabel('x in mm')
     _plt.tight_layout()
     if machine:
         AddMachineLatticeToFigure(f1, madx)
     
     ylabel   = 'y  = '+str(round(dy,3))+' mm'
     yplabel  = 'yp = '+str(round(dpy,3))+' mrad'
-    ydplabel = 'dP = '+str(round(dP/1e2,3))+' %'
+    ydplabel = 'dP = '+str(round(dP,3))+' %'
     
-    f2 = _plt.figure("Vertical", figsize=(9,5))
+    f2 = _plt.figure(figsize=(9,5))
     axy = f2.add_subplot(111)
-    axy.plot(d['s'], d['re33']*dy*1e-3,  '-',  label=ylabel)
-    axy.plot(d['s'], d['re34']*dpy*1e-3, '--', label=yplabel)
-    axy.plot(d['s'], d['re36']*dP/1e2,  '-.', label=ydplabel)
+    axy.plot(d['s'], d['re33']*dy,  '-',  label=ylabel)
+    axy.plot(d['s'], d['re34']*dpy, '--', label=yplabel)
+    axy.plot(d['s'], d['re36']*dP*10.0,  '-.', label=ydplabel)
     _plt.legend()
-    _plt.xlabel('S (m)')
+    _plt.xlabel('S in m')
+    _plt.ylabel('y in mm')
     _plt.tight_layout()
     if machine:
         AddMachineLatticeToFigure(f2, madx)
+    
+    if '.' in outputfilename:
+        outputfilenameWithout = outputfilename.split('.')[0]
+        extension = outputfilename.split('.')[1]
+
+    f1.savefig(outputfilenameWithout + '_Horizontal.' + extension)
+    f2.savefig(outputfilenameWithout + '_Vertical.' + extension)
 
 def Centroids(tfsfile, title='', outputfilename=None, machine=True):
     """
@@ -142,16 +151,23 @@ def Survey(tfsfile, title='', outputfilename=None):
     import pymadx.Data as _Data
     madx = _Data.CheckItsTfs(tfsfile)
     x    = madx.GetColumn('X')
+    y    = madx.GetColumn('Y')
     z    = madx.GetColumn('Z')
 
     f = _plt.figure()
-    ax = f.add_subplot(111)
-    ax.set_aspect('equal')
+    ax1 = f.add_subplot(211)
+    #ax1.set_aspect('equal')
+    ax1.plot(z, x, marker='.')
+    _plt.suptitle(title, size='x-large')
+    _plt.xlabel('Z (m)')
+    _plt.ylabel('X (m)')
 
-    ax.plot(x, z, marker='.')
-    _plt.suptitle(title,size='x-large')
-    _plt.xlabel('X (m)')
-    _plt.ylabel('Z (m)')
+    ax2 = f.add_subplot(212)
+    #ax2.set_aspect('equal')
+    ax2.plot(z, y, marker='.')
+    _plt.suptitle(title, size='x-large')
+    _plt.xlabel('Z (m)')
+    _plt.ylabel('Y (m)')
 
 
 def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, squareroot=True):
