@@ -103,13 +103,15 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None,
     _plt.tight_layout()
     if machine:
         AddMachineLatticeToFigure(f2, madx)
-    
-    if '.' in outputfilename:
-        outputfilenameWithout = outputfilename.split('.')[0]
-        extension = outputfilename.split('.')[1]
 
-    f1.savefig(outputfilenameWithout + '_Horizontal.' + extension)
-    f2.savefig(outputfilenameWithout + '_Vertical.' + extension)
+    if outputfilename:
+        if '.' in outputfilename:
+            outputFileNameWithout = outputfilename.split('.')[0]
+            extension = outputfilename.split('.')[1]
+
+        f1.savefig(outputFileNameWithout + '_x.' + extension)
+        f2.savefig(outputFileNameWithout + '_y.' + extension)
+
 
 def Centroids(tfsfile, title='', outputfilename=None, machine=True):
     """
