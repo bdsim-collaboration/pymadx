@@ -1,0 +1,48 @@
+"""
+Functions for comparing the optical distributions of two
+BDSIM models.
+
+Functions for plotting the individual optical functions, and an
+eighth, helper function ''compare_all_optics``, to plot display all
+seven in one go.
+"""
+import datetime as _datetime
+from matplotlib.backends.backend_pdf import PdfPages as _PdfPages
+
+from ._CompareCommon import _MakePlotterWithScale
+
+_HORIZONTAL = [('RE11', 1.0,  'RE11 / mm'),
+               ('RE12', 1.0,  'RE12 / mm'),
+               ('RE16', 10.0, 'RE16 / %')]
+
+_VERTICAL = [('RE33', 1.0,  'RE33 / mm'),
+             ('RE34', 1.0,  'RE34 / mm'),
+             ('RE36', 10.0, 'RE36 / %')]
+
+PlotHorizontal = _MakePlotterWithScale(_HORIZONTAL, "S / m", "x / mm", "Horizontal", zeroLine=True)
+PlotVertical   = _MakePlotterWithScale(_VERTICAL,   "S / m", "x / mm", "Vertical", zeroLine=True)
+
+def MADXVsMADXRMatrix(first, second, first_name=None,
+                      second_name=None, saveAll=True,
+                      outputFileName=None, **kwargs):
+    """
+    Display vertical and horizontal RMatrix components for two files.
+    """
+    figures = [
+        PlotHorizontal(first, second, first_name=first_name,second_name=second_name, **kwargs),
+        PlotVertical(first, second, first_name=first_name, second_name=second_name, **kwargs)
+    ]
+
+    if saveAll:
+        if outputFileName is not None:
+            output_filename = outputFileName
+        else:
+            output_filename = "optics-rmatrix-report.pdf"
+
+        with _PdfPages(output_filename) as pdf:
+            for figure in figures:
+                pdf.savefig(figure)
+            d = pdf.infodict()
+            d['Title'] = "{} VS {} RMatrix Optical Comparison".format(first_name, second_name)
+            d['CreationDate'] = _datetime.datetime.today()
+        print("Written ", output_filename)
