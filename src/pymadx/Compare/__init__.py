@@ -1,4 +1,6 @@
+from . import _CompareCommon
 from ._MadxMadxComparison import MADXVsMADX
+from ._MadxMadxComparisonRMatrix import MADXVsMADXRMatrix
 try:
     from ._MadxTransportComparison import MADXVsTRANSPORT
 except ImportError:
