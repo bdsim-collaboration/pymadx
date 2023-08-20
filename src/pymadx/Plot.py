@@ -1,6 +1,5 @@
 """
-Ploting script for madx TFS files using the pymadx Tfs class
-
+Various plots for madx TFS files using the pymadx Tfs class
 """
 from builtins import map as _map
 
@@ -10,7 +9,6 @@ import matplotlib.patches as _patches
 import matplotlib.pyplot  as _plt
 
 from matplotlib.collections import PatchCollection as _PatchCollection
-
 
 class _My_Axes(_matplotlib.axes.Axes):
     """
@@ -23,6 +21,7 @@ class _My_Axes(_matplotlib.axes.Axes):
 
 #register the new class of axes
 _matplotlib.projections.register_projection(_My_Axes)
+
 
 def _GetOpticalDataFromTfs(tfsobject, dispersion=True):
     """
@@ -44,11 +43,13 @@ def _GetOpticalDataFromTfs(tfsobject, dispersion=True):
     d['sigmayp']   = tfsobject.GetColumn('SIGMAYP')
     return d
 
+
 def _GetRMatrixDataFromTfs(tfsobject):
     d = {}
     for key in ['S', 'RE11', 'RE12', 'RE21', 'RE22', 'RE33', 'RE34', 'RE43', 'RE44', 'RE16', 'RE26', 'RE36', 'RE46']:
         d[key.lower()] = tfsobject.GetColumn(key)
     return d
+
 
 def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True):
     """
@@ -144,6 +145,7 @@ def Centroids(tfsfile, title='', outputfilename=None, machine=True):
         _plt.savefig(outputfilename+'.pdf')
         _plt.savefig(outputfilename+'.png')
 
+
 def Survey(tfsfile, title='', outputfilename=None):
     """
     Plot the x and z coordinates from a tfs file.
@@ -228,6 +230,7 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False,
         _plt.savefig(outputfilename+'.pdf')
         _plt.savefig(outputfilename+'.png')
 
+
 def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False):
     """
     Plot sqrt(beta x,y) as a function of S. By default, a machine diagram is shown at
@@ -272,6 +275,7 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
             outputfilename = outputfilename.split('.')[0]
         _plt.savefig(outputfilename+'.pdf')
         _plt.savefig(outputfilename+'.png')
+
 
 def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertype=True):
     """
@@ -327,6 +331,7 @@ def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertyp
         _plt.savefig(outputfilename+'.pdf')
         _plt.savefig(outputfilename+'.png')
 
+
 def ApertureN1(aperture, machine=None, outputfilename=None):
     """
     Plot the N1 aperture value from MADX.
@@ -358,6 +363,7 @@ def ApertureN1(aperture, machine=None, outputfilename=None):
         _plt.savefig(outputfilename+'.pdf')
         _plt.savefig(outputfilename+'.png')
 
+
 def _ApertureTypeColourMap():
     #Some nice colors
     _colourCodes = ['#C03028',
@@ -385,9 +391,11 @@ def _ApertureTypeColourMap():
     typeToCol = dict(list(zip(_madxAperTypes, _colourCodes)))
     return typeToCol
 
+
 def _HexToRGB(h):
     h = h.strip('#')
     return tuple(int(h[i:i+2], 16) for i in (0, 2 ,4))
+
 
 def _ApertureTypeToColour(apertype, cmap=_ApertureTypeColourMap()):
     colour = (0,0,0)
@@ -397,6 +405,7 @@ def _ApertureTypeToColour(apertype, cmap=_ApertureTypeColourMap()):
         colour = '#BCBCBC' # greyish
 
     return colour
+
 
 def _AddColourLegend(colours, cmap=_ApertureTypeColourMap()):
     found_cols = set(colours)
@@ -413,12 +422,14 @@ def _SetMachineAxesStyle(ax):
     ax.spines['left'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
+
 def _PrepareMachineAxes(figure):
     # create new machine axis with proportions 6 : 1
     axmachine = figure.add_subplot(911, projection="_My_Axes")
     axmachine.set_facecolor('none') # make background transparent to allow scientific notation
     _SetMachineAxesStyle(axmachine)
     return axmachine
+
 
 def _AdjustExistingAxes(figure, fraction=0.9, tightLayout=True):
     """
@@ -437,6 +448,7 @@ def _AdjustExistingAxes(figure, fraction=0.9, tightLayout=True):
         bbox.y0 = bbox.y0 * fraction
         bbox.y1 = bbox.y1 * fraction
         ax.set_position(bbox)
+
 
 def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, offset=None):
     """
@@ -505,6 +517,7 @@ def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, 
     MachineXlim(axmachine)
     axmachine.callbacks.connect('xlim_changed', MachineXlim)
     figure.canvas.mpl_connect('button_press_event', Click)
+
 
 def MachineDiagram(tfsfile, title=None, reverse=False):
     """
@@ -606,8 +619,6 @@ def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title
         _plt.title(title)
     _plt.tight_layout()
 
-    
-    
 
 def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None, useQuadStrength=True):
     ax  = axesinstance #handy shortcut
