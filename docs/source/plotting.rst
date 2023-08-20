@@ -8,6 +8,7 @@ Plotting Features
 -----------------
 
 * Make default optics plots.
+* Compare two sets of optics.
 * Add a machine lattice to any pre-existing plot.
 * Interactive plots with the machine diagram following the mouse zooming.
 * Interactive plots with searching for nearest element.
@@ -43,6 +44,24 @@ figure and can be used as the first argument.::
 
 .. note:: It becomes difficult to adjust the axes and layout of the graph after adding the
 	  machine description. It is therefore strongly recommended to do this last.
+
+
+Comparing Optics
+----------------
+
+Either Twiss functions or R-Matrix components can be compared between two files.
+
+Twiss
+*****
+
+:code:`pymadx.Compare.MadxVsMadx("file1.tfs", "file2.tfs")`
+
+
+R-Matrix
+********
+
+:code:`pymadx.Compare.MadxVsMadxRMatrix("file1.tfs", "file2.tfs")`
+
 
 
 Colour Coding

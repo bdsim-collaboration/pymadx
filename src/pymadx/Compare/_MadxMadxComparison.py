@@ -43,7 +43,7 @@ PlotSigma  = _MakePlotter(_SIGMA, "S / m", r"$\sigma_{x,y}$ / m", "Sigma")
 PlotSigmaP = _MakePlotter(_SIGMA_P, "S / m", r"$\sigma_{xp,yp}$ / rad", "SigmaP")
 PlotMean   = _MakePlotter(_MEAN, "S / m", r"$\bar{x}, \bar{y}$ / m", "Mean")
 
-def MADXVsMADX(first, second, first_name=None,
+def MadxVsMadx(first, second, first_name=None,
                second_name=None, saveAll=True, 
                outputFileName=None, **kwargs):
     """
@@ -79,3 +79,10 @@ def MADXVsMADX(first, second, first_name=None,
             d['Title'] = "{} VS {} Optical Comparison".format(first_name, second_name)
             d['CreationDate'] = _datetime.datetime.today()
         print("Written ", output_filename)
+
+
+def MADXVsMADX(first, second, first_name=None,
+               second_name=None, saveAll=True,
+               outputFileName=None, **kwargs):
+    print("MADXVsMADX is now MadxVsMadx - this older version will be removed in the next version.")
+    return MadxVsMadx(first, second, first_name, second_name, saveAll, outputFileName, **kwargs)

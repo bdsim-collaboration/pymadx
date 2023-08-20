@@ -22,7 +22,7 @@ _VERTICAL = [('RE33', 1.0,  'RE33 / mm'),
 PlotHorizontal = _MakePlotterWithScale(_HORIZONTAL, "S / m", "x / mm", "Horizontal", zeroLine=True)
 PlotVertical   = _MakePlotterWithScale(_VERTICAL,   "S / m", "x / mm", "Vertical", zeroLine=True)
 
-def MADXVsMADXRMatrix(first, second, first_name=None,
+def MadxVsMadxRMatrix(first, second, first_name=None,
                       second_name=None, saveAll=True,
                       outputFileName=None, **kwargs):
     """
