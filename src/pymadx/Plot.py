@@ -176,7 +176,7 @@ def Survey(tfsfile, title='', outputfilename=None):
     _plt.ylabel('Y (m)')
 
 
-def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, squareroot=True):
+def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, squareroot=True, dispersionY=False):
     """
     Plot sqrt(beta x,y) as a function of S. By default, a machine diagram is shown at
     the top of the plot.
@@ -207,7 +207,9 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False,
     axoptics.plot(d['s'], yx, 'b-', label='x')
     axoptics.plot(d['s'], yy, 'g-', label='y')
     if dispersion:
-        axoptics.plot([], [],'r--', label=r'$\mathrm{D}_{x}(S) / \beta_{lorentz}$') #fake plot for legend
+        axoptics.plot([], [], 'r--', label=r'$\mathrm{D}_{x}(S) / \beta_{lorentz}$') #fake plot for legend
+    if dispersionY:
+        axoptics.plot([], [], ls='--', c='orange', label=r'$\mathrm{D}_{y}(S) / \beta_{lorentz}$') #fake plot for legend
     axoptics.set_xlabel('S (m)')
     if squareroot:
         axoptics.set_ylabel(r'$\sqrt{\beta}$ ($\sqrt{\mathrm{m}}$)')
@@ -216,11 +218,16 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False,
     axoptics.legend(loc=0,fontsize='small') #best position
 
     #plot dispersion - only in horizontal
+    axDisp = None
+    if dispersion or dispersionY:
+        axDisp = axoptics.twinx()
+        axDisp.set_ylabel(r'Dispersion / $\beta_{lorentz}$ (m)')
     if dispersion:
         d['dispxbeta'] = madx.GetColumn('DX')
-        ax2 = axoptics.twinx()
-        ax2.plot(d['s'],d['dispxbeta'],'r--')
-        ax2.set_ylabel(r'Dispersion / $\beta_{lorentz}$ (m)')
+        axDisp.plot(d['s'],d['dispxbeta'],'r--')
+    if dispersionY:
+        d['dispybeta'] = madx.GetColumn('DY')
+        axDisp.plot(d['s'],d['dispybeta'],ls='--',c='orange')
 
     #add lattice to plot
     if machine:

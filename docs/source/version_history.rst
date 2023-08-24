@@ -8,6 +8,8 @@ V2.1.0 - 2023 / XX / XX
 * The function `MADXVsMADX` is now `MadxVsMadx` to be consistent with pybdsim.
 * Updated R-Matrix plots.
 * R-Matrix comparison plot.
+* Optional vertical dispersion line in :code:`pybdsim.Plot.Beta`.
+
 
 v2.0.1 - 2023 / 05 / 15
 =======================
