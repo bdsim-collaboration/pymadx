@@ -2,7 +2,7 @@
 Version History
 ===============
 
-V2.1.0 - 2023 / XX / XX
+V2.1.0 - 2023 / 08 / 25
 =======================
 
 * The function `MADXVsMADX` is now `MadxVsMadx` to be consistent with pybdsim.
