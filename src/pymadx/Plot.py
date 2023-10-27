@@ -70,36 +70,36 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None,
     madx = _Data.CheckItsTfs(tfsfile)
     d = _GetRMatrixDataFromTfs(madx)
 
-    xlabel   = 'x  = '+str(round(dx,3))+' mm'
-    xplabel  = 'xp = '+str(round(dpx,3))+' mrad'
-    xdplabel = 'dP = '+str(round(dP,3))+' %'
+    xlabel   = '$x$  = '+str(round(dx,3))+' mm'
+    xplabel  = "$x'$ = "+str(round(dpx,3))+' mrad'
+    xdplabel = 'd$P$ = '+str(round(dP,3))+' %'
 
     f1 = _plt.figure(figsize=(9,5))
     axx = f1.add_subplot(111)
-    axx.plot(d['s'], d['re11']*dx,  '-',  label=xlabel)
-    axx.plot(d['s'], d['re12']*dpx, '--', label=xplabel)
-    axx.plot(d['s'], d['re16']*dP*10.0,  '-.', label=xdplabel)
+    axx.plot(d['s'], d['re11']*dx,  '-',  label=xlabel, color='green')
+    axx.plot(d['s'], d['re12']*dpx, '--', label=xplabel, color='red')
+    axx.plot(d['s'], d['re16']*dP*10.0,  '-.', label=xdplabel, color='blue')
     axx.plot([d['s'][0], d['s'][-1]], [0,0], c='grey', alpha=0.3)
     _plt.legend()
-    _plt.xlabel('S / m')
-    _plt.ylabel('x / mm')
+    _plt.xlabel('$S$ in m')
+    _plt.ylabel('$x$ in mm')
     _plt.tight_layout()
     if machine:
         AddMachineLatticeToFigure(f1, madx)
     
-    ylabel   = 'y  = '+str(round(dy,3))+' mm'
-    yplabel  = 'yp = '+str(round(dpy,3))+' mrad'
-    ydplabel = 'dP = '+str(round(dP,3))+' %'
+    ylabel   = '$y$  = '+str(round(dy,3))+' mm'
+    yplabel  = "$y$' = "+str(round(dpy,3))+' mrad'
+    ydplabel = 'd$P$ = '+str(round(dP,3))+' %'
     
     f2 = _plt.figure(figsize=(9,5))
     axy = f2.add_subplot(111)
-    axy.plot(d['s'], d['re33']*dy,  '-',  label=ylabel)
-    axy.plot(d['s'], d['re34']*dpy, '--', label=yplabel)
-    axy.plot(d['s'], d['re36']*dP*10.0,  '-.', label=ydplabel)
+    axy.plot(d['s'], d['re33']*dy,  '-',  label=ylabel, color='green')
+    axy.plot(d['s'], d['re34']*dpy, '--', label=yplabel, color='red')
+    axy.plot(d['s'], d['re36']*dP*10.0,  '-.', label=ydplabel, color='blue')
     axy.plot([d['s'][0], d['s'][-1]], [0, 0], c='grey', alpha=0.3)
     _plt.legend()
-    _plt.xlabel('S in m')
-    _plt.ylabel('y in mm')
+    _plt.xlabel('$S$ in m')
+    _plt.ylabel('$y$ in mm')
     _plt.tight_layout()
     if machine:
         AddMachineLatticeToFigure(f2, madx)
