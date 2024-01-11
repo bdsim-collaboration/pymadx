@@ -176,7 +176,8 @@ def Survey(tfsfile, title='', outputfilename=None):
     _plt.ylabel('Y (m)')
 
 
-def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, squareroot=True, dispersionY=False):
+def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, squareroot=True, dispersionY=False,
+         legendLoc="best"):
     """
     Plot sqrt(beta x,y) as a function of S. By default, a machine diagram is shown at
     the top of the plot.
@@ -215,7 +216,8 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False,
         axoptics.set_ylabel(r'$\sqrt{\beta}$ ($\sqrt{\mathrm{m}}$)')
     else:
         axoptics.set_ylabel(r'$\beta$ (m)')
-    axoptics.legend(loc=0,fontsize='small') #best position
+    axoptics.legend(loc=legendLoc,fontsize='small') #best position
+    #axoptics.legend(fontsize='small')  # best position
 
     #plot dispersion - only in horizontal
     axDisp = None
