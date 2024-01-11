@@ -2,6 +2,13 @@
 Version History
 ===============
 
+V2.1.1 - 2024 / 01 / 12
+=======================
+
+* Introduce control over plot legend location for Beta plot.
+* Update copyright year.
+
+
 V2.1.0 - 2023 / 08 / 25
 =======================
 
