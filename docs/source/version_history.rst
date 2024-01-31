@@ -2,14 +2,20 @@
 Version History
 ===============
 
-V2.1.1 - 2024 / 01 / 12
+v2.1.2 - 2024 / 01 / 31
+=======================
+
+* Fix for compatibility with Matplotlib 3.8 when plotting machine diagrams.
+
+
+v2.1.1 - 2024 / 01 / 12
 =======================
 
 * Introduce control over plot legend location for Beta plot.
 * Update copyright year.
 
 
-V2.1.0 - 2023 / 08 / 25
+v2.1.0 - 2023 / 08 / 25
 =======================
 
 * The function `MADXVsMADX` is now `MadxVsMadx` to be consistent with pybdsim.

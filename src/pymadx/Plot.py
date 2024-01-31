@@ -714,16 +714,16 @@ def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=Non
 
     # convert list of patches to patch collection, True means retain original colour
     # zorder to make sure small bright things don't dominate (like sextupoles)
-    ax.add_collection(_PatchCollection(bends,       True, zorder=20))
-    ax.add_collection(_PatchCollection(quads,       True, zorder=19))
-    ax.add_collection(_PatchCollection(hkickers,    True, zorder=18))
-    ax.add_collection(_PatchCollection(vkickers,    True, zorder=17))
-    ax.add_collection(_PatchCollection(collimators, True, zorder=16))
-    ax.add_collection(_PatchCollection(sextupoles,  True, zorder=15))
-    ax.add_collection(_PatchCollection(octupoles,   True, zorder=14, edgecolor=None))
-    ax.add_collection(_PatchCollection(multipoles,  True, zorder=13, edgecolor=None))
-    ax.add_collection(_PatchCollection(unknown,     True, zorder=12, edgecolor=None))
-    ax.add_collection(_PatchCollection(solenoids,   True, zorder=11))
+    ax.add_collection(_PatchCollection(bends,       match_original=True, zorder=20))
+    ax.add_collection(_PatchCollection(quads,       match_original=True, zorder=19))
+    ax.add_collection(_PatchCollection(hkickers,    match_original=True, zorder=18))
+    ax.add_collection(_PatchCollection(vkickers,    match_original=True, zorder=17))
+    ax.add_collection(_PatchCollection(collimators, match_original=True, zorder=16))
+    ax.add_collection(_PatchCollection(sextupoles,  match_original=True, zorder=15))
+    ax.add_collection(_PatchCollection(octupoles,   match_original=True, zorder=14, edgecolor=None))
+    ax.add_collection(_PatchCollection(multipoles,  match_original=True, zorder=13, edgecolor=None))
+    ax.add_collection(_PatchCollection(unknown,     match_original=True, zorder=12, edgecolor=None))
+    ax.add_collection(_PatchCollection(solenoids,   match_original=True, zorder=11))
 
     # plot beam line - make extra long in case of reversal
     # set zorder on top
