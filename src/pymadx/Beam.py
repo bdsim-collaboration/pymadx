@@ -105,8 +105,9 @@ class Beam(dict):
     
     def ReturnTwissString(self,basefilename='output'):
         s = 'twiss, save, '
-        s += 'betx=' + self['betx'] + ', bety=' + self['bety']
-        s += ', file=' + basefilename+'.tfs;'
+        s += 'betx=' + self['betx'] + ', bety=' + self['bety'] + ', '
+        s += 'alfx=' + self['alfx'] + ', alfy=' + self['alfy'] + ', '
+        s += 'file=' + basefilename+'.tfs;'
         return s
 
     def SetX0(self,x0=0.0):
