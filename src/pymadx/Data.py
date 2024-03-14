@@ -859,12 +859,12 @@ class Tfs(object):
         import pymadx.Plot as _Plot
         _Plot.Centroids(self,title,outputfilename,machine)
 
-    def PlotSigma(self, title='', outputfilename=None, machine=True, dispersion=False):
+    def PlotSigma(self, title='', outputfilename=None, machine=True, dispersion=False, ax=None, figsize=(9,5)):
         """
         Plot the beam size.
         """
         import pymadx.Plot as _Plot
-        _Plot.Sigma(self, title, outputfilename, machine, dispersion)
+        _Plot.Sigma(self, title, outputfilename, machine, dispersion, ax, figsize)
 
     def IndexFromGmadName(self, gmadname, verbose=False):
         """

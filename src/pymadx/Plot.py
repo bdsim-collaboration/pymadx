@@ -244,7 +244,7 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False,
         _plt.savefig(outputfilename+'.png')
 
 
-def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False):
+def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, ax=None, figsize=(9,5)):
     """
     Plot sqrt(beta x,y) as a function of S. By default, a machine diagram is shown at
     the top of the plot.
@@ -258,17 +258,24 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
     d    = _GetOpticalDataFromTfs(madx)
     smax = madx.smax
 
-    f    = _plt.figure(figsize=(9,5))
-    axoptics = f.add_subplot(111)
+    if ax is None:
+        f = _plt.figure(figsize=figsize)
+        axoptics = f.add_subplot(111)
+    else:
+        axoptics = ax
 
     yx = d['sigmax']
     yy = d['sigmay']
-    axoptics.plot(d['s'], yx, 'b-', label='x')
-    axoptics.plot(d['s'], yy, 'g-', label='y')
+
+    #meanSize = _np.mean(_np.mean(yx), _np.mean(yy))
+    #_np.log10(meanSize)
+    
+    axoptics.plot(d['s'], yx*1e3, 'b-', label='x')
+    axoptics.plot(d['s'], yy*1e3, 'g-', label='y')
     if dispersion:
         axoptics.plot([], [],'r--', label=r'$\mathrm{D}_{x} / \beta (S)$') #fake plot for legend
     axoptics.set_xlabel('S (m)')
-    axoptics.set_ylabel(r'$\sigma$ (m)')
+    axoptics.set_ylabel(r'$\sigma$ (mm)')
     axoptics.legend(loc=0,fontsize='small') #best position
 
     #plot dispersion - only in horizontal
