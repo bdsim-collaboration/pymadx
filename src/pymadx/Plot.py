@@ -111,6 +111,7 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None,
 
         f1.savefig(outputFileNameWithout + '_x.' + extension)
         f2.savefig(outputFileNameWithout + '_y.' + extension)
+    return f1,f2
 
 
 def Centroids(tfsfile, title='', outputfilename=None, machine=True):
