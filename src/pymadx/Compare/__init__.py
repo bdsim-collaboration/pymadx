@@ -5,4 +5,4 @@ from ._MadxMadxComparisonRMatrix import MadxVsMadxRMatrix
 try:
     from ._MadxTransportComparison import MADXVsTRANSPORT
 except ImportError:
-    print("No pytransport functionality")
+    pass
