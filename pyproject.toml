@@ -28,12 +28,17 @@ maintainers = [
 dependencies = [
   "matplotlib>=3.0",
   "numpy>=1.14",
-  "importlib-metadata"
+  "importlib-metadata",
+  "tabulate"
 ]
 
 [project.optional-dependencies]
 pytransport = ["pytransport"]
 dev = ["pytest", "sphinx", "sphinx-rtd-theme"]
+
+[project.scripts]
+pymadx_rmatrix_print = "pymadx.Cli:main_PrintRMatrix"
+pymadx_rmatrix_pdf = "pymadx.Cli:main_PrintRMatrixPdf"
 
 [project.urls]
 homepage = "http://www.pp.rhul.ac.uk/bdsim/pymadx"

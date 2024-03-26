@@ -6,9 +6,13 @@ Installation
 Requirements
 ------------
 
- * pymadx is developed exclusively for Python 3. 3.7 is the minimum version.
- * Matplotlib
- * Numpy
+ * pymadx is developed exclusively for Python 3. Version 3.7 is the minimum version.
+
+ * matplotlib
+ * numpy
+ * tabulate
+
+These are installed automatically with pip.
 
 Installation
 ------------
@@ -20,7 +24,7 @@ the git repository:
    pip install pymadx
 
 
-Alternatively, ff cloning the git repository and installing locally, a set of
+Alternatively, if cloning the git repository and installing locally, a set of
 useful commands are provided in a simple Makefile included in the main
 directory. In this case, to install pymadx, simply run ``make install`` from
 the root pymadx directory.::

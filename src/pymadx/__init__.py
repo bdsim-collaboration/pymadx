@@ -22,6 +22,7 @@ except ImportError:
 
 from . import Beam
 from . import Builder
+from . import Cli
 from . import Compare
 from . import Convert
 from . import Data
@@ -31,6 +32,7 @@ from . import PtcAnalysis
 
 __all__ = ['Beam',
            'Builder',
+           'Cli',
            'Compare',
            'Convert',
            'Data',

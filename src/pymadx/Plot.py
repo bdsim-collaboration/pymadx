@@ -4,10 +4,14 @@ Various plots for madx TFS files using the pymadx Tfs class
 from builtins import map as _map
 
 import numpy as _np
+import math as _math
 import matplotlib         as _matplotlib
 import matplotlib.patches as _patches
 import matplotlib.pyplot  as _plt
+import re as _re
+import tabulate as _tabulate
 
+from matplotlib.backends.backend_pdf import PdfPages as _PdfPages
 from matplotlib.collections import PatchCollection as _PatchCollection
 
 class _My_Axes(_matplotlib.axes.Axes):
@@ -50,6 +54,31 @@ def _GetRMatrixDataFromTfs(tfsobject):
         d[key.lower()] = tfsobject.GetColumn(key)
     return d
 
+def _GetHorizontalBendNames(tfsobject):
+    t = tfsobject
+    def _HBend(item):
+        return abs(item['TILT']) < 1e-1 and item['KEYWORD'] in ['RBEND', 'SBEND']
+    hb = [item['NAME'] for item in t if _HBend(item)]
+    return hb
+
+def _GetVerticalBendNames(tfsobject):
+    t = tfsobject
+    def _VBend(item):
+        return abs(item['TILT'] - _np.pi*0.5) < 1e-1 and item['KEYWORD'] in ['RBEND', 'SBEND']
+    vb = [item['NAME'] for item in t if _VBend(item)]
+    return vb
+
+def _RegexMatchNames(tfsobject, regex):
+    t = tfsobject
+    if type(regex) not in [list, tuple]:
+        regex = [regex]
+    def _IsMatch(name):
+        return any(_re.match(reg, name) for reg in regex)
+        #m = _re.match(regex, name)
+        #return m is not None
+
+    matchingNames = [item['NAME'] for item in t if _IsMatch(item['NAME'])]
+    return matchingNames
 
 def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True):
     """
@@ -112,6 +141,104 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None,
         f1.savefig(outputFileNameWithout + '_x.' + extension)
         f2.savefig(outputFileNameWithout + '_y.' + extension)
     return f1,f2
+
+
+def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True,
+                   collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True):
+    """
+    Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently.
+    :param dx: displacement in x in mm that is propagated
+    :type dx: float
+    :param dpx: displacement in px (component of unit vector) in 1e-3 (e.g. mrad in small angle).
+    :type dpx: float
+    :param dP: displacement in momentum as a percentage
+    :type dP: float
+    :param dy: displacement in x in mm that is propagated
+    :type dy: float
+    :param dyx: displacement in px (component of unit vector) in 1e-3 (e.g. mrad in small angle).
+    :type dyx: float
+    """
+
+    import pymadx.Data as _Data
+    tfs = _Data.CheckItsTfs(tfsfile)
+    d = _GetRMatrixDataFromTfs(tfs)
+
+    horizontalNames = _GetHorizontalBendNames(tfs)
+    verticalNames = _GetVerticalBendNames(tfs)
+    horizontalCollNames = []
+    verticalCollNames = []
+    if collimatorHRegex is not None:
+        horizontalCollNames = _RegexMatchNames(tfs, collimatorHRegex)
+    if collimatorVRegex is not None:
+        verticalCollNames = _RegexMatchNames(tfs, collimatorVRegex)
+    collsToMaskInHorizontal = set(verticalCollNames).difference(set(horizontalCollNames))
+    collsToMaskInVertical = set(horizontalCollNames).difference(set(verticalCollNames))
+    toMaskInHorizontal = list(verticalNames)
+    toMaskInHorizontal.extend(list(collsToMaskInHorizontal))
+    toMaskInVertical = list(horizontalNames)
+    toMaskInVertical.extend(list(collsToMaskInVertical))
+
+    xlabel = '$x$  = ' + str(round(dx, 3)) + ' mm'
+    xplabel = "$x'$ = " + str(round(dpx, 3)) + ' mrad'
+    xdplabel = 'd$P$ = ' + str(round(dP, 3)) + ' %'
+
+    f = _plt.figure(figsize=figsize)
+    gs = _matplotlib.gridspec.GridSpec(21, 1)
+
+    axMachineX = f.add_subplot(gs[0, :], projection="_My_Axes")
+    axx = f.add_subplot(gs[1:10, :], sharex=axMachineX)
+    axMachineY = f.add_subplot(gs[12, :], sharex=axMachineX, projection="_My_Axes")
+    axy = f.add_subplot(gs[13:, :], sharex=axMachineX)
+
+    if grid:
+        ds = 5.0
+        smax = _math.ceil(tfs.smax / ds) * ds
+        sMinor = _np.arange(tfs.smin, smax, ds)
+        axx.set_xticks(sMinor, minor=True)
+        axy.set_xticks(sMinor, minor=True)
+        axx.grid(visible=True, color='grey', alpha=0.1, which='both')
+        axy.grid(visible=True, color='grey', alpha=0.1, which='both')
+
+    def _StyleMachineAxes(ax):
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+    _DrawMachineLattice(axMachineX, tfs, maskNames=toMaskInHorizontal)
+    _StyleMachineAxes(axMachineX)
+    axx.plot(d['s'], d['re11'] * dx, '-', label=xlabel, color='red')
+    axx.plot(d['s'], d['re12'] * dpx, '--', label=xplabel, color='blue')
+    axx.plot(d['s'], d['re16'] * dP * 10.0, '-.', label=xdplabel, color='green')
+    axx.plot([d['s'][0], d['s'][-1]], [0, 0], c='grey', alpha=0.3)
+    axx.set_ylabel('$x$ in mm')
+    axx.legend()
+
+    ylabel = '$y$  = ' + str(round(dy, 3)) + ' mm'
+    yplabel = "$y$' = " + str(round(dpy, 3)) + ' mrad'
+    ydplabel = 'd$P$ = ' + str(round(dP, 3)) + ' %'
+
+    _DrawMachineLattice(axMachineY, tfs, maskNames=toMaskInVertical, flipQuads=True)
+    _StyleMachineAxes(axMachineY)
+    axy.plot(d['s'], d['re33'] * dy, '-', label=ylabel, color='red')
+    axy.plot(d['s'], d['re34'] * dpy, '--', label=yplabel, color='blue')
+    axy.plot(d['s'], d['re36'] * dP * 10.0, '-.', label=ydplabel, color='green')
+    axy.plot([d['s'][0], d['s'][-1]], [0, 0], c='grey', alpha=0.3)
+    _plt.xlabel('$S$ in m')
+    axy.set_ylabel('$y$ in mm')
+    axy.legend()
+
+    axMachineX.set_autoscale_on(False)
+    axMachineY.set_autoscale_on(False)
+
+    f.subplots_adjust(bottom=0.1, left=0.08, right=0.98, top=0.99)
+
+    if outputfilename:
+        f.savefig(outputfilename)
+
+    return f
 
 
 def Centroids(tfsfile, title='', outputfilename=None, machine=True):
@@ -512,7 +639,7 @@ def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, 
     axmachine = _PrepareMachineAxes(figure)
     axmachine.margins(x=0.02)
 
-    _DrawMachineLattice(axmachine,tfs, reverse, offset, useQuadStrength)
+    _DrawMachineLattice(axmachine, tfs, reverse, offset, useQuadStrength)
 
     #put callbacks for linked scrolling
     def MachineXlim(ax):
@@ -641,9 +768,14 @@ def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title
     _plt.tight_layout()
 
 
-def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None, useQuadStrength=True):
+def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None, useQuadStrength=True, maskNames=None,
+                        flipQuads=False):
     ax  = axesinstance #handy shortcut
     tfs = pymadxtfsobject
+
+    if not maskNames:
+        maskNames = []
+    quadFactor = -1.0 if flipQuads else 1.0
 
     s0 = 0 #accumulated length variable that will be used by functions
     l = 0 #length variable that will be used by functions
@@ -652,14 +784,15 @@ def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=Non
     def DrawBend(e,color='b',alpha=1.0):
         return _patches.Rectangle((s0,-0.1),l,0.2,color=color,alpha=alpha)
     def DrawQuad(e,color='r',alpha=1.0):
+        k1l = e['K1L'] * quadFactor
         if useQuadStrength:
-            if e['K1L'] > 0 :
+            if k1l > 0:
                 return _patches.Rectangle((s0,0),l,0.2,color=color,alpha=alpha)
-            elif e['K1L'] < 0:
+            elif k1l < 0:
                 return _patches.Rectangle((s0,-0.2),l,0.2,color=color,alpha=alpha)
             else:
                 #quadrupole off
-                return _patches.Rectangle((s0,-0.1),l,0.2,color='#B2B2B2',alpha=0.5) #a nice grey in hex
+                return _patches.Rectangle((s0,-0.1),l,0.2,color=color,alpha=0.1)
         else:
             return _patches.Rectangle((s0,-0.2),l,0.4,color=color,alpha=alpha)
     def DrawHex(e,color,alpha=1.0):
@@ -685,28 +818,31 @@ def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=Non
         element = tfs[name]
         l = element['L']
         kw = element['KEYWORD']
+        alpha = 1.0
+        if name in maskNames:
+            alpha = 0.1
         if kw == 'QUADRUPOLE':
-            quads.append(DrawQuad(element, u'#d10000')) #red
+            quads.append(DrawQuad(element, u'#d10000', alpha)) #red
         elif kw == 'RBEND':
-            bends.append(DrawBend(element, u'#0066cc')) #blue
+            bends.append(DrawBend(element, u'#0066cc', alpha)) #blue
         elif kw == 'SBEND':
-            bends.append(DrawBend(element, u'#0066cc')) #blue
+            bends.append(DrawBend(element, u'#0066cc', alpha)) #blue
         elif kw == 'HKICKER':
-            hkickers.append(DrawRect(element, u'#4c33b2')) #purple
+            hkickers.append(DrawRect(element, u'#4c33b2', alpha)) #purple
         elif kw == 'VKICKER':
-            vkickers.append(DrawRect(element, u'#ba55d3')) #medium orchid
+            vkickers.append(DrawRect(element, u'#ba55d3', alpha)) #medium orchid
         elif kw == 'SOLENOID':
-            solenoids.append(DrawRect(element, u'#ff8800')) #orange
+            solenoids.append(DrawRect(element, u'#ff8800', alpha)) #orange
         elif kw == 'RCOLLIMATOR':
-            collimators.append(DrawRect(element,'k'))
+            collimators.append(DrawRect(element,'k', alpha))
         elif kw == 'ECOLLIMATOR':
-            collimators.append(DrawRect(element,'k'))
+            collimators.append(DrawRect(element,'k', alpha))
         elif kw == 'COLLIMATOR':
-            collimators.append(DrawRect(element,'k'))
+            collimators.append(DrawRect(element,'k', alpha))
         elif kw == 'SEXTUPOLE':
-            sextupoles.append(DrawHex(element, u'#ffcc00')) #yellow
+            sextupoles.append(DrawHex(element, u'#ffcc00', alpha)) #yellow
         elif kw == 'OCTUPOLE':
-            octupoles.append(DrawHex(element, u'#00994c')) #green
+            octupoles.append(DrawHex(element, u'#00994c', alpha)) #green
         elif kw == 'DRIFT':
             pass
         elif kw == 'MULTIPOLE':
@@ -738,3 +874,59 @@ def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=Non
     ax.plot([tfs.smin,tfs.smax],[0,0],'k-',lw=1, zorder=100)
     ax.set_ylim(-0.2,0.2)
     ax.set_xlim(tfs.smin, tfs.smax)
+
+
+def RMatrixTableString(tfs):
+    """
+    :param tfs: TFS object to inspect.
+    :type tfs: pymadx.Data.Tfs
+
+    Get the most common rmatrix terms out of the TFS file and prepare a string
+    of them in a nice big table. Returns a string.
+    """
+    rmat = {}
+    for key in ['NAME', 'S', 'RE11', 'RE12', 'RE22', 'RE33', 'RE34', 'RE44', 'RE16', 'RE26', 'RE36', 'RE46']:
+        rmat[key] = tfs.GetColumn(key)
+    rmat['S_End'] = rmat.pop('S')
+    s = _tabulate.tabulate(rmat, headers=rmat, tablefmt="grid")
+    return s
+
+
+def PrintRMatrixTable(tfs):
+    s = RMatrixTableString(tfs)
+    print(s)
+
+
+def RMatrixTableToPdf(tfs, outputfilename):
+    """
+    Save an rmatrix table to a pdf on multiple pages.
+
+    :param tfs: TFS instance to get the data from.
+    :type tfs: pymadx.Data.Tfs
+    :param outputfilename: file name to save the pdf as
+    :type outputfilename: str
+    """
+    rmat = {}
+    columns = ['NAME', 'S', 'RE11', 'RE12', 'RE22', 'RE33', 'RE34', 'RE44', 'RE16', 'RE36']
+    for key in columns:
+        rmat[key] = tfs.GetColumn(key)
+    columns[1] = 'S_End'
+    rmat['S_End'] = rmat.pop('S')
+
+    name = ' '.join([tfs.header[k] for k in ['TITLE', 'SEQUENCE', 'DATE', 'TIME']])
+
+    nPerPage = 45
+    rmat2 = _np.array([list(rmat[k]) for k in columns]).transpose()
+
+    def get_every_n(a, ni):
+        for i in range(a.shape[0] // ni):
+            yield a[ni * i:ni * (i + 1)]
+
+    with _PdfPages(outputfilename) as pdf:
+        for i, chunk in enumerate(get_every_n(rmat2, nPerPage)):
+            _plt.figure(figsize=(8.3, 11.7))  # A4 size
+            tableString = _tabulate.tabulate(chunk, headers=columns, tablefmt="grid")
+            _plt.figtext(0.05, 0.05, tableString, fontsize='x-small', fontfamily='monospace')
+            _plt.suptitle(name + "  Pg" + str(i+1))
+            pdf.savefig()
+            _plt.close()

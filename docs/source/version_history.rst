@@ -2,6 +2,22 @@
 Version History
 ===============
 
+v2.2.0 - 2024 / 03 / 26
+=======================
+
+* Introduce :code:`pymadx_rmatrix_print` and :code:`pymadx_rmatrix_pdf` as utility
+  entry points (executable commands) for rmatrix functionality.
+* Introduce functions for nicely listing an rmatrix from a TFS file.
+
+
+v2.1.3 - 2024 / 03 / 24
+=======================
+
+* Fix beam string output to include alpha Twiss parameters.
+* Optional axis to draw a beam sigma plot into and control over the figure size.
+* Remove pytransport default print out.
+
+
 v2.1.2 - 2024 / 01 / 31
 =======================
 
