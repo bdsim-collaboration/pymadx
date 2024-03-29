@@ -919,14 +919,20 @@ def RMatrixTableToPdf(tfs, outputfilename):
     rmat2 = _np.array([list(rmat[k]) for k in columns]).transpose()
 
     def get_every_n(a, ni):
-        for i in range(a.shape[0] // ni):
+        f = a.shape[0] // ni
+        for i in range(f + 1):
             yield a[ni * i:ni * (i + 1)]
 
     with _PdfPages(outputfilename) as pdf:
         for i, chunk in enumerate(get_every_n(rmat2, nPerPage)):
             _plt.figure(figsize=(8.3, 11.7))  # A4 size
             tableString = _tabulate.tabulate(chunk, headers=columns, tablefmt="grid")
-            _plt.figtext(0.05, 0.05, tableString, fontsize='x-small', fontfamily='monospace')
+            l = len(chunk)
+            dy = 0
+            if l < nPerPage:
+                # if shorter, move it up the page
+                dy = 0.85 * (1.0 - l/float(nPerPage))
+            _plt.figtext(0.05, 0.05 + dy, tableString, fontsize='x-small', fontfamily='monospace')
             _plt.suptitle(name + "  Pg" + str(i+1))
             pdf.savefig()
             _plt.close()
