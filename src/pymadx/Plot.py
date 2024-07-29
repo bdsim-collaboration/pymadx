@@ -137,6 +137,9 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None,
         if '.' in outputfilename:
             outputFileNameWithout = outputfilename.split('.')[0]
             extension = outputfilename.split('.')[1]
+        else:
+            outputFileNameWithout = outputfilename
+            extension = "pdf"
 
         f1.savefig(outputFileNameWithout + '_x.' + extension)
         f2.savefig(outputFileNameWithout + '_y.' + extension)
