@@ -5,9 +5,10 @@ from builtins import map as _map
 
 import numpy as _np
 import math as _math
-import matplotlib         as _matplotlib
+import matplotlib as _matplotlib
+import matplotlib.gridspec as _gridspec
 import matplotlib.patches as _patches
-import matplotlib.pyplot  as _plt
+import matplotlib.pyplot as _plt
 import re as _re
 import tabulate as _tabulate
 
@@ -567,6 +568,7 @@ def _AddColourLegend(colours, cmap=_ApertureTypeColourMap()):
 
 
 def _SetMachineAxesStyle(ax):
+    ax.set_facecolor('none')
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.spines['top'].set_visible(False)
@@ -583,23 +585,40 @@ def _PrepareMachineAxes(figure):
     return axmachine
 
 
-def _AdjustExistingAxes(figure, fraction=0.9, tightLayout=True):
+def _AdjustExistingAxesAndAddMachineAxis(figure, fraction=0.9, tightLayout=True):
     """
     Fraction is fraction of height all subplots will be after adjustment.
     Default is 0.9 for 90% of height.
     """
     # we have to set tight layout before adjustment otherwise if called
     # later it will cause an overlap with the machine diagram
-    if (tightLayout):
-        _plt.tight_layout()
 
     axs = figure.get_axes()
+    n_existing_axes = len(axs)
 
-    for ax in axs:
-        bbox = ax.get_position()
-        bbox.y0 = bbox.y0 * fraction
-        bbox.y1 = bbox.y1 * fraction
-        ax.set_position(bbox)
+    if n_existing_axes == 1 or n_existing_axes == 2:
+        gs = _gridspec.GridSpec(11, 1)
+        multiple = int(10 / n_existing_axes)
+    elif n_existing_axes == 3:
+        gs = _gridspec.GridSpec(10, 1)
+        multiple = 3
+    elif n_existing_axes == 4:
+        gs = _gridspec.GridSpec(13, 1)
+        multiple = 3
+    else:
+        raise ValueError("This function cannot cope with more than 4 subplots. Provide your own axis instance and use DrawMachineLattice()")
+
+    axmachine = figure.add_subplot(111, projection="_My_Axes")
+    axmachine.set_position(gs[0].get_position(figure))
+    axmachine.set_subplotspec(gs[0])
+    _SetMachineAxesStyle(axmachine)
+
+    for i in range(n_existing_axes):
+        axi = axs[i]
+        axi.set_position(gs[((i * multiple) + 1):(((i + 1) * multiple) + 1)].get_position(figure))
+        axi.set_subplotspec(gs[((i * multiple) + 1):(((i + 1) * multiple) + 1)])
+
+    return axmachine
 
 
 def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, offset=None):
@@ -638,9 +657,8 @@ def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, 
         else:
             useQuadStrength = False
 
-    axoptics  = figure.get_axes()[0]
-    _AdjustExistingAxes(figure, tightLayout=tightLayout)
-    axmachine = _PrepareMachineAxes(figure)
+    axoptics = figure.get_axes()[0]
+    axmachine = _AdjustExistingAxesAndAddMachineAxis(figure, tightLayout=tightLayout)
     axmachine.margins(x=0.02)
 
     DrawMachineLattice(axmachine, tfs, reverse, offset, useQuadStrength)
@@ -669,6 +687,7 @@ def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, 
     MachineXlim(axmachine)
     axmachine.callbacks.connect('xlim_changed', MachineXlim)
     figure.canvas.mpl_connect('button_press_event', Click)
+    return axmachine
 
 
 def MachineDiagram(tfsfile, title=None, reverse=False):
