@@ -307,11 +307,11 @@ def Survey(tfsfile, title='', outputfilename=None):
     _plt.ylabel('Y (m)')
 
 
-def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, squareroot=True, dispersionY=False,
+def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, squareroot=False, dispersionY=False,
          legendLoc="best"):
     """
-    Plot sqrt(beta x,y) as a function of S. By default, a machine diagram is shown at
-    the top of the plot.
+    Plot Twiss Beta x,y as a function of S. By default, a machine diagram is shown at
+    the top of the plot. Horizontal dispersion is included by default on a separate y axis.
 
     Optionally set dispersion=True to plot x dispersion as second axis.
     Optionally turn off machine overlay at top with machine=False
@@ -354,6 +354,7 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=False,
     axDisp = None
     if dispersion or dispersionY:
         axDisp = axoptics.twinx()
+        axDisp.plot(d['s'], _np.zeros_like(d['s']), 'r', alpha=0.1)
         axDisp.set_ylabel(r'Dispersion / $\beta_{lorentz}$ (m)')
     if dispersion:
         d['dispxbeta'] = madx.GetColumn('DX')
