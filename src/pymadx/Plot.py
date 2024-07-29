@@ -210,7 +210,7 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
         ax.spines['left'].set_visible(False)
         ax.spines['right'].set_visible(False)
 
-    _DrawMachineLattice(axMachineX, tfs, maskNames=toMaskInHorizontal)
+    DrawMachineLattice(axMachineX, tfs, maskNames=toMaskInHorizontal)
     _StyleMachineAxes(axMachineX)
     axx.plot(d['s'], d['re11'] * dx, '-', label=xlabel, color='red')
     axx.plot(d['s'], d['re12'] * dpx, '--', label=xplabel, color='blue')
@@ -223,7 +223,7 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     yplabel = "$y$' = " + str(round(dpy, 3)) + ' mrad'
     ydplabel = 'd$P$ = ' + str(round(dP, 3)) + ' %'
 
-    _DrawMachineLattice(axMachineY, tfs, maskNames=toMaskInVertical, flipQuads=True)
+    DrawMachineLattice(axMachineY, tfs, maskNames=toMaskInVertical, flipQuads=True)
     _StyleMachineAxes(axMachineY)
     axy.plot(d['s'], d['re33'] * dy, '-', label=ylabel, color='red')
     axy.plot(d['s'], d['re34'] * dpy, '--', label=yplabel, color='blue')
@@ -642,7 +642,7 @@ def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, 
     axmachine = _PrepareMachineAxes(figure)
     axmachine.margins(x=0.02)
 
-    _DrawMachineLattice(axmachine, tfs, reverse, offset, useQuadStrength)
+    DrawMachineLattice(axmachine, tfs, reverse, offset, useQuadStrength)
 
     #put callbacks for linked scrolling
     def MachineXlim(ax):
@@ -700,7 +700,7 @@ def MachineDiagram(tfsfile, title=None, reverse=False):
 
     f = _plt.figure(figsize=(10,2))
     ax = f.add_subplot(111)
-    _DrawMachineLattice(ax, tfs, reverse=reverse)
+    DrawMachineLattice(ax, tfs, reverse=reverse)
     _plt.xlabel('S (m)')
     _plt.ylim(-0.3,0.3)
     ax.get_yaxis().set_visible(False)
@@ -748,8 +748,8 @@ def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title
             useQuadStrength = False
     
     f,(axt,axb) = _plt.subplots(2,1,sharex=True,figsize=(10,3))
-    _DrawMachineLattice(axt, tfsT, reverse=reverse)
-    _DrawMachineLattice(axb, tfsB, reverse=reverse)
+    DrawMachineLattice(axt, tfsT, reverse=reverse)
+    DrawMachineLattice(axb, tfsB, reverse=reverse)
     axt.set_ylim(-0.3,0.3)
     axb.set_ylim(-0.3,0.3)
 
@@ -771,8 +771,8 @@ def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title
     _plt.tight_layout()
 
 
-def _DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None, useQuadStrength=True, maskNames=None,
-                        flipQuads=False):
+def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None, useQuadStrength=True, maskNames=None,
+                       flipQuads=False):
     ax  = axesinstance #handy shortcut
     tfs = pymadxtfsobject
 
