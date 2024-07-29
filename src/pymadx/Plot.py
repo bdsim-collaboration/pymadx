@@ -579,7 +579,11 @@ def _SetMachineAxesStyle(ax):
 
 def _PrepareMachineAxes(figure):
     # create new machine axis with proportions 6 : 1
+    gs = _gridspec.GridSpec(9,1)
     axmachine = figure.add_subplot(911, projection="_My_Axes")
+    axmachine.set_position(gs[0].get_position(figure))
+    axmachine.set_subplotspec(gs[0])
+
     axmachine.set_facecolor('none') # make background transparent to allow scientific notation
     _SetMachineAxesStyle(axmachine)
     return axmachine
