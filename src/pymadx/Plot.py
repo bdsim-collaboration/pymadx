@@ -81,7 +81,7 @@ def _RegexMatchNames(tfsobject, regex):
     matchingNames = [item['NAME'] for item in t if _IsMatch(item['NAME'])]
     return matchingNames
 
-def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True):
+def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True, s_offset=None):
     """
     Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently.
     :param dx: displacement in x in mm that is propagated
@@ -115,7 +115,7 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None,
     _plt.ylabel('$x$ in mm')
     _plt.tight_layout()
     if machine:
-        AddMachineLatticeToFigure(f1, madx)
+        AddMachineLatticeToFigure(f1, madx, offset=s_offset)
     
     ylabel   = '$y$  = '+str(round(dy,3))+' mm'
     yplabel  = "$y$' = "+str(round(dpy,3))+' mrad'
@@ -148,7 +148,7 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None,
 
 
 def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True,
-                   collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True):
+                   collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True, s_offset=None):
     """
     Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently.
     :param dx: displacement in x in mm that is propagated
@@ -161,6 +161,8 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     :type dy: float
     :param dyx: displacement in px (component of unit vector) in 1e-3 (e.g. mrad in small angle).
     :type dyx: float
+    :param s_offset: S to add to coordinates and machine diagram
+    :type s_offset: None, float
     """
 
     import pymadx.Data as _Data
@@ -211,7 +213,8 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
         ax.spines['left'].set_visible(False)
         ax.spines['right'].set_visible(False)
 
-    DrawMachineLattice(axMachineX, tfs, maskNames=toMaskInHorizontal)
+    DrawMachineLattice(axMachineX, tfs, maskNames=toMaskInHorizontal, offset=s_offset)
+    ds = 0.0 if s_offset is None else s_offset
     _StyleMachineAxes(axMachineX)
     axx.plot(d['s'], d['re11'] * dx, '-', label=xlabel, color='red')
     axx.plot(d['s'], d['re12'] * dpx, '--', label=xplabel, color='blue')
@@ -224,7 +227,7 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     yplabel = "$y$' = " + str(round(dpy, 3)) + ' mrad'
     ydplabel = 'd$P$ = ' + str(round(dP, 3)) + ' %'
 
-    DrawMachineLattice(axMachineY, tfs, maskNames=toMaskInVertical, flipQuads=True)
+    DrawMachineLattice(axMachineY, tfs, maskNames=toMaskInVertical, flipQuads=True, offset=s_offset)
     _StyleMachineAxes(axMachineY)
     axy.plot(d['s'], d['re33'] * dy, '-', label=ylabel, color='red')
     axy.plot(d['s'], d['re34'] * dpy, '--', label=yplabel, color='blue')
