@@ -13,7 +13,8 @@ import os.path as _path
 
 from ._General import Cast as _Cast
 
-class Tfs(object):
+
+class Tfs:
     """
     MADX Tfs file reader
 
