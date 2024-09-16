@@ -288,6 +288,13 @@ def Centroids(tfsfile, title='', outputfilename=None, machine=True):
 def Survey(tfsfile, title='', outputfilename=None):
     """
     Plot the x and z coordinates from a tfs file.
+
+    :param tfsfiles: list of tfs files as strings or already loaded pymadx.Data.Tfs objects.
+    :type tfsfile: str, pymadx.Data.Tfs
+    :param title: optional title for plot
+    :type title: str
+    :param outputfilename: optional output file name including extension to plt.savefig
+    :type outputfilename: str
     """
     import pymadx.Data as _Data
     madx = _Data.CheckItsTfs(tfsfile)
