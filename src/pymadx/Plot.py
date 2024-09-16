@@ -247,9 +247,9 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
 
 def Centroids(tfsfile, title='', outputfilename=None, machine=True):
     """
-    Plot the centroid (mean) x and y from the a Tfs file or pymadx.Tfs instance.
+    Plot the centroid (mean) x and y from the Tfs file or :meth:`pymadx.Data.Tfs` instance.
 
-    tfsfile        - can be either a string or a pymadx.Tfs instance.
+    tfsfile        - can be either a string or a :meth:`pymadx.Data.Tfs` instance.
     title          - optional title for plot
     outputfilename - optional name to save file to (extension determines format)
     machine        - if True (default) add machine diagram to top of plot
@@ -368,7 +368,7 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, 
          legendLoc="best"):
     """
     Plot Twiss Beta x,y as a function of S. By default, a machine diagram is shown at
-    the top of the plot. Horizontal dispersion is included by default on a separate y axis.
+    the top of the plot. Horizontal dispersion is included by default on a separate y-axis.
 
     Optionally set dispersion=True to plot x dispersion as second axis.
     Optionally turn off machine overlay at top with machine=False
@@ -455,9 +455,6 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
 
     yx = d['sigmax']
     yy = d['sigmay']
-
-    #meanSize = _np.mean(_np.mean(yx), _np.mean(yy))
-    #_np.log10(meanSize)
     
     axoptics.plot(d['s'], yx*1e3, 'b-', label='x')
     axoptics.plot(d['s'], yy*1e3, 'g-', label='y')
@@ -491,10 +488,10 @@ def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertyp
 
     Inputs:
       aperture (pymadx.Data.Aperture) - the aperture model to plot from
-      machine (str or pymadx.Data.Tfs) - TFS file or TFS istance to plot a machine lattice from (default: None)
+      machine (str or pymadx.Data.Tfs) - TFS file or TFS instance to plot a machine lattice from (default: None)
       outputfilename (str) - Name without extension of the output file if desired (default: None)
-      plot (str) - Indicates whcih aperture to plot - 'x' for X, 'y' for Y and 'xy' for both (default: 'xy')
-      plotapertype (bool) - If enabled plots the aperture type at every definted aperture point as a color-coded dot (default: False)
+      plot (str) - Indicates which aperture to plot - 'x' for X, 'y' for Y and 'xy' for both (default: 'xy')
+      plotapertype (bool) - If enabled plots the aperture type at every defined aperture point as a color-coded dot (default: False)
     """
     import pymadx.Data as _Data
     aper = _Data.CheckItsTfsAperture(aperture)
@@ -689,7 +686,7 @@ def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, 
 
     >>> pymadx.Plot.AddMachineLatticeToFigure(gcf(), 'afile.tfs')
 
-    A pymadx.Tfs class instance or a string specifying a tfs file can be
+    A :meth:`pymadx.Data.Tfs` class instance or a string specifying a tfs file can be
     supplied as the second argument interchangeably.
 
     If the reverse flag is used, the lattice is plotted in reverse only. The tfs

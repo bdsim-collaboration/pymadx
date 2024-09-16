@@ -20,7 +20,7 @@ class Tfs:
 
     >>> a = Tfs()
     >>> a.Load('myfile.tfs')
-    >>> a.Load('myfile.tar.gz') -> extracts from tar file
+    >>> a.Load('myfile.tar.gz') # extracts from tar file
 
     or
 
@@ -847,7 +847,7 @@ class Tfs:
         """
         Plot the Beta amplitude functions from the file if they exist.
 
-        squareroot -> whether to square root the beta functions or not (default = True)
+        See :meth:`pymadx.Plot.Beta`.
         """
         import pymadx.Plot as _Plot
         _Plot.Beta(self, title, outputfilename, machine, dispersion, squareroot)
