@@ -2,12 +2,22 @@
 Version History
 ===============
 
+v2.3.0 - 2024 / 09 / XX
+=======================
+
+* New :code:`pymadx_rmatrix_plot` command line tool.
+* Ability to apply an S offset in coordinates to an R-matrix plot.
+* Fix :code:`pymadx.Plot.AddMachineLatticeToFigure` to correctly adjust axes in
+  a matplotlib plot such that :code:`plt.tight_layout()` still works after adding
+  the new axes.
+
+
 v2.2.0 - 2024 / 03 / 26
 =======================
 
 * Introduce :code:`pymadx_rmatrix_print` and :code:`pymadx_rmatrix_pdf` as utility
-  entry points (executable commands) for rmatrix functionality.
-* Introduce functions for nicely listing an rmatrix from a TFS file.
+  entry points (executable commands) for R-matrix functionality.
+* Introduce functions for nicely listing an R-matrix from a TFS file.
 
 
 v2.1.3 - 2024 / 03 / 24
