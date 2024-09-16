@@ -660,8 +660,8 @@ def _AdjustExistingAxesAndAddMachineAxis(figure, fraction=0.9, tightLayout=True)
     n_existing_axes = len(non_twin_axes)
 
     if n_existing_axes == 1 or n_existing_axes == 2:
-        gs = _gridspec.GridSpec(11, 1)
-        multiple = int(10 / n_existing_axes)
+        gs = _gridspec.GridSpec(9, 1)
+        multiple = int(8 / n_existing_axes)
     elif n_existing_axes == 3:
         gs = _gridspec.GridSpec(10, 1)
         multiple = 3
