@@ -843,14 +843,14 @@ class Tfs:
         for xk,yk in zip(xkeys,ykeys):
             print(('\t'.join([xk,'{0:.3e}'.format(d[xk]),yk,'{0:.3e}'.format(d[yk])])))
 
-    def Plot(self, title='', outputfilename=None, machine=True, dispersion=False, squareroot=True):
+    def Plot(self, title='', outputfilename=None, machine=True, dispersion=True, squareroot=False, dispersionY=False):
         """
         Plot the Beta amplitude functions from the file if they exist.
 
         See :meth:`pymadx.Plot.Beta`.
         """
         import pymadx.Plot as _Plot
-        _Plot.Beta(self, title, outputfilename, machine, dispersion, squareroot)
+        _Plot.Beta(self, title, outputfilename, machine, dispersion, squareroot, dispersionY)
 
     def PlotCentroids(self, title='', outputfilename=None, machine=True):
         """
