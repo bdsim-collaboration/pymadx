@@ -21,3 +21,16 @@ def main_PrintRMatrixPdf():
 
     tfs = _pymadx.Data.Tfs(args.tfsfile)
     _pymadx.Plot.RMatrixTableToPdf(tfs, outname)
+
+def main_PlotRMatrix():
+    parser = _argparse.ArgumentParser()
+    parser.add_argument("tfsfile", type=str, help="TFS file name")
+    parser.add_argument("outputname", type=str, help="Output name for pdf")
+    args = parser.parse_args()
+
+    outname = str(args.outputname)
+    if not outname.endswith(".pdf"):
+        outname += ".pdf"
+
+    tfs = _pymadx.Data.Tfs(args.tfsfile)
+    _pymadx.Plot.RMatrixOptics2(args.tfsfile, outputfilename=outname)
