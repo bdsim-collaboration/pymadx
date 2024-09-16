@@ -58,23 +58,22 @@ class Tfs:
     # components with identical names in the sequence will be
     # identical, but the optical functions at that point will in
     # general be different.
-    def __init__(self,filename=None, verbose=False):
-        object.__init__(self) #this allows type comparison for this class
-        self.index       = []
-        self.header      = {}
+    def __init__(self, filename=None, verbose=False):
+        self.index = []
+        self.header = {}
         self.headerformats = {}
-        self.columns     = []
-        self.formats     = []
-        self.data        = {}
-        self.sequence    = []
-        self.nitems      = 0
-        self.nsegments   = 0
-        self.segments    = []
-        self.filename    = filename
-        self.smax        = 0
-        self.smin        = 0
-        self.ptctwiss    = False # whether data was generated via ptctwiss
-        self._verbose    = False
+        self.columns = []
+        self.formats = []
+        self.data = {}
+        self.sequence = []
+        self.nitems = 0
+        self.nsegments = 0
+        self.segments = []
+        self.filename = filename
+        self.smax = 0
+        self.smin = 0
+        self.ptctwiss = False # whether data was generated via ptctwiss
+        self._verbose = False
 
         if isinstance(filename, str):
             self.Load(filename, verbose=verbose)

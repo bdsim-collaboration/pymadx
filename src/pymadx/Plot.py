@@ -32,20 +32,17 @@ def _GetOpticalDataFromTfs(tfsobject, dispersion=True):
     """
     Utility to pull out the relevant optical functions into a simple dictionary.
     """
-    d = {}
-    d['s']         = tfsobject.GetColumn('S')
-    d['betx']      = tfsobject.GetColumn('BETX')
-    d['bety']      = tfsobject.GetColumn('BETY')
+    d = dict()
+    d['s'] = tfsobject.GetColumn('S')
+    d['betx'] = tfsobject.GetColumn('BETX')
+    d['bety'] = tfsobject.GetColumn('BETY')
     if dispersion:
-        d['dispx']     = tfsobject.GetColumn('DX')
+        d['dispx'] = tfsobject.GetColumn('DX')
         d['dispxbeta'] = tfsobject.GetColumn('DXBETA')
-        #d['dispy']    = tfsobject.GetColumn('DY') #don't use
-    d['x']         = tfsobject.GetColumn('X')
-    d['y']         = tfsobject.GetColumn('Y')
-    d['sigmax']    = tfsobject.GetColumn('SIGMAX')
-    d['sigmay']    = tfsobject.GetColumn('SIGMAY')
-    d['sigmaxp']   = tfsobject.GetColumn('SIGMAXP')
-    d['sigmayp']   = tfsobject.GetColumn('SIGMAYP')
+    d['x'] = tfsobject.GetColumn('X')
+    d['y'] = tfsobject.GetColumn('Y')
+    d['sigmax'] = tfsobject.GetColumn('SIGMAX')
+    d['sigmay'] = tfsobject.GetColumn('SIGMAY')
     return d
 
 
@@ -386,7 +383,7 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, 
     d['bety'] = madx.GetColumn('BETY')
     smax = madx.smax
 
-    f    = _plt.figure(figsize=(9,5))
+    f = _plt.figure(figsize=(9,5))
     axoptics = f.add_subplot(111)
 
     #optics plots
@@ -425,7 +422,7 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, 
 
     #add lattice to plot
     if machine:
-        AddMachineLatticeToFigure(f,madx)
+        AddMachineLatticeToFigure(f, madx)
 
     _plt.suptitle(title,size='x-large')
     _plt.xlim((0 - 0.05*smax, 1.05*smax))
@@ -468,7 +465,7 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
         axoptics.plot([], [],'r--', label=r'$\mathrm{D}_{x} / \beta (S)$') #fake plot for legend
     axoptics.set_xlabel('S (m)')
     axoptics.set_ylabel(r'$\sigma$ (mm)')
-    axoptics.legend(loc=0,fontsize='small') #best position
+    axoptics.legend(loc=0, fontsize='small') #best position
 
     #plot dispersion - only in horizontal
     if dispersion:
@@ -476,9 +473,8 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
         ax2.plot(d['s'],d['dispx'],'r--')
         ax2.set_ylabel(r'Dispersion / $\beta$ (m)')
 
-    #add lattice to plot
     if machine:
-        AddMachineLatticeToFigure(f,madx)
+        AddMachineLatticeToFigure(f, madx)
 
     _plt.suptitle(title,size='x-large')
     _plt.xlim((0 - 0.05*smax, 1.05*smax))
