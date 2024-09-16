@@ -317,6 +317,55 @@ def Survey(tfsfile, title='', outputfilename=None):
     _plt.xlabel('Z (m)')
     _plt.ylabel('Y (m)')
 
+    _plt.tight_layout()
+
+    if outputfilename is not None:
+        _plt.savefig(outputfilename)
+
+def SurveyMultiple(tfsfiles, labels=None, title='', outputfilename=None):
+    """
+    Plot the x and z coordinates from multiple tfs files on top of each other
+
+    :param tfsfiles: list of tfs files as strings or already loaded pymadx.Data.Tfs objects.
+    :type tfsfiles: [str,..], or [pymadx.Data.Tfs,...]
+    :param labels: optional list of labels that should match the length of tfsfiles
+    :type labels: [str,...]
+    :param title: optional title for plot
+    :type title: str
+    :param outputfilename: optional output file name including extension to plt.savefig
+    :type outputfilename: str
+    """
+    f = _plt.figure()
+    ax1 = f.add_subplot(211)
+    ax2 = f.add_subplot(212)
+
+    import pymadx.Data as _Data
+
+    if labels is None:
+        labels = tfsfiles
+
+    for tfs,l in zip(tfsfiles, labels):
+        madx = _Data.CheckItsTfs(tfs)
+        x = madx.GetColumn('X')
+        y = madx.GetColumn('Y')
+        z = madx.GetColumn('Z')
+
+        ax1.plot(z, x, marker='.', label=l)
+        ax2.plot(z, y, marker='.', label=l)
+
+    _plt.suptitle(title, size='x-large')
+    ax1.set_xlabel('Z (m)')
+    ax2.set_xlabel('Z (m)')
+    ax1.set_ylabel('X (m)')
+    ax2.set_ylabel('Y (m)')
+
+    ax1.legend()
+    ax2.legend()
+
+    _plt.tight_layout()
+
+    if outputfilename is not None:
+        _plt.savefig(outputfilename)
 
 def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, squareroot=False, dispersionY=False,
          legendLoc="best"):
