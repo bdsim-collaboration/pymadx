@@ -451,6 +451,7 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
         f = _plt.figure(figsize=figsize)
         axoptics = f.add_subplot(111)
     else:
+        f = _plt.gcf()
         axoptics = ax
 
     yx = d['sigmax']
