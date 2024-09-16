@@ -650,7 +650,14 @@ def _AdjustExistingAxesAndAddMachineAxis(figure, fraction=0.9, tightLayout=True)
     # later it will cause an overlap with the machine diagram
 
     axs = figure.get_axes()
-    n_existing_axes = len(axs)
+
+    # It's possible we have y-axis on the left of a subplot in which case we count
+    # a unique axis, but it's not really. Identify the unique ones by using the tuple
+    # of the bounding box as a key in a dictionary. Sure, it'll overwrite the last one
+    # but it should work.
+    non_twin_axes = {ax.bbox.bounds : ax for ax in axs}
+
+    n_existing_axes = len(non_twin_axes)
 
     if n_existing_axes == 1 or n_existing_axes == 2:
         gs = _gridspec.GridSpec(11, 1)
