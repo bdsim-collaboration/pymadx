@@ -2,7 +2,7 @@
 Version History
 ===============
 
-v2.3.0 - 2024 / 09 / XX
+v2.3.0 - 2025 / 01 / XX
 =======================
 
 * New :code:`pymadx_rmatrix_plot` command line tool.
@@ -10,6 +10,7 @@ v2.3.0 - 2024 / 09 / XX
 * Fix :code:`pymadx.Plot.AddMachineLatticeToFigure` to correctly adjust axes in
   a matplotlib plot such that :code:`plt.tight_layout()` still works after adding
   the new axes.
+* New ability to add a machine diagram from a cpymad instance.
 
 
 v2.2.0 - 2024 / 03 / 26

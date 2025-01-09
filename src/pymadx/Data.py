@@ -79,6 +79,8 @@ class Tfs:
             self.Load(filename, verbose=verbose)
         elif isinstance(filename, Tfs):
             self._DeepCopy(filename)
+        elif str(type(filename)) == "<class 'cpymad.madx.Table'>":
+            self.LoadFromCpymadTable(filename)
 
     def Clear(self):
         """
@@ -202,6 +204,15 @@ class Tfs:
             pass # no name key in header
 
         #additional processing
+        self._GenerateSMID()
+        self._CalculateSigma()
+        self.names = self.columns
+        if not {"ORIGIN", "DATE", "TIME", "TYPE"}.issubset(self.header):
+            # This isn't TFS.  These are guaranteed in the manual
+            # to be written to all TFS files.
+            raise ValueError("Malformed TFS.")
+
+    def _GenerateSMID(self):
         self.index = list(range(0,len(self.data),1))
         if 'S' in self.columns:
             self.smin = self[0]['S']
@@ -231,12 +242,28 @@ class Tfs:
         else:
             self.smax = 0
 
+    def LoadFromCpymadTable(self, twissTable, verbose=False):
+        tt = twissTable
+
+        self.header = {k.upper():v for k,v in tt.summary.items()}
+        self.columns = [s.upper() for s in list(tt.keys())]
+        #self.sequence = [s.upper() for s in tt['name']]
+
+        columnsLower = list(tt.keys())
+        fixKW = 'keyword' in columnsLower
+        kwIndex = columnsLower.index('keyword') if fixKW else None
+        for i,name in enumerate(tt['name']):
+            self.sequence.append(name)
+            rowDict = tt.row(i)
+            d = [rowDict[k] for k in columnsLower]
+            if fixKW:
+                d[kwIndex] = d[kwIndex].upper()
+            self.data[name] = d
+            self.nitems += 1
+        self._GenerateSMID()
         self._CalculateSigma()
         self.names = self.columns
-        if not {"ORIGIN", "DATE", "TIME", "TYPE"}.issubset(self.header):
-            # This isn't TFS.  These are guaranteed in the manual
-            # to be written to all TFS files.
-            raise ValueError("Malformed TFS.")
+        self.filename = "<class 'cpymad.madx.Table'>"
 
     def _CalculateSigma(self):
         """
@@ -388,8 +415,7 @@ class Tfs:
                 type(self).__name__,
                 self.nitems,
                 _path.basename(self.filename))
-        return "<{}.{}, {} items in lattice>".format(
-            __name__, type(self).__name__, self.nitems)
+        return "<{}.{}, {} items in lattice>".format(__name__, type(self).__name__, self.nitems)
 
     def __len__(self):
         return len(self.sequence)
