@@ -628,6 +628,7 @@ def _SetMachineAxesStyle(ax):
     ax.spines['bottom'].set_visible(False)
     ax.spines['left'].set_visible(False)
     ax.spines['right'].set_visible(False)
+    ax.margins(x=0.02)
 
 
 def _PrepareMachineAxes(figure):
@@ -642,14 +643,13 @@ def _PrepareMachineAxes(figure):
     return axmachine
 
 
-def _AdjustExistingAxesAndAddMachineAxis(figure, fraction=0.9, tightLayout=True):
+def _AdjustExistingAxesAndAddMachineAxis(figure, fraction=0.9):
     """
-    Fraction is fraction of height all subplots will be after adjustment.
-    Default is 0.9 for 90% of height.
+    :param figure: matplot figure
+    :type figure: matplotlib.figure.Figure
+    :param fraction: fraction of height all existing subplots will be after adjustment
+    :type fraction: float
     """
-    # we have to set tight layout before adjustment otherwise if called
-    # later it will cause an overlap with the machine diagram
-
     axs = figure.get_axes()
 
     # It's possible we have y-axis on the left of a subplot in which case we count
@@ -685,7 +685,7 @@ def _AdjustExistingAxesAndAddMachineAxis(figure, fraction=0.9, tightLayout=True)
     return axmachine
 
 
-def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, offset=None):
+def AddMachineLatticeToFigure(figure, tfsfile, reverse=False, offset=None):
     """
     Add a diagram above the current graph in the figure that represents the
     accelerator based on a madx twiss file in tfs format.
@@ -722,8 +722,7 @@ def AddMachineLatticeToFigure(figure, tfsfile, tightLayout=True, reverse=False, 
             useQuadStrength = False
 
     axoptics = figure.get_axes()[0]
-    axmachine = _AdjustExistingAxesAndAddMachineAxis(figure, tightLayout=tightLayout)
-    axmachine.margins(x=0.02)
+    axmachine = _AdjustExistingAxesAndAddMachineAxis(figure)
 
     DrawMachineLattice(axmachine, tfs, reverse, offset, useQuadStrength)
 
