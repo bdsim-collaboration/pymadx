@@ -1,0 +1,5 @@
+call, file="h6.madx";
+
+select, flag=twiss, clear;
+select, flag=twiss, column={name, s, keyword, l, alfx, alfy, betx, bety, dx, dy, dpx, dpy, x, y, tilt, angle, k1l, hkick, vkick};
+twiss, chrom=true, rmatrix=true, save, file="h6-simple.tfs", betx=3.3, alfx=0, bety=3.3, alfy=0;
