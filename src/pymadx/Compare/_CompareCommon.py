@@ -35,10 +35,11 @@ def _MakePlotter(plot_info_tuples, x_label, y_label, title):
 
         plot = _plt.figure(title, figsize=(9,5), **kwargs)
         # Loop over the variables in plot_info_tuples and draw the plots.
-        for var, legend_name in plot_info_tuples:
-            _plt.plot(first.GetColumn('S'), first.GetColumn(var),
+        colours = ["tab:blue", "tab:orange"]
+        for colour, (var, legend_name) in zip(colours, plot_info_tuples):
+            _plt.plot(first.GetColumn('S'), first.GetColumn(var), c=colour,
                       label="{}: {}".format(legend_name, first_name), **kwargs)
-            _plt.plot(second.GetColumn('S'), second.GetColumn(var),
+            _plt.plot(second.GetColumn('S'), second.GetColumn(var), '--', c=colour,
                       label="{}: {}".format(legend_name, second_name), **kwargs)
 
         # Set axis labels and draw legend
