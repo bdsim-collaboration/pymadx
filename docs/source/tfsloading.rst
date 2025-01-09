@@ -19,7 +19,7 @@ Tfs Class Features
 ------------------
 
 * Loading of TFS files.
-* Loading of TFS files compressed and archived with .tar.gz suffix without decompressing.
+* Loading of TFS files compressed with .gz suffix without decompressing.
 * Report a count of all different element types.
 * Get a particular column.
 * Get a particular row.
@@ -45,16 +45,14 @@ A file may be loading by constructing a Tfs instance from a file name.
 
 .. note:: The import will be assumed from now on in examples.
 
-A file compressed using tar and gzip may also be loaded without first uncompressing
-without any difference in functionality. Not temporary files are created::
+A file compressed using gzip may also be loaded without first decompressing
+without any difference in functionality. No temporary files are created::
 
-  tar -czf myTwissFile.tar.gz myTwissFile.fs
+  gzip myTwissFile.tfs
   
 >>> import pymadx
->>> a = pymadx.Data.Tfs("myTwissFile.tar.gz")
+>>> a = pymadx.Data.Tfs("myTwissFile.gz")
 
-.. note:: The detection of a compressed file is based on 'tar' or 'gz' existing
-	  in the file name.
 
 Twiss File Preparation
 ----------------------
@@ -138,7 +136,7 @@ Row or Element
 
 A row of data is an entry for a particular element. The Tfs class is conceptually a list of
 elements. Each element is represented by a Python dictionary that has a key for each column.
-The list of acceptable keys (ie names of columns) can be found in the member named 'colums'.::
+The list of acceptable keys (i.e. names of columns) can be found in the member named 'colums'.::
 
   a.columns #prints out list of column names
 

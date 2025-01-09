@@ -13,3 +13,4 @@ def test_data_tfs_load():
 
 def test_data_tfs_load_gz():
     d = pymadx.Data.Tfs(_fn("test_input/h6-positive-120gev-fm.tfs.gz"))
+    assert len(d) == 226
