@@ -144,6 +144,24 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None,
     return f1,f2
 
 
+def GetHorizontalVerticalMaskNames(tfs, collimatorHRegex=None, collimatorVRegex=None):
+    horizontalNames = _GetHorizontalBendNames(tfs)
+    verticalNames = _GetVerticalBendNames(tfs)
+    horizontalCollNames = []
+    verticalCollNames = []
+    if collimatorHRegex is not None:
+        horizontalCollNames = _RegexMatchNames(tfs, collimatorHRegex)
+    if collimatorVRegex is not None:
+        verticalCollNames = _RegexMatchNames(tfs, collimatorVRegex)
+    collsToMaskInHorizontal = set(verticalCollNames).difference(set(horizontalCollNames))
+    collsToMaskInVertical = set(horizontalCollNames).difference(set(verticalCollNames))
+    toMaskInHorizontal = list(verticalNames)
+    toMaskInHorizontal.extend(list(collsToMaskInHorizontal))
+    toMaskInVertical = list(horizontalNames)
+    toMaskInVertical.extend(list(collsToMaskInVertical))
+    return toMaskInHorizontal, toMaskInVertical
+
+
 def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True,
                    collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True, s_offset=None):
     """
@@ -166,20 +184,7 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     tfs = _Data.CheckItsTfs(tfsfile)
     d = _GetRMatrixDataFromTfs(tfs)
 
-    horizontalNames = _GetHorizontalBendNames(tfs)
-    verticalNames = _GetVerticalBendNames(tfs)
-    horizontalCollNames = []
-    verticalCollNames = []
-    if collimatorHRegex is not None:
-        horizontalCollNames = _RegexMatchNames(tfs, collimatorHRegex)
-    if collimatorVRegex is not None:
-        verticalCollNames = _RegexMatchNames(tfs, collimatorVRegex)
-    collsToMaskInHorizontal = set(verticalCollNames).difference(set(horizontalCollNames))
-    collsToMaskInVertical = set(horizontalCollNames).difference(set(verticalCollNames))
-    toMaskInHorizontal = list(verticalNames)
-    toMaskInHorizontal.extend(list(collsToMaskInHorizontal))
-    toMaskInVertical = list(horizontalNames)
-    toMaskInVertical.extend(list(collsToMaskInVertical))
+    toMaskInHorizontal, toMaskInVertical = GetHorizontalVerticalMaskNames(tfs, collimatorHRegex, collimatorVRegex)
 
     xlabel = '$x$  = ' + str(round(dx, 3)) + ' mm'
     xplabel = "$x'$ = " + str(round(dpx, 3)) + ' mrad'
