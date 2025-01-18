@@ -1232,10 +1232,12 @@ def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None
     ax.set_xlim(tfs.smin, tfs.smax)
 
 
-def RMatrixTableString(tfs):
+def RMatrixTableString(tfs, tablefmt='grid'):
     """
     :param tfs: TFS object to inspect.
     :type tfs: pymadx.Data.Tfs
+    :param tablefmt: tabulate table format
+    :type tablefmt: str
 
     Get the most common rmatrix terms out of the TFS file and prepare a string
     of them in a nice big table. Returns a string.
@@ -1244,7 +1246,7 @@ def RMatrixTableString(tfs):
     for key in ['NAME', 'S', 'RE11', 'RE12', 'RE22', 'RE33', 'RE34', 'RE44', 'RE16', 'RE26', 'RE36', 'RE46']:
         rmat[key] = tfs.GetColumn(key)
     rmat['S_End'] = rmat.pop('S')
-    s = _tabulate.tabulate(rmat, headers=rmat, tablefmt="grid")
+    s = _tabulate.tabulate(rmat, headers=rmat, tablefmt=tablefmt)
     return s
 
 
