@@ -46,8 +46,8 @@
 @ DQMIN_PHASE      %le      1.498548277
 @ TITLE            %14s "h6-filter-mode"
 @ ORIGIN           %17s "5.09.01 Darwin 64"
-@ DATE             %08s "09/01/25"
-@ TIME             %08s "23.06.46"
+@ DATE             %08s "17/01/25"
+@ TIME             %08s "19.47.06"
 * NAME                             S KEYWORD                          L            ALFX            ALFY            BETX            BETY              DX              DY             DPX             DPY               X               Y            TILT           ANGLE             K1L           HKICK           VKICK 
 $ %s                             %le %s                             %le             %le             %le             %le             %le             %le             %le             %le             %le             %le             %le             %le             %le             %le             %le             %le 
  "H6$START"              0.000000000 "MARKER"                0.000000000     0.000000000     0.000000000     3.300000000     3.300000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000

@@ -1,0 +1,345 @@
+title, '2024 Configuration of P42';
+
+/***************************** Dipoles ******************************/ 
+kB2 = 0.0014;
+kB3 = 0.0028;
+! wrong but non-zero
+kTRIM1 = 1e-6;
+kB4 = 0.0065952;
+kB5 = 0.0065952;
+kTRIM2 = 1e-6;
+kTRIM3 = 1e-6;
+kTRIM4 = 1e-6;
+kTRIM5 = 1e-6;
+kTRIM6 = 1e-6;
+kB71 = -0.0059997;
+kB72 = -0.0059997;
+kTRIM7 = 1e-6;
+kTRIM8 = 1e-6;
+kTRIM9 = 1e-6;
+kB8 = -0.0071455;
+kB9 = 0.0029436;
+kTRIM10 = 1e-6;
+kB10 = 0.0069631;
+kB11 = 0.0060254;
+kB12 = -0.0033351;
+/***************************** Quadrupoles ******************************/ 
+kQ1 = 0.0094818930255;
+kQ2 = 0.014060357105624999;
+kQ3 = -0.015109921895625001;
+kQ4 = 0.014060357105624999;
+kQ5 = -0.011809308943125;
+kQ10 = 0.008376788390624999;
+kQ11 = -0.005071603640624999;
+kQ12 = 0.0051535399949999994;
+kQ13 = -0.008376788390624999;
+kQ14 = 0.008376788390624999;
+kQ15 = -0.006886700932499999;
+kQ16 = 0.007776927337499999;
+! wrong but non-zero
+kQ17 = 1e-5;
+kQ18 = -0.008707644129375;
+kQ19 = 0.009850612241249999;
+kQ20 = -0.010396885831875001;
+kQ21 = 0.011986278727499999;
+
+ambn2411 := -0.00549865229110512;
+amtn2411 := 0.00409955076370171;
+kB1B3_T4 := -0.0027;
+
+angle_P42 = asin(0.0014);
+position_P42 = 0.01673;
+
+
+
+  /**********************************************************************************
+  *
+  * P42 version (draft) YETS 2022-2023 in MAD X SEQUENCE format
+  * Generated the 14-JUN-2023 02:53:38 from Layout
+  *
+  ***********************************************************************************/
+
+
+
+/************************************************************************************/
+/*                       TYPES DEFINITION                                           */
+/************************************************************************************/
+
+l.P42_BBS                      := 0.45;
+l.P42_BBS_TBIU                 := 0;
+l.P42_BSGV                     := 0.45;
+l.P42_BSI                      := 0;
+l.P42_BSI_TBIU                 := 0;
+l.P42_BSM                      := 0.45;
+l.P42_BSP                      := 0.45;
+l.P42_BSP_TBIU                 := 0;
+l.P42_MBNH_HWP                 := 5;
+l.P42_MBNV_HWP                 := 5;
+l.P42_MBW__HWP                 := 6.2;
+l.P42_MBXGDCWP                 := 3;
+l.P42_MCXCAHWC                 := 0.4;
+l.P42_MDSH                     := 0.7;
+l.P42_MSN                      := 3.2;
+l.P42_MTN__HWP                 := 3.6;
+l.P42_QNL__8WP                 := 2.99;
+l.P42_QSL__8WP                 := 3;
+l.P42_TBACA                    := 0.5;
+l.P42_TBACB                    := 0.2;
+l.P42_TBID                     := 0.25;
+l.P42_TBIU                     := 0;
+l.P42_TCMAA                    := 0.4;
+l.P42_TCMAC                    := 0.4;
+l.P42_XCHV_001                 := 1;
+l.P42_XCIOP001                 := 0.1;
+l.P42_XFFH                     := 0.276;
+l.P42_XFFV                     := 0.276;
+l.P42_XTAX_007                 := 1.615;
+l.P42_XTAX_008                 := 1.615;
+l.P42_XTCX_005                 := 1.6;
+l.P42_XTCX_006                 := 2.4;
+l.P42_XVVSB001                 := 0.32;
+l.P42_XVWAC001                 := 0.0001;
+l.P42_XVWAD001                 := 0.0001;
+l.P42_XVWAE001                 := 0.0002;
+
+
+
+//---------------------- COLLIMATOR     ---------------------------------------------
+P42_TCMAA      : COLLIMATOR  , L := l.P42_TCMAA, APERTYPE=RECTANGLE, APERTURE={0.150, 0.300};         ! Collimation mask type A
+P42_TCMAC      : COLLIMATOR  , L := l.P42_TCMAC;         ! Collimation mask type C
+P42_XCHV_001   : COLLIMATOR  , L := l.P42_XCHV_001, APERTYPE=RECTANGLE, APERTURE={0.05,0.05};      ! SPS Collimator horizontal et vertical 4 blocks (design 1970)
+P42_XCIOP001   : COLLIMATOR  , L := l.P42_XCIOP001;      ! Converter IN OUT Plate - Lead
+P42_XTAX_007   : COLLIMATOR  , L := l.P42_XTAX_007, APERTYPE=RACETRACK, APERTURE={0.02,0.01,0.01,0.01};      ! Target Absorber Type 007
+P42_XTAX_008   : COLLIMATOR  , L := l.P42_XTAX_008, APERTYPE=RACETRACK, APERTURE={0.02,0.01,0.01,0.01};      ! Target Absorber Type 008
+P42_XTCX_005   : COLLIMATOR  , L := l.P42_XTCX_005, APERTYPE=CIRCLE, APERTURE=0.06;      ! XTCX - Fixed Collimator 1.6 m, Vacuum, no cooling
+P42_XTCX_006   : COLLIMATOR  , L := l.P42_XTCX_006, APERTYPE=CIRCLE, APERTURE=0.045;      ! XTCX - Fixed collimator Type 006
+//---------------------- HKICKER        ---------------------------------------------
+P42_MDSH       : HKICKER     , L := l.P42_MDSH, APERTYPE=RECTANGLE, APERTURE={0.063, 0.0295};          ! Correcting dipole, BT line, short, horizontal deflection
+
+//---------------------- INSTRUMENT     ---------------------------------------------
+P42_BBS        : INSTRUMENT  , L := l.P42_BBS;           ! Beam Box Scanner
+P42_BBS_TBIU   : INSTRUMENT  , L := l.P42_BBS_TBIU;      ! Beam Box Scanner (special inside TBIU)
+P42_BSGV       : INSTRUMENT  , L := l.P42_BSGV;          ! SEM grid, vertical
+P42_BSI        : INSTRUMENT  , L := l.P42_BSI;           ! SEM intensity
+P42_BSI_TBIU   : INSTRUMENT  , L := l.P42_BSI_TBIU;      ! SEM intensity (special Inside TBIU)
+P42_BSM        : INSTRUMENT  , L := l.P42_BSM;           ! SEM position, moveable
+P42_TBACA      : INSTRUMENT  , L := l.P42_TBACA;         ! Target Box variant A
+P42_TBACA_C    : MARKER;                                 ! Target box centre marker
+P42_TBACA_E    : MARKER;                                 ! Target box end marker 
+P42_TBACB      : INSTRUMENT  , L := l.P42_TBACB;         ! Target Box variant B
+P42_TBID       : INSTRUMENT  , L := l.P42_TBID;          ! target beam instrumentation, downstream
+P42_TBIU       : INSTRUMENT  , L := l.P42_TBIU;          ! target beam instrumentation, upstream
+P42_XFFH       : INSTRUMENT  , L := l.P42_XFFH;          ! Finger Scintillator Profile Monitor - Horizontal
+P42_XFFV       : INSTRUMENT  , L := l.P42_XFFV;          ! Finger Scintillator Profile Monitor - Vertical
+P42_XVVSB001   : INSTRUMENT  , L := l.P42_XVVSB001;      ! X Vacuum Sector ElectroValve DN159x320mm (local control) - VAT
+P42_XVWAC001   : INSTRUMENT  , L := l.P42_XVWAC001;      ! X Vacuum Window Aluminium DN159X0.1, conical flanges
+P42_XVWAD001   : INSTRUMENT  , L := l.P42_XVWAD001, APERTYPE=RACETRACK, APERTURE={0.175, 0.030, 0.030, 0.030};      ! X Vacuum Window Aluminium DN159X0.1, aperture 120 mm
+P42_XVWAE001   : INSTRUMENT  , L := l.P42_XVWAE001, APERTYPE=RACETRACK, APERTURE={0.430, 0.030, 0.030, 0.030};      ! X Vacuum Window Aluminium EL900X60X0.2
+//---------------------- KICKER         ---------------------------------------------
+P42_MCXCAHWC   : KICKER      , L := l.P42_MCXCAHWC, APERTYPE=CIRCLE, APERTURE=0.036;      ! Corrector magnet, H or V, type MDX
+P42_MTN__HWP   : KICKER      , L := l.P42_MTN__HWP, APERTYPE=RECTANGLE, APERTURE={0.120, 0.03};  
+//---------------------- MONITOR        ---------------------------------------------
+P42_BSP        : MONITOR     , L := l.P42_BSP;           ! SEM position, horizontal + vertical
+P42_BSP_TBIU   : MONITOR     , L := l.P42_BSP_TBIU;      ! SEM position, horizontal + vertical (special inside TBIU)
+//---------------------- QUADRUPOLE     ---------------------------------------------
+!P42_QNL__8WP   : QUADRUPOLE  , L := l.P42_QNL__8WP, APERTYPE="QNL_beampipe.dat",APERTURE={0.05,0.05};      ! HERE I DEFINE THE BEAMPIPE AS A SET OF POINTS, If this is not good for you a conservative suggestion would be a circular beampipe wiht a radius of 37.5 mm
+P42_QNL__8WP   : QUADRUPOLE  , L := l.P42_QNL__8WP, APERTYPE=CIRCLE, APERTURE=0.0385;
+P42_QSL__8WP   : QUADRUPOLE  , L := l.P42_QSL__8WP, APERTYPE=CIRCLE, APERTURE=0.046;      ! Quadrupole, slim, long, - Same magnet type SPQSLD_
+//---------------------- RBEND          ---------------------------------------------
+P42_MBNH_HWP   : RBEND       , L := l.P42_MBNH_HWP, APERTYPE=RECTANGLE, APERTURE={0.0745, 0.026};      ! Bending magnet, secondary beams, horizontal, north area
+P42_MBNV_HWP   : RBEND       , L := l.P42_MBNV_HWP, APERTYPE=RECTANGLE, APERTURE={0.0745, 0.026};      ! Bending magnet, secondary beams, vertical, north area - Mechanical dimensions from NORMA
+P42_MBW__HWP   : RBEND       , L := l.P42_MBW__HWP, APERTYPE=RECTANGLE, APERTURE={0.063, 0.0225};      ! Bending Magnet, main, type B2, 1000A
+P42_MBXGDCWP   : RBEND       , L := l.P42_MBXGDCWP, APERTYPE=RECTANGLE, APERTURE={0.063, 0.0295};      ! Bending magnet, Target N
+P42_MSN        : RBEND       , L := l.P42_MSN, APERTYPE=RECTANGLE, APERTURE={0.047, 0.026};           ! Septum magnet, north area - offset mechanical and optical dimensions according to drawing 1766138 (not well indicated)
+
+//---------------------- ROTATION, TRANSLATION ----------------------------------
+P42_rotation : yrotation, angle := angle_P42;
+P42_shift : translation, dx := position_P42 * cos(angle_P42);
+
+//---------------------------- Strength Definitions ----------------------------- 
+B1B3_T4H : P42_MTN__HWP, HKICK := kB1B3_T4, TILT=-0.000261799;
+B1B3_T4Ha : P42_MTN__HWP, HKICK := kB1B3_T4, TILT=-0.000261799;
+B2H : P42_MSN, ANGLE := kB2, TILT=-0.00026230364426381447;
+B3H : P42_MSN, ANGLE := kB3, TILT=-0.00026179938820641385;
+Q1F : P42_QSL__8WP, K1 := kQ1;
+Q2F : P42_QNL__8WP, K1 := kQ2;
+TRIM1V : P42_MCXCAHWC, TILT=1.5705355343774487;
+Q3D : P42_QNL__8WP, K1 := kQ3;
+Q4F : P42_QNL__8WP, K1 := kQ4;
+B4H : P42_MBW__HWP, ANGLE := kB4, TILT=-0.3693106627516487;
+B4Ha : P42_MBW__HWP, ANGLE := kB4, TILT=-0.3693157743395632;
+B5H : P42_MBW__HWP, ANGLE := kB5, TILT=-0.00028565810790937403;
+B4Ha : P42_MBW__HWP, ANGLE := kB4, TILT=-0.369364566576347;
+B4Hb : P42_MBW__HWP, ANGLE := kB4, TILT=-0.36939897325455306;
+TRIM2V : P42_MCXCAHWC, TILT=1.570398174455684;
+Q5D : P42_QNL__8WP, K1 := kQ5;
+Q10F : P42_QNL__8WP, K1 := kQ10;
+TRIM3H : P42_MCXCAHWC, TILT=-0.0003981523392124264;
+Q11D : P42_QNL__8WP, K1 := kQ11;
+TRIM4V : P42_MCXCAHWC, TILT=1.570398174455684;
+Q12F : P42_QNL__8WP, K1 := kQ12;
+Q13D : P42_QNL__8WP, K1 := kQ13;
+Q14F : P42_QNL__8WP, K1 := kQ14;
+TRIM5H : P42_MDSH, TILT=-0.00039815233921242674;
+TRIM6V : P42_MCXCAHWC, TILT=1.570398174455684;
+B71H : P42_MBNH_HWP, ANGLE := kB71, TILT=-0.00039815233921242706;
+B72H : P42_MBNH_HWP, ANGLE := kB72, TILT=-0.000343169583121045;
+B71Ha : P42_MBNH_HWP, ANGLE := kB71, TILT=-0.0002881972412966894;
+B72Hb : P42_MBNH_HWP, ANGLE := kB72, TILT=-0.0002332353135584029;
+B71Hc : P42_MBNH_HWP, ANGLE := kB71, TILT=-0.00017828379970740522;
+B72Hd : P42_MBNH_HWP, ANGLE := kB72, TILT=-0.00012334269956141007;
+B71He : P42_MBNH_HWP, ANGLE := kB71, TILT=-6.841201293791084e-05;
+B72Hf : P42_MBNH_HWP, ANGLE := kB72, TILT=-1.3491739646258056e-05;
+B71Hg : P42_MBNH_HWP, ANGLE := kB71, TILT=4.141812050438982e-05;
+Q15D : P42_QNL__8WP, K1 := kQ15;
+TRIM7V : P42_MCXCAHWC, TILT=1.5708926443625928;
+Q16F : P42_QNL__8WP, K1 := kQ16;
+Q17D : P42_QNL__8WP, K1 := kQ17;
+TRIM8H : P42_MCXCAHWC, TILT=9.631756769629276e-05;
+Q18D : P42_QNL__8WP, K1 := kQ18;
+TRIM9V : P42_MCXCAHWC, TILT=1.5708926443625928;
+B8H : P42_MBNH_HWP, ANGLE := kB8, TILT=9.631756769629205e-05;
+B8Ha : P42_MBNH_HWP, ANGLE := kB8, TILT=0.00016168786617705617;
+B9H : P42_MBNH_HWP, ANGLE := kB9, TILT=0.00022704502762330343;
+B9Ha : P42_MBNH_HWP, ANGLE := kB9, TILT=0.00020012204054811695;
+Q19F : P42_QNL__8WP, K1 := kQ19;
+Q20D : P42_QNL__8WP, K1 := kQ20;
+Q21F : P42_QNL__8WP, K1 := kQ21;
+TRIM10H : P42_MCXCAHWC, TILT=0.0001731988014928568;
+B10V : P42_MBNV_HWP, ANGLE := kB10, TILT=1.5709695255963894;
+B11V : P42_MBNV_HWP, ANGLE := kB11, TILT=1.5709695152696603;
+B12V : P42_MBXGDCWP, ANGLE := kB12, TILT=1.5709695165778923;
+
+
+/************************************************************************************/
+/*                       P42 SEQUENCE                                               */
+/************************************************************************************/
+
+p42 : SEQUENCE, refer = centre,         L = 838.16;
+ TBACA.X0400000                : P42_TBACA_C     , at = .0          , slot_id = 56964667;
+ TBACA.X0400000_E              : P42_TBACA_E     , at = .25          , slot_id = 56964667; 
+ TCMAA.X0400001                : P42_TCMAA       , at = .85          , slot_id = 56992277;
+ XVW.X0400001                  : P42_XVWAD001    , at = 1.10095      , slot_id = 57310366;
+ MTN.X0400003                  : B1B3_T4H     , at = 3.15         , slot_id = 56992202;
+ MTN.X0400007                  : B1B3_T4Ha    , at = 7.35         , slot_id = 56992225;
+ XVW.X0400017                  : P42_XVWAE001    , at = 16.610987628 , slot_id = 57310461;
+ rotation                      : P42_rotation    , at = 17.2;
+ shift                         : P42_shift       , at = 17.2;
+ XTAX.X0430018                 : P42_XTAX_007    , at = 18.0075      , slot_id = 57087670;
+ XTAX.X0430020                 : P42_XTAX_008    , at = 19.6325      , slot_id = 56992724;
+ XCIO.X0430021                 : P42_XCIOP001    , at = 20.525       , slot_id = 56995006;
+ XVW.X0430020                  : P42_XVWAD001    , at = 20.604950147 , slot_id = 57310475;
+ MSN.X0430022                  : B2H         , at = 22.45        , slot_id = 56992358;
+ MSN.X0430029                  : B3H         , at = 29.43        , slot_id = 56992392;
+ QSL.X0430033                  : Q1F    , at = 32.92        , slot_id = 56992417;
+ QNL.X0430040                  : Q2F    , at = 39.78        , slot_id = 56050728;
+ XTCX.X0430042                 : P42_XTCX_005    , at = 42.425       , slot_id = 57087872;
+ MCXCA.X0430048                : TRIM1V    , at = 48.095       , slot_id = 56051257;
+ QNL.X0430050                  : Q3D    , at = 50.28        , slot_id = 56050737;
+ QNL.X0430054                  : Q3D    , at = 53.71        , slot_id = 56050746;
+ QNL.X0430064                  : Q4F    , at = 64.21        , slot_id = 56050755;
+ MBW.X0430069                  : B4H    , at = 69.219       , slot_id = 40400557;
+ MBW.X0430076                  : B4Ha    , at = 75.859       , slot_id = 56050692;
+ MBW.X0430082                  : B5H    , at = 82.499       , slot_id = 40401984;
+ MBW.X0430089                  : B4Ha    , at = 89.139       , slot_id = 56050701;
+ MBW.X0430096                  : B4Hb    , at = 95.779       , slot_id = 40401985;
+ MCXCA.X0430100                : TRIM2V    , at = 99.56        , slot_id = 56050791;
+ QNL.X0430108                  : Q5D    , at = 107.75       , slot_id = 56050764;
+ QNL.X0430111                  : Q5D    , at = 111.18       , slot_id = 56050773;
+ QNL.X0430169                  : Q10F    , at = 168.65       , slot_id = 56994620;
+ MCXCA.X0430171                : TRIM3H    , at = 170.7        , slot_id = 56994644;
+ BBS.X0430224                  : P42_BBS         , at = 223.46       , slot_id = 57088220;
+ BSP.X0430225                  : P42_BSP         , at = 224.045      , slot_id = 57088055;
+ QNL.X0430226                  : Q11D    , at = 226.12       , slot_id = 56994696;
+ MCXCA.X0430228                : TRIM4V    , at = 228.17       , slot_id = 56994723;
+ BBS.X0430281                  : P42_BBS         , at = 280.93       , slot_id = 57088229;
+ BSP.X0430282                  : P42_BSP         , at = 281.515      , slot_id = 57088064;
+ BSI.X0430282                  : P42_BSI         , at = 281.74       , slot_id = 57088293;
+ QNL.X0430284                  : Q12F    , at = 283.59       , slot_id = 56994981;
+ XCHV.X0430286                 : P42_XCHV_001    , at = 286.015      , slot_id = 56995032;
+ QNL.X0430341                  : Q13D    , at = 341.06       , slot_id = 56995143;
+ XVVS.X0430343                 : P42_XVVSB001    , at = 343          , slot_id = 57524422;
+ XVW.X0430388                  : P42_XVWAC001    , at = 388.539      , slot_id = 57311850;
+ BSG.X0430389                  : P42_BSGV        , at = 388.917      , slot_id = 57311266;
+ XVW.X0430390                  : P42_XVWAC001    , at = 390.201      , slot_id = 57311904;
+ XCHV.X0430396                 : P42_XCHV_001    , at = 396.105      , slot_id = 56997983;
+ QNL.X0430399                  : Q14F    , at = 398.53       , slot_id = 56998033;
+ MDSH.X0430401                 : TRIM5H        , at = 400.789      , slot_id = 56998114;
+ XCHV.X0430454                 : P42_XCHV_001    , at = 453.575      , slot_id = 56997992;
+ QNL.X0430456                  : Q13D    , at = 456          , slot_id = 56998042;
+ MCXCA.X0430458                : TRIM6V    , at = 458.05       , slot_id = 56998123;
+ XVW.X0430509                  : P42_XVWAC001    , at = 509.942      , slot_id = 57311953;
+ BSG.X0430510                  : P42_BSGV        , at = 510.32       , slot_id = 57311215;
+ XVW.X0430511                  : P42_XVWAC001    , at = 511.604      , slot_id = 57312002;
+ QNL.X0430513                  : Q14F    , at = 513.47       , slot_id = 56998051;
+ XFFV.X0430515                 : P42_XFFV        , at = 515.323      , slot_id = 56998177;
+ XFFH.X0430516                 : P42_XFFH        , at = 515.599      , slot_id = 56998159;
+ MBNH.X0430520                 : B71H    , at = 519.565      , slot_id = 56998186;
+ MBNH.X0430525                 : B72H    , at = 525.225      , slot_id = 56998195;
+ MBNH.X0430531                 : B71Ha    , at = 530.885      , slot_id = 56998204;
+ MBNH.X0430537                 : B72Hb    , at = 536.545      , slot_id = 56998213;
+ MBNH.X0430542                 : B71Hc    , at = 542.205      , slot_id = 56998222;
+ MBNH.X0430548                 : B72Hd    , at = 547.865      , slot_id = 56998231;
+ MBNH.X0430554                 : B71He    , at = 553.525      , slot_id = 56998240;
+ MBNH.X0430559                 : B72Hf    , at = 559.185      , slot_id = 56998249;
+ MBNH.X0430565                 : B71Hg    , at = 564.845      , slot_id = 56998258;
+ BSP.X0430569                  : P42_BSP         , at = 568.865      , slot_id = 57088073;
+ QNL.X0430571                  : Q15D    , at = 570.94       , slot_id = 56998060;
+ MCXCA.X0430573                : TRIM7V    , at = 572.99       , slot_id = 56998132;
+ BSP.X0430626                  : P42_BSP         , at = 626.335      , slot_id = 57088082;
+ QNL.X0430628                  : Q16F    , at = 628.41       , slot_id = 56998069;
+ XTCX.X0430631                 : P42_XTCX_006    , at = 631.455      , slot_id = 57087897;
+ BSG.X0430653                  : P42_BSGV        , at = 653.441      , slot_id = 57311360;
+ XCHV.X0430683                 : P42_XCHV_001    , at = 683.455      , slot_id = 56998003;
+ QNL.X0430685                  : Q17D    , at = 685.88       , slot_id = 56998078;
+ MCXCA.X0430688                : TRIM8H    , at = 687.93       , slot_id = 56998141;
+ XFFH.X0430708                 : P42_XFFH        , at = 706.882      , slot_id = 57198319;
+ QNL.X0430710                  : Q18D    , at = 708.87       , slot_id = 57196968;
+ QNL.X0430714                  : Q18D    , at = 712.915      , slot_id = 56998087;
+ MCXCA.X0430715                : TRIM9V    , at = 714.965      , slot_id = 56998150;
+ MBNH.X0430718                 : B8H    , at = 718.23       , slot_id = 56998267;
+ MBNH.X0430724                 : B8Ha    , at = 723.89       , slot_id = 56998276;
+ MBNH.X0430730                 : B9H    , at = 729.55       , slot_id = 56998285;
+ MBNH.X0430735                 : B9Ha    , at = 735.21       , slot_id = 56998294;
+ BSP.X0450769                  : P42_BSP         , at = 768.31       , slot_id = 57088184;
+ BSI.X0450769                  : P42_BSI         , at = 768.535      , slot_id = 57088316;
+ QNL.X0450770                  : Q19F    , at = 770.385      , slot_id = 56050809;
+ QNL.X0450792                  : Q20D    , at = 792.125      , slot_id = 56050818;
+ QNL.X0450795                  : Q20D    , at = 795.555      , slot_id = 56050827;
+ QNL.X0450814                  : Q21F    , at = 813.865      , slot_id = 56050836;
+ QNL.X0450817                  : Q21F    , at = 817.295      , slot_id = 56051237;
+ BSM.X0450819                  : P42_BSM         , at = 819.235      , slot_id = 57212612;
+ MCXCA.X0450820                : TRIM10H    , at = 819.895      , slot_id = 56051246;
+ MBNV.X0450823                 : B10V    , at = 823.06       , slot_id = 57087563;
+ MBNV.X0450829                 : B11V    , at = 828.72       , slot_id = 57087572;
+ XVW.X0450831                  : P42_XVWAC001    , at = 831.703      , slot_id = 57312051;
+ MBXGD.X0450834                : B12V    , at = 834.128      , slot_id = 56050800;
+ BSG.X0450836                  : P42_BSGV        , at = 836.204      , slot_id = 57311552;
+ XVW.X0450837                  : P42_XVWAC001    , at = 836.882      , slot_id = 57312100;
+ BBS.X0450837                  : P42_BBS_TBIU    , at = 837.1        , slot_id = 57311185, assembly_id= 56964638;
+ BSI.X0450837                  : P42_BSI_TBIU    , at = 837.1        , slot_id = 57311151, assembly_id= 56964638;
+ BSP.X0450837                  : P42_BSP_TBIU    , at = 837.1        , slot_id = 57311119, assembly_id= 56964638;
+ TBIU.X0450837                 : P42_TBIU        , at = 837.1        , slot_id = 56964638;
+ TCMAC.X0450838                : P42_TCMAC       , at = 837.5        , slot_id = 56993160;
+ TBACB.X1010000                : P42_TBACB       , at = 838.06       , slot_id = 55490825;
+ ENDP42                        : MARKER          , at = 838.16;
+ENDSEQUENCE;
+ 
+beam, particle=proton, sequence=p42, pc=400.0, ex=4.754e-8, ey=1.186e-8, sige=1.5e-4;
+use, sequence=p42;
+
+select, flag=twiss, clear;
+select, flag=twiss, column={name, s, keyword, l, alfx, alfy, betx, bety, dx, dy, dpx, dpy, x, y, tilt, angle, k1l, hkick, vkick};
+twiss, chrom=true, rmatrix=true, save, file = "p42-simple.tfs",
+       alfx =-0.37478803, 
+       alfy = 3.02808346e-01, 
+       betx = 3.20821145, 
+       bety = 3.39582514, 
+       dx = -1.54253503e-01, 
+       dpx = -0.00243761, 
+       dy = 2.30693735e-03, 
+       dpy = -0.00320161;
+
+
+select, flag=survey, clear;
+survey, x0=0, y0=0, z0=0, theta0=0, phi0=0, psi0=0, file="p42-survey.tfs";
