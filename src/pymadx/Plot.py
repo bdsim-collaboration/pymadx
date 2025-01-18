@@ -2,7 +2,7 @@
 Various plots for madx TFS files using the pymadx Tfs class
 """
 from builtins import map as _map
-
+from collections import defaultdict as _defaultdict
 import numpy as _np
 import math as _math
 import matplotlib as _matplotlib
@@ -14,6 +14,22 @@ import tabulate as _tabulate
 
 from matplotlib.backends.backend_pdf import PdfPages as _PdfPages
 from matplotlib.collections import PatchCollection as _PatchCollection
+
+import pymadx.Data as _Data
+
+defaultElementColours = {'QUADRUPOLE': u'#d10000',
+                         'RBEND': u'#0066cc',
+                         'SBEND': u'#0066cc',
+                         'HKICKER': u'#4c33b2',
+                         'VKICKER': u'#ba55d3',
+                         'SOLENOID': u'#ff8800',
+                         'RCOLLIMATOR': 'k',
+                         'ECOLLIMATOR': 'k',
+                         'COLLIMATOR': 'k',
+                         'SEXTUPOLE': u'#ffcc00',
+                         'OCTUPOLE': u'#00994c'
+                         }
+
 
 class _My_Axes(_matplotlib.axes.Axes):
     """
@@ -368,6 +384,255 @@ def SurveyMultiple(tfsfiles, labels=None, title='', outputfilename=None):
 
     if outputfilename is not None:
         _plt.savefig(outputfilename)
+
+
+def MSNPatches(xend, yend, rotation, horizontal, inside, alpha):
+    edges = _np.array([[0, 0.5*width], [0, -0.5*width], [-length, -0.5*width], [-length, 0.5*width]])
+    edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
+    return _patches.Polygon(edges, color=colour, fill=True, alpha=alpha)
+
+
+def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
+               title='', outputfilename=None, resolution=0.1, defaultWidth=0.5, defaultCoilLength=0.15):
+    """
+    Plot the x and z coordinates from a tfs file.
+
+    :param tfsfiles: list of tfs files as strings or already loaded pymadx.Data.Tfs objects.
+    :type tfsfile: str, pymadx.Data.Tfs
+    :param title: optional title for plot
+    :type title: str
+    :param outputfilename: optional output file name including extension to plt.savefig
+    :type outputfilename: str
+
+    xwidth
+    ywidth
+    colour
+    """
+    survey = _Data.CheckItsTfs(survey_tfsfile)
+
+    if elementDict is None:
+        elementDict = {}
+    if typeDict is None:
+        typeDict = {}
+    if funcDict is None:
+        funcDict = {}
+    if maskNames is None:
+        maskNames = []
+
+    if not ax:
+        f = _plt.figure()
+        ax = f.add_subplot(111)
+    else:
+        f = ax.get_figure()
+
+    def _Rotate(points, angle, origin=None):
+        if origin is None:
+            #origin = _np.array([[0,0],[0,0]])
+            origin = _np.array([[0, 0]])
+        c, s = _np.cos(-angle), _np.sin(-angle)
+        R = _np.array(((c, -s), (s, c)))
+        return (points - origin) @ R + origin
+        #return _np.array([(R*points[i]).sum(axis=1) for i in range(len(points))])
+
+    def _RotateTranslate(points, angle, offset):
+        c, s = _np.cos(-angle), _np.sin(-angle)
+        R = _np.array(((c, -s), (s, c)))
+        return points @ R + offset
+
+    def _CurvedLine(x0, y0, xydir, angle, arcLength, stepSize=0.1):
+        return [[x0, y0]]
+    def _SBend():
+        return None # polygon
+    def _Rectangle(xend, yend, width, length, rotation, colour, alpha, dx=0, dy=0):
+        """
+        dx, dy are in curvilinear x,y so are applied to plot y,x respectiviely for an ZX plot.
+        """
+        edges = _np.array([[0, 0.5*width+dx], [0, -0.5*width+dx], [-length, -0.5*width+dx], [-length, 0.5*width+dx]])
+        edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
+        return _patches.Polygon(edges, color=colour, fill=True, alpha=alpha)
+
+    def _CoilPolygonsQuad(xend, yend, length, rotation, alpha, coil_dict, colour="#b87333"):
+        cl = coil_dict['coil_length']
+        if cl == 0:
+            return []
+        cw = coil_dict['coil_width']
+        arc1 = _np.array([[_np.sin(theta), _np.cos(theta)] for theta in _np.linspace(0, _np.pi/2, 5)])
+        r = 0.5*cl
+        arc_bot = arc1*r + _np.array([cl-r, -r])
+        arc_top = _np.array(arc_bot)
+        arc_top[:,1] *= -1
+        edges_out = _np.array([*arc_bot, [cl, -0.5*cw], [0, -0.5*cw], [0, 0.5*cw], [cl, 0.5*cw], *(arc_top[::-1])])
+        edges_in = _np.array(edges_out)
+        edges_in[:,0] *= -1 # flip x
+        edges_in[:,0] -= length
+        global_offset = _np.array([xend, yend])
+        edges_out = _Rotate(edges_out, rotation) + global_offset
+        edges_in = _Rotate(edges_in, rotation) + global_offset
+        return [_patches.Polygon(edges_out, color=colour, fill=True, alpha=alpha),
+                _patches.Polygon(edges_in, color=colour, fill=True, alpha=alpha)]
+
+    def _CoilPolygonsDipoleH(xend, yend, length, rotation, alpha, dx, coil_dict, colour="#b87333"):
+        cl = coil_dict['coil_length']
+        if cl == 0:
+            return []
+        cw = coil_dict['coil_width']
+        cdx = coil_dict['coil_dx']
+        arc1 = _np.array([[_np.sin(theta), _np.cos(theta)] for theta in _np.linspace(0, _np.pi/2, 5)])
+        r = 0.5*cl
+        arc_top = arc1*r + _np.array([cl-r, (0.5*cw) - r ])
+        arc_bot = _np.array(arc_top)[::-1]
+        arc_bot[:,1] *= -1 # flip y
+        coil_offset = _np.array([0, cdx])
+        edges_out = _np.array([[0, 0.5*cw], *arc_top, *arc_bot, [0, -0.5*cw]]) + coil_offset
+        edges_in = _np.array(edges_out)
+        edges_in[:,0] *= -1 # flip x
+        edges_in[:,0] -= length
+        global_offset = _np.array([xend, yend + dx])
+        edges_out = _Rotate(edges_out, rotation) + global_offset
+        edges_in = _Rotate(edges_in, rotation) + global_offset
+        return [_patches.Polygon(edges_out, color=colour, fill=True, alpha=alpha),
+                _patches.Polygon(edges_in, color=colour, fill=True, alpha=alpha)]
+
+    def _UpdateParams(element, params, insideFactor):
+        n = e['NAME']
+        allKeys = set(params.keys())
+        allowedTypeKeys = set(allKeys)
+        for k, prms in elementDict.items():
+            if k in n:
+                params.update(prms)
+                eleKeys = set(prms.keys())
+                allowedTypeKeys -= eleKeys
+                break
+        for k, prms in typeDict.items():
+            if k in n:
+                keysToTake = allowedTypeKeys.intersection(set(prms.keys()))
+                subDict = {l:prms[l] for l in keysToTake}
+                params.update(subDict)
+                break
+        insideFactor2 = 1 if params['inside'] else -1
+        params['dx'] *= insideFactor * insideFactor2
+        params['coil_dx'] *= insideFactor * insideFactor2
+        return params
+
+    X, Z, ang = 0, 0, 0
+    XZdir = _np.array([0,1])
+    axisLine = []
+
+    # loop over elements and prepare patches
+    # patches are turned into patch collection which is more efficient later
+    quads, bends, kickers, collimators, sextupoles = [], [], [], [], []
+    octupoles, multipoles, solenoids, other, coils = [], [], [], [], []
+
+    _defaults = _defaultdict(lambda: r"#cccccc", defaultElementColours)  # default is grey
+
+    for i, e in enumerate(survey):
+        if i == 0:
+            X = e['X']
+            Z = e['Z']
+            ang = e['THETA']
+            axisLine.append([Z,X])
+        l = e['L']
+        if l == 0:
+            continue
+        angle = e['ANGLE']
+        insideFactor = -1 * _np.sign(angle)
+        # draw line from previous point until now
+        pt = [[Z, X]] if angle == 0 else _CurvedLine(Z, X, XZdir, angle, l, resolution)
+        axisLine.extend(pt)
+
+        Xend, Zend = e['X'], e['Z']
+        name = e['NAME']
+
+        if name in funcDict:
+            # delegate function gives back list of patches
+            other.extend(funcDict[name](locals()))
+            continue
+
+        alpha = 0.1 if name in maskNames else 1.0
+        # tolerate very slight tilts, e.g. earth's curvature corrections
+        vertical = abs(e['TILT'] - 0.5*_np.pi) < 0.02 * _np.pi
+
+        # draw element
+        kw = e['KEYWORD']
+        if kw in ['DRIFT']:
+            continue
+        params = {'colour' : _defaults[kw],
+                  'width' : defaultWidth,
+                  'height' : defaultWidth,
+                  'dx' : 0, # curvilinear x
+                  'dy' : 0, # curvilinear y
+                  'coil_length' : defaultCoilLength,
+                  'coil_width' : 0.7*defaultWidth,
+                  'coil_height' : 0,
+                  'coil_dx' : 0, # curvilinear x
+                  'coil_dy' : 0, # curvilinear x
+                  'coil_edge' : 0,
+                  'inside' : True
+                  }
+        params = _UpdateParams(e, params, insideFactor)
+        params['coil_dx']# *= inside
+        c = params['colour']
+        w = params['width']
+        h = params['height']
+        th = e['THETA']
+        dx = params['dx']
+        dy = params['dy']
+        coils_this_mag = []
+        if vertical:
+            dx, dy = dy, dx
+        if kw == 'QUADRUPOLE':
+            quads.append(_Rectangle(Zend, Xend, w, l, th, c, alpha, dx, dy))
+            coils_this_mag.extend(_CoilPolygonsQuad(Zend, Xend, l, th, alpha, params))
+        elif kw == 'RBEND':
+            a = 0 if vertical else 0.5*angle
+            bends.append(_Rectangle(Zend, Xend, w, l, th+0.5*a, c, alpha, dx, dy))
+            coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
+        # elif kw == 'SBEND':
+        #     bends.append(DrawBend(element, c, alpha, dx, dy)) #blue
+        #     coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
+        elif kw in ['HKICKER', 'VKICKER']:
+             kickers.append(_Rectangle(Zend, Xend, w, l, th, c, alpha, dx, dy))
+             coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
+        elif kw == 'SOLENOID':
+             solenoids.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy))
+        elif kw in ['RCOLLIMATOR', 'ECOLLIMATOR', 'COLLIMATOR']:
+             collimators.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy))
+        elif kw == 'SEXTUPOLE':
+             sextupoles.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy)) #yellow
+        elif kw == 'OCTUPOLE':
+             octupoles.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy)) #green
+        else:
+             #unknown so make light in alpha
+             if l > 0.1:
+                 other.append(_Rectangle(Zend, Xend, w, l, e['THETA'], '#cccccc',alpha=0.2)) #light grey
+
+        if len(coils_this_mag) > 0:
+            coils.extend(coils_this_mag)
+
+
+    ax.add_collection(_PatchCollection(bends, match_original=True, zorder=20))
+    ax.add_collection(_PatchCollection(quads, match_original=True, zorder=19))
+    ax.add_collection(_PatchCollection(kickers, match_original=True, zorder=18))
+    ax.add_collection(_PatchCollection(collimators, match_original=True, zorder=16))
+    ax.add_collection(_PatchCollection(sextupoles, match_original=True, zorder=15))
+    ax.add_collection(_PatchCollection(octupoles, match_original=True, zorder=14, edgecolor=None))
+    ax.add_collection(_PatchCollection(multipoles, match_original=True, zorder=13, edgecolor=None))
+    ax.add_collection(_PatchCollection(other, match_original=True, zorder=12, edgecolor=None))
+    ax.add_collection(_PatchCollection(solenoids, match_original=True, zorder=11))
+    ax.add_collection(_PatchCollection(coils, match_original=True, zorder=10))
+
+    axisLine = _np.array(axisLine)
+    ax.plot(axisLine[:, 0], axisLine[:, 1], c='k', zorder=21)
+    ax.plot(survey.GetColumn('Z'), survey.GetColumn('X'), c='k', zorder=22, alpha=0.5, lw=1)
+    _plt.suptitle(title, size='x-large')
+    _plt.xlabel('Z (m)')
+    _plt.ylabel('X (m)')
+
+    _plt.tight_layout()
+    if outputfilename is not None:
+        _plt.savefig(outputfilename)
+
+    return f,ax
 
 def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, squareroot=False, dispersionY=False,
          legendLoc="best"):
