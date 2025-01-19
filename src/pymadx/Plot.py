@@ -512,12 +512,12 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         arc_top = arc1*r + _np.array([cl-r, (0.5*cw) - r ])
         arc_bot = _np.array(arc_top)[::-1]
         arc_bot[:,1] *= -1 # flip y
-        coil_offset = _np.array([0, cdx])
+        coil_offset = _np.array([0, cdx + dx])
         edges_out = _np.array([[0, 0.5*cw], *arc_top, *arc_bot, [0, -0.5*cw]]) + coil_offset
         edges_in = _np.array(edges_out)
         edges_in[:,0] *= -1 # flip x
         edges_in[:,0] -= length
-        global_offset = _np.array([xend, yend + dx])
+        global_offset = _np.array([xend, yend])
         edges_out = _Rotate(edges_out, rotation) + global_offset
         edges_in = _Rotate(edges_in, rotation) + global_offset
         return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
