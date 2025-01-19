@@ -642,20 +642,20 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
              kickers.append(_Rectangle(Zend, Xend, w, l, th, c, alpha, dx, dy))
              coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
         elif kw == 'SOLENOID':
-             solenoids.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy))
+            solenoids.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy))
         elif kw in ['RCOLLIMATOR', 'ECOLLIMATOR', 'COLLIMATOR']:
             if params['style'] == 'fancy':
                 collimators.append(_Collimator(Zend, Xend, w, l, e['THETA'], u'#606060', alpha))
             else:
                 collimators.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha))
         elif kw == 'SEXTUPOLE':
-             sextupoles.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy)) #yellow
+            sextupoles.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy)) #yellow
         elif kw == 'OCTUPOLE':
-             octupoles.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy)) #green
+            octupoles.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy)) #green
         else:
-             #unknown so make light in alpha
-             if l > 0.1:
-                 other.append(_Rectangle(Zend, Xend, w, l, e['THETA'], '#cccccc',alpha=0.2)) #light grey
+            #unknown so make light in alpha
+            if l > 0.1:
+                other.append(_Rectangle(Zend, Xend, w, l, e['THETA'], '#cccccc',alpha=0.2)) #light grey
 
         if len(coils_this_mag) > 0:
             coils.extend(coils_this_mag)
