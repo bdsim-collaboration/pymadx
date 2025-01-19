@@ -17,7 +17,8 @@ from matplotlib.collections import PatchCollection as _PatchCollection
 
 import pymadx.Data as _Data
 
-defaultElementColours = {'QUADRUPOLE': u'#d10000',
+defaultElementColours = {'DRIFT': u'#c0c0c0',
+                         'QUADRUPOLE': u'#d10000',
                          'RBEND': u'#0066cc',
                          'SBEND': u'#0066cc',
                          'HKICKER': u'#4c33b2',
@@ -393,8 +394,8 @@ def MSNPatches(xend, yend, rotation, horizontal, inside, alpha):
 
 
 def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
-               title='', outputfilename=None, resolution=0.1, defaultWidth=0.5, defaultCoilLength=0.15,
-               globalRotation=None, globalOffset=None):
+               ignoreNames=None, title='', outputfilename=None, resolution=0.1, defaultWidth=0.5, defaultCoilLength=0.15,
+               globalRotation=None, globalOffset=None, pipeRadius=None, pipeMaskRanges=None):
     """
     Plot the x and z coordinates from a tfs file.
 
@@ -422,6 +423,10 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
     maskNames = _InitialiseList(maskNames)
     ignoreNames = _InitialiseList(ignoreNames)
 
+    if pipeMaskRanges is None:
+        pipeMaskRanges = [[survey[0]['S']-100, survey[0]['S']-99]]
+    buildPipes = pipeRadius is not None
+    _pipeOn = True
 
     gr = globalRotation is not None
     if gr:
@@ -548,6 +553,7 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
     # patches are turned into patch collection which is more efficient later
     quads, bends, kickers, collimators, sextupoles = [], [], [], [], []
     octupoles, multipoles, solenoids, other, coils = [], [], [], [], []
+    pipes = []
 
     _defaults = _defaultdict(lambda: r"#cccccc", defaultElementColours)  # default is grey
 
@@ -558,20 +564,23 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
             ang = e['THETA']
             axisLine.append([Z,X])
         l = e['L']
+        name = e['NAME']
+        if "BEGIN.VAC" in name or "BEG.VAC" in name:
+            _pipeOn = True
+        elif "END.VAC" in name:
+            _pipeOn = False
+
         if l == 0:
             continue
+
         angle = e['ANGLE']
         insideFactor = -1 * _np.sign(angle)
         # draw line from previous point until now
-        pt = [[Z, X]] if angle == 0 else _CurvedLine(Z, X, XZdir, angle, l, resolution)
+        Xend, Zend = e['X'], e['Z']
+        pt = [[Zend, Xend]] if angle == 0 else _CurvedLine(Z, X, XZdir, angle, l, resolution)
         axisLine.extend(pt)
 
-        Xend, Zend = e['X'], e['Z']
-        name = e['NAME']
-
-        if name in funcDict:
-            # delegate function gives back list of patches
-            other.extend(funcDict[name](locals()))
+        if name in ignoreNames:
             continue
 
         alpha = 0.1 if name in maskNames else 1.0
@@ -583,8 +592,6 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
 
         # draw element
         kw = e['KEYWORD']
-        if kw in ['DRIFT']:
-            continue
         params = {'colour' : _defaults[kw],
                   'width' : defaultWidth,
                   'height' : defaultWidth,
@@ -609,7 +616,19 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         coils_this_mag = []
         if vertical:
             dx, dy = dy, dx
-        if kw == 'QUADRUPOLE':
+
+        if name in funcDict:
+            # delegate function gives back list of polygons as x,y coords in plot
+            polygonList = funcDict[name](locals())
+            edges = _RotateTranslate(edges, th, _np.array([Zend, Xend]))
+            return _patches.Polygon(_Global(edges), color=c, fill=True, alpha=alpha)
+        elif kw == 'DRIFT':
+            # don't deal with pole faces - just put behind everything
+            if _pipeOn and buildPipes:
+                ignore = any([a <= e['S'] <= b for (a,b) in pipeMaskRanges])
+                if not ignore:
+                    pipes.append(_Rectangle(Zend, Xend, pipeRadius, l, th, c, alpha))
+        elif kw == 'QUADRUPOLE':
             quads.append(_Rectangle(Zend, Xend, w, l, th, c, alpha, dx, dy))
             coils_this_mag.extend(_CoilPolygonsQuad(Zend, Xend, l, th, alpha, params))
         elif kw == 'RBEND':
@@ -638,6 +657,10 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         if len(coils_this_mag) > 0:
             coils.extend(coils_this_mag)
 
+        # update the coords at the incoming end for the next loop iteration
+        X = Xend
+        Z = Zend
+
 
     ax.add_collection(_PatchCollection(bends, match_original=True, zorder=20))
     ax.add_collection(_PatchCollection(quads, match_original=True, zorder=19))
@@ -649,6 +672,7 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
     ax.add_collection(_PatchCollection(other, match_original=True, zorder=12, edgecolor=None))
     ax.add_collection(_PatchCollection(solenoids, match_original=True, zorder=11))
     ax.add_collection(_PatchCollection(coils, match_original=True, zorder=10))
+    ax.add_collection(_PatchCollection(pipes, match_original=True, zorder=9))
 
     axisLine = _np.array(axisLine)
     ax.plot(axisLine[:, 0], axisLine[:, 1], c='k', zorder=21)
