@@ -638,9 +638,9 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         # elif kw == 'SBEND':
         #     bends.append(DrawBend(element, c, alpha, dx, dy)) #blue
         #     coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
-        elif kw in ['HKICKER', 'VKICKER']:
-             kickers.append(_Rectangle(Zend, Xend, w, l, th, c, alpha, dx, dy))
-             coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
+        elif kw in ['HKICKER', 'VKICKER', 'KICKER']:
+            kickers.append(_Rectangle(Zend, Xend, w, l, th, c, alpha, dx, dy))
+            coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
         elif kw == 'SOLENOID':
             solenoids.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy))
         elif kw in ['RCOLLIMATOR', 'ECOLLIMATOR', 'COLLIMATOR']:
