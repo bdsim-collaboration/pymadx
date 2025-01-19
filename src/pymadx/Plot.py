@@ -411,14 +411,17 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
     """
     survey = _Data.CheckItsTfs(survey_tfsfile)
 
-    if elementDict is None:
-        elementDict = {}
-    if typeDict is None:
-        typeDict = {}
-    if funcDict is None:
-        funcDict = {}
-    if maskNames is None:
-        maskNames = []
+    # need these list / dicts but can't have a mutable type as a default argument
+    def _InitialiseList(var):
+        return [] if var is None else var
+    def _InitialiseDict(var):
+        return {} if var is None else var
+    elementDict = _InitialiseDict(elementDict)
+    typeDict = _InitialiseDict(typeDict)
+    funcDict = _InitialiseDict(funcDict)
+    maskNames = _InitialiseList(maskNames)
+    ignoreNames = _InitialiseList(ignoreNames)
+
 
     gr = globalRotation is not None
     if gr:
