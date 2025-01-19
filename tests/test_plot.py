@@ -37,19 +37,23 @@ def test_survey2d_ZX_fancy():
                 'QSL' : {'width': 0.32, 'height': 0.52},
                 'QTS' : {'width': 0.6, 'height': 0.8, 'colour': r'#82bdb9'},
                 'QWL' : {'width': 0.66, 'height': 0.84, 'colour': r'#d4340c', 'coil_length': 0.14, 'coil_width': 0.6},
-                'LSX' : {'width':0.4, 'height':0.4, 'colour':r'#ddc8e9'}}
+                'LSX' : {'width':0.4, 'height':0.4, 'colour':r'#ddc8e9'},
+                'XCHV' : {'style': 'fancy'}}
     typeDict['MCB'] = dict(typeDict['MCA']) # copy it
     typeDict['MBXGD'] = dict(typeDict['MCWV'])
     oldmbn = r'#e39351'
     s = pymadx.Data.Tfs(_fn("h6-survey.tfs"))
-    f, ax = pymadx.Plot.Survey2DZX(s, typeDict=typeDict, elementDict=elemDict)
+
+    maskRanges = [[9.2, 20.1]]
+
+    f, ax = pymadx.Plot.Survey2DZX(s, typeDict=typeDict, elementDict=elemDict, pipeRadius=0.07, pipeMaskRanges=maskRanges)
 
     h8 = pymadx.Data.Tfs(_fn("h8-survey.tfs"))
     pymadx.Plot.Survey2DZX(h8, ax=ax, typeDict=typeDict)
 
-    p42 = pymadx.Data.Tfs(_fn("p42-survey.tfs"))
-    globalRotation = [4332.609, -638.9902819, 0.116276]
-    pymadx.Plot.Survey2DZX(p42, ax=ax, typeDict=typeDict, globalRotation=globalRotation)
+    #p42 = pymadx.Data.Tfs(_fn("p42-survey.tfs"))
+    #globalRotation = [4332.609, -638.9902819, 0.116276]
+    #pymadx.Plot.Survey2DZX(p42, ax=ax, typeDict=typeDict, globalRotation=globalRotation)
 
 #test_survey2d_ZX()
 test_survey2d_ZX_fancy()
