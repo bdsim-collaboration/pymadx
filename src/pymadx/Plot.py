@@ -393,7 +393,8 @@ def MSNPatches(xend, yend, rotation, horizontal, inside, alpha):
 
 
 def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
-               title='', outputfilename=None, resolution=0.1, defaultWidth=0.5, defaultCoilLength=0.15):
+               title='', outputfilename=None, resolution=0.1, defaultWidth=0.5, defaultCoilLength=0.15,
+               globalRotation=None, globalOffset=None):
     """
     Plot the x and z coordinates from a tfs file.
 
@@ -419,6 +420,14 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
     if maskNames is None:
         maskNames = []
 
+    gr = globalRotation is not None
+    if gr:
+        grax = globalRotation[:2]
+        gran = globalRotation[-1]
+    gt = globalOffset is not None
+    if gt:
+        gtt = _np.array(globalOffset)
+
     if not ax:
         f = _plt.figure()
         ax = f.add_subplot(111)
@@ -427,12 +436,10 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
 
     def _Rotate(points, angle, origin=None):
         if origin is None:
-            #origin = _np.array([[0,0],[0,0]])
             origin = _np.array([[0, 0]])
         c, s = _np.cos(-angle), _np.sin(-angle)
         R = _np.array(((c, -s), (s, c)))
         return (points - origin) @ R + origin
-        #return _np.array([(R*points[i]).sum(axis=1) for i in range(len(points))])
 
     def _RotateTranslate(points, angle, offset):
         c, s = _np.cos(-angle), _np.sin(-angle)
@@ -449,6 +456,10 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         """
         edges = _np.array([[0, 0.5*width+dx], [0, -0.5*width+dx], [-length, -0.5*width+dx], [-length, 0.5*width+dx]])
         edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
+        if gr:
+            edges = _Rotate(edges, gran, grax)
+        if gt:
+            edges += gtt
         return _patches.Polygon(edges, color=colour, fill=True, alpha=alpha)
 
     def _CoilPolygonsQuad(xend, yend, length, rotation, alpha, coil_dict, colour="#b87333"):
@@ -468,6 +479,12 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         global_offset = _np.array([xend, yend])
         edges_out = _Rotate(edges_out, rotation) + global_offset
         edges_in = _Rotate(edges_in, rotation) + global_offset
+        if gr:
+            edges_out = _Rotate(edges_out, gran, grax)
+            edges_in = _Rotate(edges_in, gran, grax)
+        if gt:
+            edges_out += gtt
+            edges_in += gtt
         return [_patches.Polygon(edges_out, color=colour, fill=True, alpha=alpha),
                 _patches.Polygon(edges_in, color=colour, fill=True, alpha=alpha)]
 
@@ -490,6 +507,12 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         global_offset = _np.array([xend, yend + dx])
         edges_out = _Rotate(edges_out, rotation) + global_offset
         edges_in = _Rotate(edges_in, rotation) + global_offset
+        if gr:
+            edges_out = _Rotate(edges_out, gran, grax)
+            edges_in = _Rotate(edges_in, gran, grax)
+        if gt:
+            edges_out += gtt
+            edges_in += gtt
         return [_patches.Polygon(edges_out, color=colour, fill=True, alpha=alpha),
                 _patches.Polygon(edges_in, color=colour, fill=True, alpha=alpha)]
 
@@ -550,7 +573,10 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
 
         alpha = 0.1 if name in maskNames else 1.0
         # tolerate very slight tilts, e.g. earth's curvature corrections
-        vertical = abs(e['TILT'] - 0.5*_np.pi) < 0.02 * _np.pi
+        if 'TILT' in e:
+            vertical = abs(e['TILT'] - 0.5*_np.pi) < 0.02 * _np.pi
+        else:
+            vertical = False
 
         # draw element
         kw = e['KEYWORD']
@@ -623,7 +649,12 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
 
     axisLine = _np.array(axisLine)
     ax.plot(axisLine[:, 0], axisLine[:, 1], c='k', zorder=21)
-    ax.plot(survey.GetColumn('Z'), survey.GetColumn('X'), c='k', zorder=22, alpha=0.5, lw=1)
+    zx_survey = _np.column_stack([survey.GetColumn('Z'), survey.GetColumn('X')])
+    if gr:
+        zx_survey = _Rotate(zx_survey, gran, grax)
+    if gt:
+        zx_survey += gtt
+    ax.plot(zx_survey[:,0], zx_survey[:,1], c='k', zorder=22, alpha=0.5, lw=1)
     _plt.suptitle(title, size='x-large')
     _plt.xlabel('Z (m)')
     _plt.ylabel('X (m)')

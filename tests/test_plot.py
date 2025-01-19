@@ -48,7 +48,8 @@ def test_survey2d_ZX_fancy():
     pymadx.Plot.Survey2DZX(h8, ax=ax, typeDict=typeDict)
 
     p42 = pymadx.Data.Tfs(_fn("p42-survey.tfs"))
-    pymadx.Plot.Survey2DZX(p42, ax=ax, typeDict=typeDict)
+    globalRotation = [4332.609, -638.9902819, 0.116276]
+    pymadx.Plot.Survey2DZX(p42, ax=ax, typeDict=typeDict, globalRotation=globalRotation)
 
 #test_survey2d_ZX()
 test_survey2d_ZX_fancy()
