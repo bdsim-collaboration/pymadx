@@ -464,6 +464,15 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         """
         edges = _np.array([[0, 0.5*width+dx], [0, -0.5*width+dx], [-length, -0.5*width+dx], [-length, 0.5*width+dx]])
         edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
+        return _patches.Polygon(_Global(edges), color=colour, fill=True, alpha=alpha)
+    def _Collimator(xend, yend, width, length, rotation, colour, alpha):
+        edges = _np.array([[0,            0.3*width], [0,           -0.3*width], [-0.3*length, -0.3*width],
+                           [-0.3*length, -0.5*width], [-0.7*length, -0.5*width], [-0.7*length, -0.3*width],
+                           [-length,     -0.3*width], [-length,      0.3*width], [-0.7*length,  0.3*width],
+                           [-0.7*length,  0.3*width], [-0.7*length,  0.5*width], [-0.3*length,  0.5*width],
+                           [-0.3*length,  0.3*width]])
+        edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
+        return _patches.Polygon(_Global(edges), color=colour, fill=True, alpha=alpha)
 
     def _Global(points):
         if gr:
@@ -593,7 +602,8 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
                   'coil_dx' : 0, # curvilinear x
                   'coil_dy' : 0, # curvilinear x
                   'coil_edge' : 0,
-                  'inside' : True
+                  'inside' : True,
+                  'style' : 'normal',
                   }
         params = _UpdateParams(e, params, insideFactor)
         params['coil_dx']# *= inside
@@ -634,7 +644,10 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         elif kw == 'SOLENOID':
              solenoids.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy))
         elif kw in ['RCOLLIMATOR', 'ECOLLIMATOR', 'COLLIMATOR']:
-             collimators.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy))
+            if params['style'] == 'fancy':
+                collimators.append(_Collimator(Zend, Xend, w, l, e['THETA'], u'#606060', alpha))
+            else:
+                collimators.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha))
         elif kw == 'SEXTUPOLE':
              sextupoles.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy)) #yellow
         elif kw == 'OCTUPOLE':
