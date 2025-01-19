@@ -464,11 +464,13 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         """
         edges = _np.array([[0, 0.5*width+dx], [0, -0.5*width+dx], [-length, -0.5*width+dx], [-length, 0.5*width+dx]])
         edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
+
+    def _Global(points):
         if gr:
-            edges = _Rotate(edges, gran, grax)
+            points = _Rotate(points, gran, grax)
         if gt:
-            edges += gtt
-        return _patches.Polygon(edges, color=colour, fill=True, alpha=alpha)
+            points += gtt
+        return points
 
     def _CoilPolygonsQuad(xend, yend, length, rotation, alpha, coil_dict, colour="#b87333"):
         cl = coil_dict['coil_length']
@@ -487,14 +489,8 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         global_offset = _np.array([xend, yend])
         edges_out = _Rotate(edges_out, rotation) + global_offset
         edges_in = _Rotate(edges_in, rotation) + global_offset
-        if gr:
-            edges_out = _Rotate(edges_out, gran, grax)
-            edges_in = _Rotate(edges_in, gran, grax)
-        if gt:
-            edges_out += gtt
-            edges_in += gtt
-        return [_patches.Polygon(edges_out, color=colour, fill=True, alpha=alpha),
-                _patches.Polygon(edges_in, color=colour, fill=True, alpha=alpha)]
+        return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
+                _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
 
     def _CoilPolygonsDipoleH(xend, yend, length, rotation, alpha, dx, coil_dict, colour="#b87333"):
         cl = coil_dict['coil_length']
@@ -515,14 +511,8 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         global_offset = _np.array([xend, yend + dx])
         edges_out = _Rotate(edges_out, rotation) + global_offset
         edges_in = _Rotate(edges_in, rotation) + global_offset
-        if gr:
-            edges_out = _Rotate(edges_out, gran, grax)
-            edges_in = _Rotate(edges_in, gran, grax)
-        if gt:
-            edges_out += gtt
-            edges_in += gtt
-        return [_patches.Polygon(edges_out, color=colour, fill=True, alpha=alpha),
-                _patches.Polygon(edges_in, color=colour, fill=True, alpha=alpha)]
+        return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
+                _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
 
     def _UpdateParams(element, params, insideFactor):
         n = e['NAME']
@@ -674,14 +664,11 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
     ax.add_collection(_PatchCollection(coils, match_original=True, zorder=10))
     ax.add_collection(_PatchCollection(pipes, match_original=True, zorder=9))
 
-    axisLine = _np.array(axisLine)
-    ax.plot(axisLine[:, 0], axisLine[:, 1], c='k', zorder=21)
-    zx_survey = _np.column_stack([survey.GetColumn('Z'), survey.GetColumn('X')])
-    if gr:
-        zx_survey = _Rotate(zx_survey, gran, grax)
-    if gt:
-        zx_survey += gtt
-    ax.plot(zx_survey[:,0], zx_survey[:,1], c='k', zorder=22, alpha=0.5, lw=1)
+    axisLine = _Global(_np.array(axisLine))
+    ax.plot(axisLine[:, 0], axisLine[:, 1], c='k', zorder=21, alpha=0.5, lw=1)
+    #zx_survey = _np.column_stack([survey.GetColumn('Z'), survey.GetColumn('X')])
+    #zx_survey = _Global(zx_survey)
+    #ax.plot(zx_survey[:,0], zx_survey[:,1], c='k', zorder=22, alpha=0.5, lw=1)
     _plt.suptitle(title, size='x-large')
     _plt.xlabel('Z (m)')
     _plt.ylabel('X (m)')
