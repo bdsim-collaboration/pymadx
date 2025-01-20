@@ -393,7 +393,7 @@ def MSNPatches(xend, yend, rotation, horizontal, inside, alpha):
     return _patches.Polygon(edges, color=colour, fill=True, alpha=alpha)
 
 
-def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
+def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
                ignoreNames=None, title='', outputfilename=None, resolution=0.1, defaultWidth=0.5, defaultCoilLength=0.15,
                globalRotation=None, globalOffset=None, pipeRadius=None, pipeMaskRanges=None):
     """
@@ -422,6 +422,7 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
     funcDict = _InitialiseDict(funcDict)
     maskNames = _InitialiseList(maskNames)
     ignoreNames = _InitialiseList(ignoreNames)
+    greyColour = u'#c0c0c0'
 
     if pipeMaskRanges is None:
         pipeMaskRanges = [[survey[0]['S']-100, survey[0]['S']-99]]
@@ -482,6 +483,8 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         return points
 
     def _CoilPolygonsQuad(xend, yend, length, rotation, alpha, coil_dict, colour="#b87333"):
+        if greyOut:
+            colour = greyColour
         cl = coil_dict['coil_length']
         if cl == 0:
             return []
@@ -502,6 +505,8 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
                 _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
 
     def _CoilPolygonsDipoleH(xend, yend, length, rotation, alpha, dx, coil_dict, colour="#b87333"):
+        if greyOut:
+            colour = greyColour
         cl = coil_dict['coil_length']
         if cl == 0:
             return []
@@ -617,6 +622,11 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
         if vertical:
             dx, dy = dy, dx
 
+        # for everything
+        if greyOut:
+            c = greyColour
+            alpha = 1.0
+
         if name in funcDict:
             # delegate function gives back list of polygons as x,y coords in plot
             polygonList = funcDict[name](locals())
@@ -645,7 +655,8 @@ def Survey2DZX(survey_tfsfile, ax=None, elementDict=None, typeDict=None, funcDic
             solenoids.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy))
         elif kw in ['RCOLLIMATOR', 'ECOLLIMATOR', 'COLLIMATOR']:
             if params['style'] == 'fancy':
-                collimators.append(_Collimator(Zend, Xend, w, l, e['THETA'], u'#606060', alpha))
+                cc = c if greyOut else u'#606060'
+                collimators.append(_Collimator(Zend, Xend, w, l, e['THETA'], cc, alpha))
             else:
                 collimators.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha))
         elif kw == 'SEXTUPOLE':
