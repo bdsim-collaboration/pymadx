@@ -395,7 +395,8 @@ def MSNPatches(xend, yend, rotation, horizontal, inside, alpha):
 
 def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
                ignoreNames=None, title='', outputfilename=None, resolution=0.1, defaultWidth=0.5, defaultCoilLength=0.15,
-               globalRotation=None, globalOffset=None, pipeRadius=None, pipeMaskRanges=None):
+               globalRotation=None, globalOffset=None, pipeRadius=None, pipeMaskRanges=None, zOffset=0, invisibleAxes=False,
+               arrowsDy=0, arrowsDx=0):
     """
     Plot the x and z coordinates from a tfs file.
 
@@ -675,31 +676,51 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDic
         X = Xend
         Z = Zend
 
+    zo = zOffset * 30
+    ax.add_collection(_PatchCollection(bends, match_original=True, zorder=20+zo))
+    ax.add_collection(_PatchCollection(quads, match_original=True, zorder=19+zo))
+    ax.add_collection(_PatchCollection(kickers, match_original=True, zorder=18+zo))
+    ax.add_collection(_PatchCollection(collimators, match_original=True, zorder=16+zo))
+    ax.add_collection(_PatchCollection(sextupoles, match_original=True, zorder=15+zo))
+    ax.add_collection(_PatchCollection(octupoles, match_original=True, zorder=14+zo, edgecolor=None))
+    ax.add_collection(_PatchCollection(multipoles, match_original=True, zorder=13+zo, edgecolor=None))
+    ax.add_collection(_PatchCollection(other, match_original=True, zorder=12+zo, edgecolor=None))
+    ax.add_collection(_PatchCollection(solenoids, match_original=True, zorder=11+zo))
+    ax.add_collection(_PatchCollection(coils, match_original=True, zorder=10+zo))
+    ax.add_collection(_PatchCollection(pipes, match_original=True, zorder=9+zo))
 
-    ax.add_collection(_PatchCollection(bends, match_original=True, zorder=20))
-    ax.add_collection(_PatchCollection(quads, match_original=True, zorder=19))
-    ax.add_collection(_PatchCollection(kickers, match_original=True, zorder=18))
-    ax.add_collection(_PatchCollection(collimators, match_original=True, zorder=16))
-    ax.add_collection(_PatchCollection(sextupoles, match_original=True, zorder=15))
-    ax.add_collection(_PatchCollection(octupoles, match_original=True, zorder=14, edgecolor=None))
-    ax.add_collection(_PatchCollection(multipoles, match_original=True, zorder=13, edgecolor=None))
-    ax.add_collection(_PatchCollection(other, match_original=True, zorder=12, edgecolor=None))
-    ax.add_collection(_PatchCollection(solenoids, match_original=True, zorder=11))
-    ax.add_collection(_PatchCollection(coils, match_original=True, zorder=10))
-    ax.add_collection(_PatchCollection(pipes, match_original=True, zorder=9))
-
+    # axis of machine over the top always
     axisLine = _Global(_np.array(axisLine))
-    ax.plot(axisLine[:, 0], axisLine[:, 1], c='k', zorder=21, alpha=0.5, lw=1)
-    #zx_survey = _np.column_stack([survey.GetColumn('Z'), survey.GetColumn('X')])
-    #zx_survey = _Global(zx_survey)
-    #ax.plot(zx_survey[:,0], zx_survey[:,1], c='k', zorder=22, alpha=0.5, lw=1)
+    ax.plot(axisLine[:, 0], axisLine[:, 1], c='k', zorder=21+zo, alpha=0.5, lw=1)
+
     _plt.suptitle(title, size='x-large')
     _plt.xlabel('Z (m)')
     _plt.ylabel('X (m)')
-
     _plt.tight_layout()
+
+    if invisibleAxes:
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        # orientation arrows
+        fratio = f.get_size_inches()
+        xOverY = fratio[0]/fratio[1]
+        w = 0.003
+        ys = arrowsDy
+        xs = arrowsDx
+        _plt.arrow(0.02-0.5*w+xs, 0.02+ys, 0.07/xOverY, 0, width=w*xOverY, head_width=3*w*xOverY, head_length=1*w*xOverY, transform=ax.transAxes, color='k', capstyle='butt')
+        _plt.text(0.02+(0.13/xOverY)+xs, 0.02+ys, 'Z (m)', transform=ax.transAxes)
+        _plt.arrow(0.02+xs, 0.02-(0.5*w*xOverY)+ys, 0, 0.07, width=w, head_width=3*w, head_length=3*w*xOverY, transform=ax.transAxes, color='k', capstyle='butt')
+        _plt.text(0.02+xs, 0.13+ys, 'X (m)', transform=ax.transAxes)
+
     if outputfilename is not None:
-        _plt.savefig(outputfilename)
+        if 'png' in outputfilename:
+            _plt.savefig(outputfilename, dpi=500)
+        else:
+            _plt.savefig(outputfilename)
 
     return f,ax
 
