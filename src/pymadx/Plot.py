@@ -396,7 +396,7 @@ def MSNPatches(xend, yend, rotation, horizontal, inside, alpha):
 def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
                ignoreNames=None, title='', outputfilename=None, resolution=0.1, defaultWidth=0.5, defaultCoilLength=0.15,
                globalRotation=None, globalOffset=None, pipeRadius=None, pipeMaskRanges=None, zOffset=0, invisibleAxes=False,
-               arrowsDy=0, arrowsDx=0):
+               arrowsDy=0, arrowsDx=0, defaultAlpha=None):
     """
     Plot the x and z coordinates from a tfs file.
 
@@ -589,6 +589,8 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDic
             continue
 
         alpha = 0.1 if name in maskNames else 1.0
+        if defaultAlpha != None:
+            alpha = defaultAlpha
         # tolerate very slight tilts, e.g. earth's curvature corrections
         if 'TILT' in e:
             vertical = abs(e['TILT'] - 0.5*_np.pi) < 0.02 * _np.pi
