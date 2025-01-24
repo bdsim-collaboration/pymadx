@@ -614,7 +614,7 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDic
                   'style' : 'normal',
                   }
         params = _UpdateParams(e, params, insideFactor)
-        params['coil_dx']# *= inside
+        #params['coil_dx']# *= inside
         c = params['colour']
         w = params['width']
         h = params['height']
@@ -677,6 +677,8 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDic
         # update the coords at the incoming end for the next loop iteration
         X = Xend
         Z = Zend
+
+    axisLine.extend([[Z, X]])
 
     zo = zOffset * 30
     ax.add_collection(_PatchCollection(bends, match_original=True, zorder=20+zo))
