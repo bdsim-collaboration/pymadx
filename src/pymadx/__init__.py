@@ -26,6 +26,7 @@ from . import Cli
 from . import Compare
 from . import Convert
 from . import Data
+from . import Diagrams
 from . import Plot
 from . import Ptc
 from . import PtcAnalysis
@@ -36,6 +37,7 @@ __all__ = ['Beam',
            'Compare',
            'Convert',
            'Data',
+           'Diagrams',
            'Plot',
            'Ptc',
            'PtcAnalysis']
