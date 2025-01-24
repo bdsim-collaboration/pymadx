@@ -669,7 +669,7 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDic
         else:
             #unknown so make light in alpha
             if l > 0.1:
-                other.append(_Rectangle(Zend, Xend, w, l, e['THETA'], '#cccccc',alpha=0.2)) #light grey
+                other.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha)) #light grey
 
         if len(coils_this_mag) > 0:
             coils.extend(coils_this_mag)
