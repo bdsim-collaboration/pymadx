@@ -2,9 +2,12 @@
 Version History
 ===============
 
+
 v2.3.0 - 2025 / 01 / XX
 =======================
 
+* Tfs class no longer recalculates S coordinate by default. Can be turned back on by
+  setting the member variable `recalculateSifSliced=True`.
 * New :code:`pymadx_rmatrix_plot` command line tool.
 * Ability to apply an S offset in coordinates to an R-matrix plot.
 * Fix :code:`pymadx.Plot.AddMachineLatticeToFigure` to correctly adjust axes in

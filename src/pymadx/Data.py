@@ -74,6 +74,7 @@ class Tfs:
         self.smin = 0
         self.ptctwiss = False # whether data was generated via ptctwiss
         self._verbose = False
+        self.recalculateSifSliced = False
 
         if isinstance(filename, str):
             self.Load(filename, verbose=verbose)
@@ -487,20 +488,19 @@ class Tfs:
             prepareNewS = False
             sOffset     = 0
             if start > 0 and 'S' in self.columns:
-                prepareNewS = True
                 # if 'S' is in the columns, 'SORIGINAL' will be too
                 sStart = self.GetRowDict(self.sequence[start-1])['S']
-                if stop==len(self):
+                if stop == len(self):
                     #Zero counted, make sure stop index not outside of range
-                    sEnd   = self.GetRowDict(self.sequence[stop-1])['S']
+                    sEnd = self.GetRowDict(self.sequence[stop-1])['S']
                 else:
-                    sEnd   = self.GetRowDict(self.sequence[stop])['S']
+                    sEnd = self.GetRowDict(self.sequence[stop])['S']
 
             # prepare S coordinate and append to each list per element
             for i in range(index.start,index.stop,index.step):
                 # copy instead of modify existing
                 elementlist = list(self.data[self.sequence[i]])
-                if prepareNewS:
+                if self.recalculateSifSliced:
                     # maintain the original s from the original data
                     if start > stop:
                         elementlist[self.ColumnIndex('S')] = (

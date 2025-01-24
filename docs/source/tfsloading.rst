@@ -131,6 +131,12 @@ You can also search by nearest curvilinear S coordinate along the beam line.::
   >>> 225
   a[225]['NAME']
 
+
+.. note:: When 'slicing' an instance, a new column is added called "SORIGINAL". If the
+          member :code:`recalculateSifSliced` is set to :code:`True` (default :code:`False`)
+          the `S` coordinate will be recalculated from 0 at the beginning of the new sequence.
+  
+
 Row or Element
 **************
 
