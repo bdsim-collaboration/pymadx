@@ -5,6 +5,7 @@ from collections import defaultdict as _defaultdict
 import numpy as _np
 import matplotlib.patches as _patches
 import matplotlib.pyplot as _plt
+from matplotlib.collections import PatchCollection as _PatchCollection
 
 import pymadx.Data as _Data
 
@@ -23,10 +24,147 @@ defaultElementColours = {'DRIFT': u'#c0c0c0',
                          }
 
 
-def MSNPatches(xend, yend, rotation, horizontal, inside, alpha):
-    edges = _np.array([[0, 0.5*width], [0, -0.5*width], [-length, -0.5*width], [-length, 0.5*width]])
-    edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
-    return _patches.Polygon(edges, color=colour, fill=True, alpha=alpha)
+def Rotate(points, angle, origin=None):
+    """
+    Apply a rotation to an array of [x,y] pairs about (0,0) or an optional origin point.
+
+    :param points: numpy array of [x,y] points (any length)
+    :type points: numpy.array([x1,y1], [x2,y2],...])
+    :param angle: angle to rotate by in radians. Positive is anti-clockwise in the x-y plane.
+    :type angle: float, int
+    :param origin: optional [x,y] to rotate the data about - default [0,0]
+    :type origin: np.array([x,y])
+    """
+    if origin is None:
+        origin = _np.array([[0, 0]])
+    c, s = _np.cos(-angle), _np.sin(-angle)
+    R = _np.array(((c, -s), (s, c)))
+    return (points - origin) @ R + origin
+
+
+def RotateTranslate(points, angle, translation, rotationOrigin=None):
+    """
+    Apply a rotation and then add a translation to all points.
+
+    See Rotate()
+
+    :param translation: [x,y] to add to all points after rotation
+    :type translation: np.array([x,y])
+    """
+    rotated = Rotate(points, angle, rotationOrigin)
+    rotoTranslated = rotated + translation
+    return rotoTranslated
+
+
+def Polygon(edges, colour, alpha):
+    """
+    Return a polygon patch from a list of points as a numpy array.
+    """
+    return _patches.Polygon(edges, colour=colour, fill=True, alpha=alpha)
+
+
+def _CoilPolygonsDipoleH(length, dx=0, coil_dict=None, colour="#b87333",
+                         greyOut=False, greyColour='#c0c0c0'):
+    if greyOut:
+        colour = greyColour
+    cl = coil_dict['coil_length']
+    if cl == 0:
+        return []
+    cw = coil_dict['coil_width']
+    cdx = coil_dict['coil_dx']
+    arc1 = _np.array([[_np.sin(theta), _np.cos(theta)] for theta in _np.linspace(0, _np.pi/2, 5)])
+    r = 0.5*cl
+    arc_top = arc1*r + _np.array([cl-r, (0.5*cw) - r ])
+    arc_bot = _np.array(arc_top)[::-1]
+    arc_bot[:,1] *= -1 # flip y
+    coil_offset = _np.array([0, cdx + dx])
+    edges_out = _np.array([[0, 0.5*cw], *arc_top, *arc_bot, [0, -0.5*cw]]) + coil_offset
+    edges_in = _np.array(edges_out)
+    edges_in[:,0] *= -1 # flip x
+    edges_in[:,0] -= length
+    global_offset = _np.array([xend, yend])
+    edges_out = Rotate(edges_out, rotation) + global_offset
+    edges_in = Rotate(edges_in, rotation) + global_offset
+    return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
+            _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
+
+
+def _CoilPolygonsDipoleH(xend, yend, length, rotation, alpha, dx, coil_dict, colour="#b87333",
+                         greyOut=False, greyColour='#c0c0c0'):
+    if greyOut:
+        colour = greyColour
+    cl = coil_dict['coil_length']
+    if cl == 0:
+        return []
+    cw = coil_dict['coil_width']
+    cdx = coil_dict['coil_dx']
+    arc1 = _np.array([[_np.sin(theta), _np.cos(theta)] for theta in _np.linspace(0, _np.pi/2, 5)])
+    r = 0.5*cl
+    arc_top = arc1*r + _np.array([cl-r, (0.5*cw) - r ])
+    arc_bot = _np.array(arc_top)[::-1]
+    arc_bot[:,1] *= -1 # flip y
+    coil_offset = _np.array([0, cdx + dx])
+    edges_out = _np.array([[0, 0.5*cw], *arc_top, *arc_bot, [0, -0.5*cw]]) + coil_offset
+    edges_in = _np.array(edges_out)
+    edges_in[:,0] *= -1 # flip x
+    edges_in[:,0] -= length
+    global_offset = _np.array([xend, yend])
+    edges_out = Rotate(edges_out, rotation) + global_offset
+    edges_in = Rotate(edges_in, rotation) + global_offset
+    return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
+            _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
+
+
+
+def _CoilPolygonsQuad(xend, yend, length, rotation, alpha, coil_dict, colour="#b87333",
+                      greyOut=False, greyColour='#c0c0c0'):
+    if greyOut:
+        colour = greyColour
+    cl = coil_dict['coil_length']
+    if cl == 0:
+        return []
+    cw = coil_dict['coil_width']
+    arc1 = _np.array([[_np.sin(theta), _np.cos(theta)] for theta in _np.linspace(0, _np.pi/2, 5)])
+    r = 0.5*cl
+    arc_bot = arc1*r + _np.array([cl-r, -r])
+    arc_top = _np.array(arc_bot)
+    arc_top[:,1] *= -1
+    edges_out = _np.array([*arc_bot, [cl, -0.5*cw], [0, -0.5*cw], [0, 0.5*cw], [cl, 0.5*cw], *(arc_top[::-1])])
+    edges_in = _np.array(edges_out)
+    edges_in[:,0] *= -1 # flip x
+    edges_in[:,0] -= length
+    global_offset = _np.array([xend, yend])
+    edges_out = Rotate(edges_out, rotation) + global_offset
+    edges_in = Rotate(edges_in, rotation) + global_offset
+    return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
+            _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
+
+
+def _CurvedLine(x0, y0, xydir, angle, arcLength, stepSize=0.1):
+    return [[x0, y0]]
+
+
+def _SBend():
+    return None # polygon
+
+
+def _Rectangle(xend, yend, width, length, rotation, colour, alpha, dx=0, dy=0):
+    """
+    dx, dy are in curvilinear x,y so are applied to plot y,x respectiviely for an ZX plot.
+    """
+    edges = _np.array([[0, 0.5*width+dx], [0, -0.5*width+dx], [-length, -0.5*width+dx], [-length, 0.5*width+dx]])
+    edges = RotateTranslate(edges, rotation, _np.array([xend, yend]))
+    return _patches.Polygon(_Global(edges), color=colour, fill=True, alpha=alpha)
+
+
+def _Collimator(xend, yend, width, length, rotation, colour, alpha):
+    edges = _np.array([[0,            0.3*width], [0,           -0.3*width], [-0.3*length, -0.3*width],
+                       [-0.3*length, -0.5*width], [-0.7*length, -0.5*width], [-0.7*length, -0.3*width],
+                       [-length,     -0.3*width], [-length,      0.3*width], [-0.7*length,  0.3*width],
+                       [-0.7*length,  0.3*width], [-0.7*length,  0.5*width], [-0.3*length,  0.5*width],
+                       [-0.3*length,  0.3*width]])
+    edges = RotateTranslate(edges, rotation, _np.array([xend, yend]))
+    return _patches.Polygon(_Global(edges), color=colour, fill=True, alpha=alpha)
 
 
 def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
@@ -80,93 +218,15 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDic
     else:
         f = ax.get_figure()
 
-    def _Rotate(points, angle, origin=None):
-        if origin is None:
-            origin = _np.array([[0, 0]])
-        c, s = _np.cos(-angle), _np.sin(-angle)
-        R = _np.array(((c, -s), (s, c)))
-        return (points - origin) @ R + origin
-
-    def _RotateTranslate(points, angle, offset):
-        c, s = _np.cos(-angle), _np.sin(-angle)
-        R = _np.array(((c, -s), (s, c)))
-        return points @ R + offset
-
-    def _CurvedLine(x0, y0, xydir, angle, arcLength, stepSize=0.1):
-        return [[x0, y0]]
-    def _SBend():
-        return None # polygon
-    def _Rectangle(xend, yend, width, length, rotation, colour, alpha, dx=0, dy=0):
-        """
-        dx, dy are in curvilinear x,y so are applied to plot y,x respectiviely for an ZX plot.
-        """
-        edges = _np.array([[0, 0.5*width+dx], [0, -0.5*width+dx], [-length, -0.5*width+dx], [-length, 0.5*width+dx]])
-        edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
-        return _patches.Polygon(_Global(edges), color=colour, fill=True, alpha=alpha)
-    def _Collimator(xend, yend, width, length, rotation, colour, alpha):
-        edges = _np.array([[0,            0.3*width], [0,           -0.3*width], [-0.3*length, -0.3*width],
-                           [-0.3*length, -0.5*width], [-0.7*length, -0.5*width], [-0.7*length, -0.3*width],
-                           [-length,     -0.3*width], [-length,      0.3*width], [-0.7*length,  0.3*width],
-                           [-0.7*length,  0.3*width], [-0.7*length,  0.5*width], [-0.3*length,  0.5*width],
-                           [-0.3*length,  0.3*width]])
-        edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
-        return _patches.Polygon(_Global(edges), color=colour, fill=True, alpha=alpha)
-
     def _Global(points):
         if gr:
-            points = _Rotate(points, gran, grax)
+            points = Rotate(points, gran, grax)
         if gt:
             points += gtt
         return points
 
-    def _CoilPolygonsQuad(xend, yend, length, rotation, alpha, coil_dict, colour="#b87333"):
-        if greyOut:
-            colour = greyColour
-        cl = coil_dict['coil_length']
-        if cl == 0:
-            return []
-        cw = coil_dict['coil_width']
-        arc1 = _np.array([[_np.sin(theta), _np.cos(theta)] for theta in _np.linspace(0, _np.pi/2, 5)])
-        r = 0.5*cl
-        arc_bot = arc1*r + _np.array([cl-r, -r])
-        arc_top = _np.array(arc_bot)
-        arc_top[:,1] *= -1
-        edges_out = _np.array([*arc_bot, [cl, -0.5*cw], [0, -0.5*cw], [0, 0.5*cw], [cl, 0.5*cw], *(arc_top[::-1])])
-        edges_in = _np.array(edges_out)
-        edges_in[:,0] *= -1 # flip x
-        edges_in[:,0] -= length
-        global_offset = _np.array([xend, yend])
-        edges_out = _Rotate(edges_out, rotation) + global_offset
-        edges_in = _Rotate(edges_in, rotation) + global_offset
-        return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
-                _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
-
-    def _CoilPolygonsDipoleH(xend, yend, length, rotation, alpha, dx, coil_dict, colour="#b87333"):
-        if greyOut:
-            colour = greyColour
-        cl = coil_dict['coil_length']
-        if cl == 0:
-            return []
-        cw = coil_dict['coil_width']
-        cdx = coil_dict['coil_dx']
-        arc1 = _np.array([[_np.sin(theta), _np.cos(theta)] for theta in _np.linspace(0, _np.pi/2, 5)])
-        r = 0.5*cl
-        arc_top = arc1*r + _np.array([cl-r, (0.5*cw) - r ])
-        arc_bot = _np.array(arc_top)[::-1]
-        arc_bot[:,1] *= -1 # flip y
-        coil_offset = _np.array([0, cdx + dx])
-        edges_out = _np.array([[0, 0.5*cw], *arc_top, *arc_bot, [0, -0.5*cw]]) + coil_offset
-        edges_in = _np.array(edges_out)
-        edges_in[:,0] *= -1 # flip x
-        edges_in[:,0] -= length
-        global_offset = _np.array([xend, yend])
-        edges_out = _Rotate(edges_out, rotation) + global_offset
-        edges_in = _Rotate(edges_in, rotation) + global_offset
-        return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
-                _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
-
     def _UpdateParams(element, params, insideFactor):
-        n = e['NAME']
+        n = element['NAME']
         allKeys = set(params.keys())
         allowedTypeKeys = set(allKeys)
         for k, prms in elementDict.items():
@@ -269,7 +329,7 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDic
         if name in funcDict:
             # delegate function gives back list of polygons as x,y coords in plot
             polygonList = funcDict[name](locals())
-            edges = _RotateTranslate(edges, th, _np.array([Zend, Xend]))
+            edges = RotateTranslate(edges, th, _np.array([Zend, Xend]))
             return _patches.Polygon(_Global(edges), color=c, fill=True, alpha=alpha)
         elif kw == 'DRIFT':
             # don't deal with pole faces - just put behind everything
