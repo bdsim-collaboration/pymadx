@@ -14,6 +14,34 @@ import os.path as _path
 from ._General import Cast as _Cast
 
 
+class RotoTranslation2D:
+    def __init__(self, rotationAngle, translation, rotationOrigin=None):
+        self.angle = rotationAngle
+        self.origin = _np.array([[0, 0]]) if rotationOrigin is None else rotationOrigin
+        self.translation = translation
+
+    def __mul__(self, other):
+        if type(other) == _np.ndarray:
+            sh = _np.shape(other)
+            good = len(sh) == 2 # 2 dimensions
+            good |= sh[1] == 2 # only 2 points in each entry in 1st dimension
+            if not good:
+                raise IndexError("Incompatible shape of array")
+            other = self._ApplyRotation(other)
+            other = other + self.translation
+            return other
+        else:
+            raise TypeError("only numpy arrays are supported")
+
+    def _ApplyRotation(self, points):
+        c, s = _np.cos(-self.angle), _np.sin(-self.angle)
+        R = _np.array(((c, -s), (s, c)))
+        return (points - self.origin) @ R + self.origin
+
+    def Inverse(self):
+        return RotoTranslation2D(-self.angle, -1*self.translation, rotationOrigin=self.translation)
+
+
 class Tfs:
     """
     MADX Tfs file reader
@@ -1131,6 +1159,21 @@ class Tfs:
             lastSpos += self.GetColumn('S')[-1]
         self.smax = self.GetColumn('S')[-1]
         self.header['LENGTH'] = self.GetColumn('S')[-1]
+
+    def GetRotoTranslationFromElementZX(self, elementName):
+        """
+        If this is a survey TFS file and has the columns Z, X and THETA, this will
+        give the rototranslation to apply to get an object from 0,0 to the frame of
+        this element in the survey (at its end usually).
+
+        >>> offset = np.array([0, 0.3]) # want to place this offset relative to end of 'MCA1'
+        >>> a = pymadx.Data.Tfs("mysurvey.tfs")
+        >>> r = a.GetRotoTranslationFromElementZX("MCA1")
+        >>> offsetMCA1 = r * offset
+        """
+        di = self[elementName]
+        return RotoTranslation2D(di['THETA'], _np.array([di['Z'], di['X']]))
+
 
 def CheckItsTfs(tfsfile):
     """
