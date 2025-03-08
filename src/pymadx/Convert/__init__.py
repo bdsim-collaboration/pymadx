@@ -11,4 +11,4 @@ from ._TfsToPtc import TfsToPtcTwiss
 try:
     from ._Transport2Madx import Transport2Madx
 except ImportError:
-    print("No pytransport functionality")
+    pass
