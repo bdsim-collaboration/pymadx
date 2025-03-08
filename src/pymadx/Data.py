@@ -1184,7 +1184,7 @@ def CheckItsTfs(tfsfile):
     """
     if type(tfsfile) == str:
         madx = Tfs(tfsfile)
-    elif type(tfsfile) == Tfs:
+    elif isinstance(tfsfile, Tfs):
         madx = tfsfile
     else:
         raise IOError("Not pymadx.Data.Tfs file type: "+str(tfsfile))
