@@ -15,10 +15,11 @@ from ._General import Cast as _Cast
 
 
 class RotoTranslation2D:
-    def __init__(self, rotationAngle, translation, rotationOrigin=None):
+    def __init__(self, rotationAngle=0, translation=(0,0), rotationOrigin=None):
         self.angle = rotationAngle
         self.origin = _np.array([[0, 0]]) if rotationOrigin is None else rotationOrigin
-        self.translation = translation
+        self.translation = _np.array(translation)
+        self.is_identity = self.angle == 0 and (self.translation == 0).all() and (self.origin == 0).all()
 
     def __mul__(self, other):
         if type(other) == _np.ndarray:
@@ -27,9 +28,12 @@ class RotoTranslation2D:
             good |= sh[1] == 2 # only 2 points in each entry in 1st dimension
             if not good:
                 raise IndexError("Incompatible shape of array")
-            other = self._ApplyRotation(other)
-            other = other + self.translation
-            return other
+            if self.is_identity:
+                return other
+            else:
+                other = self._ApplyRotation(other)
+                other = other + self.translation
+                return other
         else:
             raise TypeError("only numpy arrays are supported")
 
