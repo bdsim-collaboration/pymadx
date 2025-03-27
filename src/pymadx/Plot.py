@@ -1656,7 +1656,7 @@ def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None
     
     # loop over elements and prepare patches
     # patches are turned into patch collection which is more efficient later
-    quads, bends, hkickers, vkickers, collimators, sextupoles, octupoles, multipoles, solenoids, unknown = [],[],[],[],[],[],[],[],[], []
+    quads, bends, hkickers, vkickers, kickers, collimators, sextupoles, octupoles, multipoles, solenoids, unknown = [],[],[],[],[],[],[],[],[], [], []
     for name in sequence:
         element = tfs[name]
         l = element['L']
@@ -1674,6 +1674,8 @@ def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None
             hkickers.append(DrawRect(element, u'#4c33b2', alpha)) #purple
         elif kw == 'VKICKER':
             vkickers.append(DrawRect(element, u'#ba55d3', alpha)) #medium orchid
+        elif kw == 'KICKER':
+            kickers.append(DrawRect(element, u'#4c33b2', alpha)) #purple
         elif kw == 'SOLENOID':
             solenoids.append(DrawRect(element, u'#ff8800', alpha)) #orange
         elif kw == 'RCOLLIMATOR':
@@ -1708,6 +1710,7 @@ def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None
     ax.add_collection(_PatchCollection(quads,       match_original=True, zorder=19))
     ax.add_collection(_PatchCollection(hkickers,    match_original=True, zorder=18))
     ax.add_collection(_PatchCollection(vkickers,    match_original=True, zorder=17))
+    ax.add_collection(_PatchCollection(kickers,     match_original=True, zorder=17))
     ax.add_collection(_PatchCollection(collimators, match_original=True, zorder=16))
     ax.add_collection(_PatchCollection(sextupoles,  match_original=True, zorder=15))
     ax.add_collection(_PatchCollection(octupoles,   match_original=True, zorder=14, edgecolor=None))
