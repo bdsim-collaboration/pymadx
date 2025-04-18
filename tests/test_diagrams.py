@@ -1,12 +1,21 @@
 import pymadx
 import os
 
+import matplotlib.pyplot as plt
+
 def _fn(filename):
     return os.path.join(os.path.dirname(__file__), "test_input", filename)
 
 def test_survey2d_ZX():
     s = pymadx.Data.Tfs(_fn("h6-survey.tfs"))
     pymadx.Diagrams.Survey2DZX(s)
+    plt.show()
+
+def test_survey2d_ZX_offset():
+    s = pymadx.Data.Tfs(_fn("h6-survey.tfs"))
+    offset = s.GetRotoTranslationFromElementZX("XWCA.X0410404")
+    pymadx.Diagrams.Survey2DZX(s, offsetRotoTranslation=offset)
+    plt.show()
 
 def test_survey2d_ZX_fancy():
     #funcDict = {'MSN' : pymadx.Plot.MSNPatches}
@@ -45,9 +54,11 @@ def test_survey2d_ZX_fancy():
     h8 = pymadx.Data.Tfs(_fn("h8-survey.tfs"))
     pymadx.Diagrams.Survey2DZX(h8, ax=ax, typeDict=typeDict)
 
-    #p42 = pymadx.Data.Tfs(_fn("p42-survey.tfs"))
-    #globalRotation = [4332.609, -638.9902819, 0.116276]
-    #pymadx.Plot.Survey2DZX(p42, ax=ax, typeDict=typeDict, globalRotation=globalRotation)
+    p42 = pymadx.Data.Tfs(_fn("p42-survey.tfs"))
+    pymadx.Diagrams.Survey2DZX(p42, ax=ax, typeDict=typeDict)
 
-#test_survey2d_ZX()
-test_survey2d_ZX_fancy()
+    plt.show()
+
+
+#test_survey2d_ZX_offset()
+#test_survey2d_ZX_fancy()
