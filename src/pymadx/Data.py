@@ -972,7 +972,7 @@ class Tfs:
 
     def ElementPerturbs(self, component):
         """
-        Search an invidivual dictionary representing a row in the TFS file
+        Search an individual dictionary representing a row in the TFS file
         for as to whether it perturbs.
         """
 

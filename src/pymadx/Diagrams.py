@@ -9,6 +9,7 @@ from matplotlib.collections import PatchCollection as _PatchCollection
 
 import pymadx.Data as _Data
 
+
 defaultElementColours = {'DRIFT': u'#c0c0c0',
                          'QUADRUPOLE': u'#d10000',
                          'RBEND': u'#0066cc',
@@ -40,7 +41,6 @@ def Rotate(points, angle, origin=None):
     R = _np.array(((c, -s), (s, c)))
     return (points - origin) @ R + origin
 
-
 def RotateTranslate(points, angle, translation, rotationOrigin=None):
     """
     Apply a rotation and then add a translation to all points.
@@ -54,15 +54,13 @@ def RotateTranslate(points, angle, translation, rotationOrigin=None):
     rotoTranslated = rotated + translation
     return rotoTranslated
 
-
 def Polygon(edges, colour, alpha):
     """
     Return a polygon patch from a list of points as a numpy array.
     """
     return _patches.Polygon(edges, colour=colour, fill=True, alpha=alpha)
 
-
-def _CoilPolygonsDipoleH(length, rotation, xend, yend, roto_translation, dx=0, coil_dict=None, colour="#b87333",
+def _CoilPolygonsDipoleH(xend, yend, length, rotation, roto_translation, dx=0, coil_dict=None, colour="#b87333",
                          alpha=1.0, greyOut=False, greyColour='#c0c0c0'):
     if greyOut:
         colour = greyColour
