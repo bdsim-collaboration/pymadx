@@ -279,29 +279,50 @@ def Centroids(tfsfile, title='', outputfilename=None, machine=True):
     import pymadx.Data as _Data
     madx = _Data.CheckItsTfs(tfsfile)
     d    = _GetOpticalDataFromTfs(madx)
-    smax = madx.smax
 
     f    = _plt.figure(figsize=(9,5))
     axoptics = f.add_subplot(111)
 
     #optics plots
-    axoptics.plot(d['s'],d['x'],'b-', label=r'$\mu_{x}$')
-    axoptics.plot(d['s'],d['y'],'g-', label=r'$\mu_{y}$')
+    axoptics.plot(d['s'],d['x'], label=r'$\mu_{x}$')
+    axoptics.plot(d['s'],d['y'], label=r'$\mu_{y}$')
     axoptics.set_xlabel('S (m)')
     axoptics.set_ylabel(r'$\mu_{(x,y)}$ (m)')
     axoptics.legend(loc=0,fontsize='small') #best position
-
-    #add lattice to plot
+    axoptics.axhline(0, color='grey', alpha=0.5, ls='--')
     if machine:
         AddMachineLatticeToFigure(f,madx)
-
     _plt.suptitle(title,size='x-large')
+    if outputfilename is not None:
+        _plt.savefig(outputfilename)
 
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename+'.pdf')
-        _plt.savefig(outputfilename+'.png')
+def CentroidsAngle(tfsfile, title='', outputfilename=None, machine=True):
+    """
+    Plot the centroid (mean) x and y from the Tfs file or :meth:`pymadx.Data.Tfs` instance.
+
+    tfsfile        - can be either a string or a :meth:`pymadx.Data.Tfs` instance.
+    title          - optional title for plot
+    outputfilename - optional name to save file to (extension determines format)
+    machine        - if True (default) add machine diagram to top of plot
+    """
+    import pymadx.Data as _Data
+    d = _Data.CheckItsTfs(tfsfile)
+
+    f    = _plt.figure(figsize=(9,5))
+    axoptics = f.add_subplot(111)
+
+    #optics plots
+    axoptics.plot(d.GetColumn('S'), d.GetColumn('PX')*1e6, label='PX')
+    axoptics.plot(d.GetColumn('S'), d.GetColumn('PY')*1e6, label='PY')
+    axoptics.set_xlabel('S (m)')
+    axoptics.set_ylabel("Angle ($\mu$rad)")
+    axoptics.legend(loc=0,fontsize='small') #best position
+    axoptics.axhline(0, color='grey', alpha=0.5, ls='--')
+    if machine:
+        AddMachineLatticeToFigure(f, d)
+    _plt.suptitle(title,size='x-large')
+    if outputfilename is not None:
+        _plt.savefig(outputfilename)
 
 
 def Survey(tfsfile, title='', outputfilename=None):
