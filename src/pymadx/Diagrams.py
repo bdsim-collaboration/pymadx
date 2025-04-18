@@ -194,7 +194,7 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDic
     buildPipes = pipeRadius is not None
     _pipeOn = True
 
-    rt = offsetRotoTranslation if offsetRotoTranslation is not None else _Data.RotoTranslation2D()
+    rt = offsetRotoTranslation.Inverse() if offsetRotoTranslation is not None else _Data.RotoTranslation2D()
 
     if not ax:
         f = _plt.figure()
@@ -298,14 +298,15 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDic
             coils_this_mag.extend(_CoilPolygonsQuad(Zend, Xend, l, th, rt, alpha, params))
         elif kw == 'RBEND':
             a = 0 if vertical else 0.5*angle
-            bends.append(_Rectangle(Zend, Xend, w, l, th+0.5*a, rt, c, alpha, dx, dy))
-            coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params)) ## TODO
+            ang = th+0.5*a
+            bends.append(_Rectangle(Zend, Xend, w, l, ang, rt, c, alpha, dx, dy))
+            coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, ang, rt, dx, params, alpha=alpha, greyOut=greyOut))
         # elif kw == 'SBEND':
         #     bends.append(DrawBend(element, c, alpha, dx, dy)) #blue
         #     coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
         elif kw in ['HKICKER', 'VKICKER', 'KICKER']:
             kickers.append(_Rectangle(Zend, Xend, w, l, th, rt, c, alpha, dx, dy))
-            coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
+            coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, rt, dx, params, alpha=alpha, greyOut=greyOut))
         elif kw == 'SOLENOID':
             solenoids.append(_Rectangle(Zend, Xend, w, l, e['THETA'], rt, c, alpha, dx, dy))
         elif kw in ['RCOLLIMATOR', 'ECOLLIMATOR', 'COLLIMATOR']:
