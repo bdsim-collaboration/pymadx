@@ -235,7 +235,15 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=Non
     buildPipes = pipeRadius is not None
     _pipeOn = True
 
-    rt = offsetRotoTranslation.Inverse() if offsetRotoTranslation is not None else _Data.RotoTranslation2D()
+    if offsetRotoTranslation is not None:
+        if isinstance(offsetRotoTranslation, str):
+            rt = survey.GetRotoTranslationFromElementZX(offsetRotoTranslation).Inverse()
+        elif isinstance(offsetRotoTranslation, _Data.RotoTranslation2D):
+            rt = offsetRotoTranslation.Inverse()
+        else:
+            raise ValueError("offsetRotoTranslation must be None, str or a RotoTranslation2D")
+    else:
+        rt = _Data.RotoTranslation2D()
 
     if not ax:
         f = _plt.figure()
