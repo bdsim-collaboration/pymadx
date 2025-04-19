@@ -9,13 +9,24 @@ def _fn(filename):
 def test_survey2d_ZX():
     s = pymadx.Data.Tfs(_fn("h6-survey.tfs"))
     pymadx.Diagrams.Survey2DZX(s)
-    plt.show()
 
 def test_survey2d_ZX_offset():
     s = pymadx.Data.Tfs(_fn("h6-survey.tfs"))
     offset = s.GetRotoTranslationFromElementZX("XWCA.X0410404")
     pymadx.Diagrams.Survey2DZX(s, offsetRotoTranslation=offset)
-    plt.show()
+
+def test_survey2d_ZX_offset_by_name():
+    s = pymadx.Data.Tfs(_fn("h6-survey.tfs"))
+    pymadx.Diagrams.Survey2DZX(s, offsetRotoTranslation="XWCA.X0410404")
+
+def test_survey2d_ZX_grey_out():
+    s = pymadx.Data.Tfs(_fn("h6-survey.tfs"))
+    pymadx.Diagrams.Survey2DZX(s, greyOut=True)
+
+def test_survey2d_ZX_mask_names():
+    s = pymadx.Data.Tfs(_fn("h6-survey.tfs"))
+    maskNames = ['MTN.X0400003', 'MTN.X0400007']
+    pymadx.Diagrams.Survey2DZX(s, maskNames=maskNames)
 
 def test_survey2d_ZX_fancy():
     #funcDict = {'MSN' : pymadx.Plot.MSNPatches}
@@ -57,8 +68,9 @@ def test_survey2d_ZX_fancy():
     p42 = pymadx.Data.Tfs(_fn("p42-survey.tfs"))
     pymadx.Diagrams.Survey2DZX(p42, ax=ax, typeDict=typeDict)
 
-    plt.show()
-
 
 #test_survey2d_ZX_offset()
 #test_survey2d_ZX_fancy()
+#test_survey2d_ZX_grey_out()
+#test_survey2d_ZX_offset_by_name()
+#plt.show()
