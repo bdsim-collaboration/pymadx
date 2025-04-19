@@ -3,7 +3,7 @@ Version History
 ===============
 
 
-v2.3.0 - 2025 / 01 / XX
+v2.3.0 - 2025 / 04 / XX
 =======================
 
 * Tfs class no longer recalculates S coordinate by default. Can be turned back on by
@@ -14,6 +14,7 @@ v2.3.0 - 2025 / 01 / XX
   a matplotlib plot such that :code:`plt.tight_layout()` still works after adding
   the new axes.
 * New ability to add a machine diagram from a cpymad instance.
+* New :code:`pymadx.Diagrams` module to draw machine diagrams.
 
 
 v2.2.0 - 2024 / 03 / 26

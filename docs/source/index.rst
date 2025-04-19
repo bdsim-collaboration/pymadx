@@ -14,6 +14,7 @@ programmatically.
    installation
    tfsloading
    plotting
+   diagrams
    building
    converting
    moduledocs

@@ -158,12 +158,12 @@ def _UpdateParams(elementDict, typeDict, element, params, insideFactor):
     params['coil_dx'] *= insideFactor * insideFactor2
     return params
 
-def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
-               ignoreNames=None, title='', outputfilename=None, resolution=0.1, defaultWidth=0.5, defaultCoilLength=0.15,
-               offsetRotoTranslation=None, pipeRadius=None, pipeMaskRanges=None, zOffset=0, invisibleAxes=False,
-               arrowsDy=0, arrowsDx=0, defaultAlpha=None):
+def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=None, title='', outputfilename=None,
+               zOffset=0, defaultWidth=0.5, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
+               ignoreNames=None, resolution=0.1, defaultCoilLength=0.15, pipeRadius=None, pipeMaskRanges=None,
+               invisibleAxes=False, arrowsDy=0, arrowsDx=0, defaultAlpha=None):
     """
-    Plot the x and z coordinates from a tfs file.
+    Draw a schematic of a beamline in the Z-X plane. Allow styling of different elements by type or by name.
 
     :param survey_tfsfile: list of tfs files as strings or already loaded pymadx.Data.Tfs objects.
     :type survey_tfsfile: str, pymadx.Data.Tfs
@@ -171,9 +171,47 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDic
     :type ax: matplotlib.axes.Axes, None
     :param greyOut: whether to plot the whole line in greyscale
     :type greyOut: bool
-    :param elementDict: dictionary of elements keyed by name
-    :param offsetRotoTranslation: offset roto-translation to apply before plotting.
-    :type offsetRotoTranslation: None, pymadx.Data.RotoTranslation2D
+    :param offsetRotoTranslation: Optional roto-translation to apply before plotting to offset the whole diagram. Can
+    be the name of the element in the survey file also.
+    :type offsetRotoTranslation: None, str, pymadx.Data.RotoTranslation2D
+    :param title: title of the plot
+    :type title: str
+    :param outputfilename: output filename to save the plot to
+    :type outputfilename: str
+    :param zOffset: z-offset when drawing in matplotlib. Higher is more to the front. Use in single integer steps.
+    :type zOffset: int
+    :param defaultWidth: default width of each magnet in metres.
+    :type defaultWidth: float
+    :param elementDict: dictionary of element_name to dict of parameters
+    :type elementDict: dict(str, dict(str, str|float|int))
+    :param typeDict: dictionary of element_name to dict of parameters for a given type, e.g. QUADRUPOLE
+    :type typeDict: dict(str, dict(str, str|float|int))
+    :param funcDict: dictionary of element_name to function to draw it
+    :type funcDict: dict(str, function)
+    :param maskNames: list of elements to grey out as grey with alpha = 0.1
+    :type maskNames: list(str)
+    :param ignoreNames: list of elements to ignore and not draw at all
+    :type ignoreNames: list(str)
+    :param resolution: sampling distance along curved arcs in metres
+    :type resolution: float
+    :param defaultCoilLength: default coil length along S in metres
+    :type defaultCoilLength: float
+    :param pipeRadius: pipe radius (i.e. half-width) in metres
+    :type pipeRadius: None, float
+    :param pipeMaskRanges: list of tuples of (start, end) to hide the beam pipe
+    :type pipeMaskRanges: None, list(tuple(float, float))
+    :param invisibleAxes: whether to hide the bounding box of the matplotlib axes
+    :type invisibleAxes: bool
+    :param arrowsDy: fraction of figure height to move the orientation arrows (positive is up in the plot)
+    :type arrowsDy: float
+    :param arrowsDx: fraction of figure width to move the orientation arrows (positive is down in the plot)
+    :type arrowsDx: float
+    :param defaultAlpha: default alpha value to use for the whole beamline if not otherwise specified per element
+    :type defaultAlpha: None, float
+
+
+    Order of precedence is: funcDict, elementDict, typeDict. i.e. funcDict replaces any information given
+    in the other two. An elementDict always overrides any typeDict information.
     """
     survey = _Data.CheckItsTfs(survey_tfsfile)
 
