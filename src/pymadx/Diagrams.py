@@ -118,11 +118,14 @@ def _CurvedLine(x0, y0, xydir, angle, arcLength, stepSize=0.1):
 def _SBend():
     return None # polygon
 
-def _Rectangle(xend, yend, width, length, rotation, roto_translation, colour, alpha, dx=0, dy=0):
+def _Rectangle(xend, yend, half_width, length, rotation, roto_translation, colour, alpha, dx=0, dy=0):
     """
-    dx, dy are in curvilinear x,y so are applied to plot y,x respectiviely for an ZX plot.
+    dx, dy are in curvilinear x,y so are applied to plot y,x respectively for an ZX plot.
     """
-    edges = _np.array([[0, 0.5*width+dx], [0, -0.5*width+dx], [-length, -0.5*width+dx], [-length, 0.5*width+dx]])
+    edges = _np.array([[0, 0.5 * half_width + dx],
+                       [0, -0.5 * half_width + dx],
+                       [-length, -0.5 * half_width + dx],
+                       [-length, 0.5 * half_width + dx]])
     edges = RotateTranslate(edges, rotation, _np.array([xend, yend]))
     edges = roto_translation * edges
     return _patches.Polygon(edges, color=colour, fill=True, alpha=alpha)
