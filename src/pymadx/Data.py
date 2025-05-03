@@ -1178,6 +1178,20 @@ class Tfs:
         di = self[elementName]
         return RotoTranslation2D(di['THETA'], _np.array([di['Z'], di['X']]))
 
+    def GetRotoTranslationFromElementZY(self, elementName):
+        """
+        If this is a survey TFS file and has the columns Z, Y and PHI, this will
+        give the rototranslation to apply to get an object from 0,0 to the frame of
+        this element in the survey (at its end usually).
+
+        >>> offset = np.array([0, 0.3]) # want to place this offset relative to end of 'MCA1'
+        >>> a = pymadx.Data.Tfs("mysurvey.tfs")
+        >>> r = a.GetRotoTranslationFromElementZY("MCA1")
+        >>> offsetMCA1 = r * offset
+        """
+        di = self[elementName]
+        return RotoTranslation2D(di['PHI'], _np.array([di['Z'], di['Y']]))
+
 
 def CheckItsTfs(tfsfile):
     """
