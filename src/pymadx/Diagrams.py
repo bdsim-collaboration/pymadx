@@ -43,12 +43,11 @@ def Rotate(points, angle, origin=None):
 
 def RotateTranslate(points, angle, translation, rotationOrigin=None):
     """
-    Apply a rotation and then add a translation to all points.
-
-    See Rotate()
+    Apply a rotation and then add a translation to all points. See Rotate()
 
     :param translation: [x,y] to add to all points after rotation
     :type translation: np.array([x,y])
+
     """
     rotated = Rotate(points, angle, rotationOrigin)
     rotoTranslated = rotated + translation
@@ -57,6 +56,14 @@ def RotateTranslate(points, angle, translation, rotationOrigin=None):
 def Polygon(edges, colour, alpha):
     """
     Return a polygon patch from a list of points as a numpy array.
+
+    :param edges: numpy array of [x,y] edges
+    :type edges: numpy.array([x1,y1], [x2,y2],...)
+    :param colour: colour of the polygon
+    :type colour: str
+    :param alpha: transparency of the polygon
+    :type alpha: float
+
     """
     return _patches.Polygon(edges, colour=colour, fill=True, alpha=alpha)
 
@@ -207,9 +214,9 @@ def _UpdateParams(elementDict, typeDict, element, params, insideFactor):
 
 class _SurveyDiagram:
     def __init__(self, survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=None, title='', outputfilename=None,
-               zOffset=0, defaultWidth=0.5, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
-               ignoreNames=None, resolution=0.1, defaultCoilLength=0.15, pipeRadius=None, pipeMaskRanges=None,
-               invisibleAxes=False, arrowsDy=0, arrowsDx=0, defaultAlpha=None):
+                 zOffset=0, defaultWidth=0.5, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
+                 ignoreNames=None, resolution=0.1, defaultCoilLength=0.15, pipeRadius=None, pipeMaskRanges=None,
+                 invisibleAxes=False, arrowsDy=0, arrowsDx=0, defaultAlpha=None):
         self.survey = _Data.CheckItsTfs(survey_tfsfile)
 
         if not ax:
@@ -548,8 +555,7 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=Non
     :type ax: matplotlib.axes.Axes, None
     :param greyOut: whether to plot the whole line in greyscale
     :type greyOut: bool
-    :param offsetRotoTranslation: Optional roto-translation to apply before plotting to offset the whole diagram. Can
-    be the name of the element in the survey file also.
+    :param offsetRotoTranslation: Optional roto-translation to apply before plotting to offset the whole diagram. Can be the name of the element in the survey file also.
     :type offsetRotoTranslation: None, str, pymadx.Data.RotoTranslation2D
     :param title: title of the plot
     :type title: str
@@ -586,9 +592,9 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=Non
     :param defaultAlpha: default alpha value to use for the whole beamline if not otherwise specified per element
     :type defaultAlpha: None, float
 
-
     Order of precedence is: funcDict, elementDict, typeDict. i.e. funcDict replaces any information given
     in the other two. An elementDict always overrides any typeDict information.
+
     """
     a = _SurveyDiagramZX(survey_tfsfile, ax, greyOut, offsetRotoTranslation, title, outputfilename,
                          zOffset, defaultWidth, elementDict, typeDict, funcDict, maskNames,
@@ -610,8 +616,7 @@ def Survey2DZY(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=Non
     :type ax: matplotlib.axes.Axes, None
     :param greyOut: whether to plot the whole line in greyscale
     :type greyOut: bool
-    :param offsetRotoTranslation: Optional roto-translation to apply before plotting to offset the whole diagram. Can
-    be the name of the element in the survey file also.
+    :param offsetRotoTranslation: Optional roto-translation to apply before plotting to offset the whole diagram. Can be the name of the element in the survey file also.
     :type offsetRotoTranslation: None, str, pymadx.Data.RotoTranslation2D
     :param title: title of the plot
     :type title: str
@@ -648,9 +653,9 @@ def Survey2DZY(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=Non
     :param defaultAlpha: default alpha value to use for the whole beamline if not otherwise specified per element
     :type defaultAlpha: None, float
 
-
     Order of precedence is: funcDict, elementDict, typeDict. i.e. funcDict replaces any information given
     in the other two. An elementDict always overrides any typeDict information.
+
     """
     a = _SurveyDiagramZY(survey_tfsfile, ax, greyOut, offsetRotoTranslation, title, outputfilename,
                          zOffset, defaultWidth, elementDict, typeDict, funcDict, maskNames,

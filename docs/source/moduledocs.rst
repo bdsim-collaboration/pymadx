@@ -36,6 +36,14 @@ pymadx.Data module
 		:undoc-members:
 		:show-inheritance:
 
+pymadx.Diagrams module
+----------------------
+
+.. automodule:: pymadx.Diagrams
+		:members:
+		:undoc-members:
+		:show-inheritance:
+
 pymadx.Plot module
 ------------------
 
