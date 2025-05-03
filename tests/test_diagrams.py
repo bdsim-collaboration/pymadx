@@ -131,16 +131,37 @@ def test_survey2d_ZY_fancy():
     pymadx.Diagrams.Survey2DZY(p42, ax=ax, typeDict=typeDict)
 
 
-# test_survey2d_ZX()
-# test_survey2d_ZX_offset()
-# test_survey2d_ZX_fancy()
-# test_survey2d_ZX_grey_out()
-# test_survey2d_ZX_offset_by_name()
-#
-# test_survey2d_ZY()
-# test_survey2d_ZY_offset()
-# test_survey2d_ZY_fancy()
-# test_survey2d_ZY_grey_out()
-# test_survey2d_ZY_offset_by_name()
-#
-# plt.show()
+# plots for manual
+"""
+pth = "../docs/source/figures/diagrams_"
+test_survey2d_ZX()
+plt.savefig(pth+"zx.png", dpi=400)
+test_survey2d_ZX_offset()
+plt.savefig(pth+"zx_offset.png", dpi=400)
+test_survey2d_ZX_fancy()
+plt.savefig(pth+"zx_fancy.png", dpi=400)
+test_survey2d_ZX_grey_out()
+plt.savefig(pth+"zx_grey.png", dpi=400)
+test_survey2d_ZX_offset_by_name()
+
+test_survey2d_ZY()
+plt.savefig(pth+"zy.png", dpi=400)
+test_survey2d_ZY_offset()
+plt.savefig(pth+"zy_offset.png", dpi=400)
+test_survey2d_ZY_fancy()
+plt.savefig(pth+"zy_fancy.png", dpi=400)
+test_survey2d_ZY_grey_out()
+plt.savefig(pth+"zy_grey.png", dpi=400)
+test_survey2d_ZY_offset_by_name()
+
+h6 = pymadx.Data.Tfs(_fn("h6-survey.tfs"))
+h8 = pymadx.Data.Tfs(_fn("h8-survey.tfs"))
+fig, ax = pymadx.Diagrams.Survey2DZX(h6)
+pymadx.Diagrams.Survey2DZX(h8, ax=ax, zOffset=2)
+plt.savefig(pth+"zx_multiple.png", dpi=400)
+fig2, ax2 = pymadx.Diagrams.Survey2DZY(h6)
+pymadx.Diagrams.Survey2DZY(h8, ax=ax2, zOffset=2)
+plt.savefig(pth+"zy_multiple.png", dpi=400)
+
+plt.show()
+"""
