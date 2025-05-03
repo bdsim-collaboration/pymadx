@@ -412,7 +412,7 @@ class _SurveyDiagram:
             #     coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
             elif kw in ['HKICKER', 'VKICKER', 'KICKER']:
                 kickers.append(_Rectangle(x_end, y_end, w, l, xy_ang, rt, c, alpha, dx, dy))
-                coils_this_mag.extend(self._GetCoilsDipole(bends_in_plot_plane, x_end, y_end, l, ang, rt, params, alpha))
+                coils_this_mag.extend(self._GetCoilsDipole(bends_in_plot_plane, x_end, y_end, l, xy_ang, rt, params, alpha))
             elif kw == 'SOLENOID':
                 solenoids.append(_Rectangle(x_end, y_end, w, l, xy_ang, rt, c, alpha, dx, dy))
             elif kw in ['RCOLLIMATOR', 'ECOLLIMATOR', 'COLLIMATOR']:
