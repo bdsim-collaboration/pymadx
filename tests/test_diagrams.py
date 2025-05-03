@@ -131,8 +131,16 @@ def test_survey2d_ZY_fancy():
     pymadx.Diagrams.Survey2DZY(p42, ax=ax, typeDict=typeDict)
 
 
-#test_survey2d_ZX_offset()
-#test_survey2d_ZX_fancy()
-#test_survey2d_ZX_grey_out()
-#test_survey2d_ZX_offset_by_name()
-#plt.show()
+# test_survey2d_ZX()
+# test_survey2d_ZX_offset()
+# test_survey2d_ZX_fancy()
+# test_survey2d_ZX_grey_out()
+# test_survey2d_ZX_offset_by_name()
+#
+# test_survey2d_ZY()
+# test_survey2d_ZY_offset()
+# test_survey2d_ZY_fancy()
+# test_survey2d_ZY_grey_out()
+# test_survey2d_ZY_offset_by_name()
+#
+# plt.show()
