@@ -3,9 +3,11 @@ Version History
 ===============
 
 
-v2.3.0 - 2025 / 04 / XX
+v3.0.0 - 2025 / 05 / XX
 =======================
 
+* New :code:`pymadx.Diagrams` module to draw machine diagrams with coils and
+  customisation from survey output. See :ref:`diagrams` for instructions.
 * Tfs class no longer recalculates S coordinate by default. Can be turned back on by
   setting the member variable `recalculateSifSliced=True`.
 * New :code:`pymadx_rmatrix_plot` command line tool.
@@ -14,7 +16,6 @@ v2.3.0 - 2025 / 04 / XX
   a matplotlib plot such that :code:`plt.tight_layout()` still works after adding
   the new axes.
 * New ability to add a machine diagram from a cpymad instance.
-* New :code:`pymadx.Diagrams` module to draw machine diagrams.
 
 
 v2.2.0 - 2024 / 03 / 26
