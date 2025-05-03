@@ -62,7 +62,6 @@ def _GetOpticalDataFromTfs(tfsobject, dispersion=True):
     d['sigmay'] = tfsobject.GetColumn('SIGMAY')
     return d
 
-
 def _GetRMatrixDataFromTfs(tfsobject):
     d = {}
     for key in ['S', 'RE11', 'RE12', 'RE21', 'RE22', 'RE33', 'RE34', 'RE43', 'RE44', 'RE16', 'RE26', 'RE36', 'RE46']:
@@ -178,7 +177,6 @@ def GetHorizontalVerticalMaskNames(tfs, collimatorHRegex=None, collimatorVRegex=
     toMaskInVertical.extend(list(collsToMaskInVertical))
     return toMaskInHorizontal, toMaskInVertical
 
-
 def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True,
                    collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True, s_offset=None):
     """
@@ -266,7 +264,6 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
 
     return f
 
-
 def Centroids(tfsfile, title='', outputfilename=None, machine=True):
     """
     Plot the centroid (mean) x and y from the Tfs file or :meth:`pymadx.Data.Tfs` instance.
@@ -323,7 +320,6 @@ def CentroidsAngle(tfsfile, title='', outputfilename=None, machine=True):
     _plt.suptitle(title,size='x-large')
     if outputfilename is not None:
         _plt.savefig(outputfilename)
-
 
 def Survey(tfsfile, title='', outputfilename=None):
     """
@@ -406,685 +402,6 @@ def SurveyMultiple(tfsfiles, labels=None, title='', outputfilename=None):
 
     if outputfilename is not None:
         _plt.savefig(outputfilename)
-
-
-def MSNPatches(xend, yend, rotation, horizontal, inside, alpha):
-    edges = _np.array([[0, 0.5*width], [0, -0.5*width], [-length, -0.5*width], [-length, 0.5*width]])
-    edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
-    return _patches.Polygon(edges, color=colour, fill=True, alpha=alpha)
-
-
-def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
-               ignoreNames=None, title='', outputfilename=None, resolution=0.1, defaultWidth=0.5, defaultCoilLength=0.15,
-               globalRotation=None, globalOffset=None, pipeRadius=None, pipeMaskRanges=None, zOffset=0, invisibleAxes=False,
-               arrowsDy=0, arrowsDx=0, defaultAlpha=None):
-    """
-    Plot the x and z coordinates from a tfs file.
-
-    :param tfsfiles: list of tfs files as strings or already loaded pymadx.Data.Tfs objects.
-    :type tfsfile: str, pymadx.Data.Tfs
-    :param title: optional title for plot
-    :type title: str
-    :param outputfilename: optional output file name including extension to plt.savefig
-    :type outputfilename: str
-
-    xwidth
-    ywidth
-    colour
-    """
-    survey = _Data.CheckItsTfs(survey_tfsfile)
-
-    # need these list / dicts but can't have a mutable type as a default argument
-    def _InitialiseList(var):
-        return [] if var is None else var
-    def _InitialiseDict(var):
-        return {} if var is None else var
-    elementDict = _InitialiseDict(elementDict)
-    typeDict = _InitialiseDict(typeDict)
-    funcDict = _InitialiseDict(funcDict)
-    maskNames = _InitialiseList(maskNames)
-    ignoreNames = _InitialiseList(ignoreNames)
-    greyColour = u'#c0c0c0'
-
-    if pipeMaskRanges is None:
-        pipeMaskRanges = [[survey[0]['S']-100, survey[0]['S']-99]]
-    buildPipes = pipeRadius is not None
-    _pipeOn = True
-
-    gr = globalRotation is not None
-    if gr:
-        grax = globalRotation[:2]
-        gran = globalRotation[-1]
-    gt = globalOffset is not None
-    if gt:
-        gtt = _np.array(globalOffset)
-
-    if not ax:
-        f = _plt.figure()
-        ax = f.add_subplot(111)
-    else:
-        f = ax.get_figure()
-
-    def _Rotate(points, angle, origin=None):
-        if origin is None:
-            origin = _np.array([[0, 0]])
-        c, s = _np.cos(-angle), _np.sin(-angle)
-        R = _np.array(((c, -s), (s, c)))
-        return (points - origin) @ R + origin
-
-    def _RotateTranslate(points, angle, offset):
-        c, s = _np.cos(-angle), _np.sin(-angle)
-        R = _np.array(((c, -s), (s, c)))
-        return points @ R + offset
-
-    def _CurvedLine(x0, y0, xydir, angle, arcLength, stepSize=0.1):
-        return [[x0, y0]]
-    def _SBend():
-        return None # polygon
-    def _Rectangle(xend, yend, width, length, rotation, colour, alpha, dx=0, dy=0):
-        """
-        dx, dy are in curvilinear x,y so are applied to plot y,x respectiviely for an ZX plot.
-        """
-        edges = _np.array([[0, 0.5*width+dx], [0, -0.5*width+dx], [-length, -0.5*width+dx], [-length, 0.5*width+dx]])
-        edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
-        return _patches.Polygon(_Global(edges), color=colour, fill=True, alpha=alpha)
-    def _Collimator(xend, yend, width, length, rotation, colour, alpha):
-        edges = _np.array([[0,            0.3*width], [0,           -0.3*width], [-0.3*length, -0.3*width],
-                           [-0.3*length, -0.5*width], [-0.7*length, -0.5*width], [-0.7*length, -0.3*width],
-                           [-length,     -0.3*width], [-length,      0.3*width], [-0.7*length,  0.3*width],
-                           [-0.7*length,  0.3*width], [-0.7*length,  0.5*width], [-0.3*length,  0.5*width],
-                           [-0.3*length,  0.3*width]])
-        edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
-        return _patches.Polygon(_Global(edges), color=colour, fill=True, alpha=alpha)
-
-    def _Global(points):
-        if gr:
-            points = _Rotate(points, gran, grax)
-        if gt:
-            points += gtt
-        return points
-
-    def _CoilPolygonsQuad(xend, yend, length, rotation, alpha, coil_dict, colour="#b87333"):
-        if greyOut:
-            colour = greyColour
-        cl = coil_dict['coil_length']
-        if cl == 0:
-            return []
-        cw = coil_dict['coil_width']
-        arc1 = _np.array([[_np.sin(theta), _np.cos(theta)] for theta in _np.linspace(0, _np.pi/2, 5)])
-        r = 0.5*cl
-        arc_bot = arc1*r + _np.array([cl-r, -r])
-        arc_top = _np.array(arc_bot)
-        arc_top[:,1] *= -1
-        edges_out = _np.array([*arc_bot, [cl, -0.5*cw], [0, -0.5*cw], [0, 0.5*cw], [cl, 0.5*cw], *(arc_top[::-1])])
-        edges_in = _np.array(edges_out)
-        edges_in[:,0] *= -1 # flip x
-        edges_in[:,0] -= length
-        global_offset = _np.array([xend, yend])
-        edges_out = _Rotate(edges_out, rotation) + global_offset
-        edges_in = _Rotate(edges_in, rotation) + global_offset
-        return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
-                _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
-
-    def _CoilPolygonsDipoleH(xend, yend, length, rotation, alpha, dx, coil_dict, colour="#b87333"):
-        if greyOut:
-            colour = greyColour
-        cl = coil_dict['coil_length']
-        if cl == 0:
-            return []
-        cw = coil_dict['coil_width']
-        cdx = coil_dict['coil_dx']
-        arc1 = _np.array([[_np.sin(theta), _np.cos(theta)] for theta in _np.linspace(0, _np.pi/2, 5)])
-        r = 0.5*cl
-        arc_top = arc1*r + _np.array([cl-r, (0.5*cw) - r ])
-        arc_bot = _np.array(arc_top)[::-1]
-        arc_bot[:,1] *= -1 # flip y
-        coil_offset = _np.array([0, cdx + dx])
-        edges_out = _np.array([[0, 0.5*cw], *arc_top, *arc_bot, [0, -0.5*cw]]) + coil_offset
-        edges_in = _np.array(edges_out)
-        edges_in[:,0] *= -1 # flip x
-        edges_in[:,0] -= length
-        global_offset = _np.array([xend, yend])
-        edges_out = _Rotate(edges_out, rotation) + global_offset
-        edges_in = _Rotate(edges_in, rotation) + global_offset
-        return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
-                _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
-
-    def _UpdateParams(element, params, insideFactor):
-        n = e['NAME']
-        allKeys = set(params.keys())
-        allowedTypeKeys = set(allKeys)
-        for k, prms in elementDict.items():
-            if k in n:
-                params.update(prms)
-                eleKeys = set(prms.keys())
-                allowedTypeKeys -= eleKeys
-                break
-        for k, prms in typeDict.items():
-            if k in n:
-                keysToTake = allowedTypeKeys.intersection(set(prms.keys()))
-                subDict = {l:prms[l] for l in keysToTake}
-                params.update(subDict)
-                break
-        insideFactor2 = 1 if params['inside'] else -1
-        params['dx'] *= insideFactor * insideFactor2
-        params['coil_dx'] *= insideFactor * insideFactor2
-        return params
-
-    X, Z, ang = 0, 0, 0
-    XZdir = _np.array([0,1])
-    axisLine = []
-
-    # loop over elements and prepare patches
-    # patches are turned into patch collection which is more efficient later
-    quads, bends, kickers, collimators, sextupoles = [], [], [], [], []
-    octupoles, multipoles, solenoids, other, coils = [], [], [], [], []
-    pipes = []
-
-    _defaults = _defaultdict(lambda: r"#cccccc", defaultElementColours)  # default is grey
-
-    for i, e in enumerate(survey):
-        if i == 0:
-            X = e['X']
-            Z = e['Z']
-            ang = e['THETA']
-            axisLine.append([Z,X])
-        l = e['L']
-        name = e['NAME']
-        if "BEGIN.VAC" in name or "BEG.VAC" in name:
-            _pipeOn = True
-        elif "END.VAC" in name:
-            _pipeOn = False
-
-        if l == 0:
-            continue
-
-        angle = e['ANGLE']
-        insideFactor = -1 * _np.sign(angle)
-        # draw line from previous point until now
-        Xend, Zend = e['X'], e['Z']
-        pt = [[Zend, Xend]] if angle == 0 else _CurvedLine(Z, X, XZdir, angle, l, resolution)
-        axisLine.extend(pt)
-
-        if name in ignoreNames:
-            continue
-
-        alpha = 0.1 if name in maskNames else 1.0
-        if defaultAlpha != None:
-            alpha = defaultAlpha
-        # tolerate very slight tilts, e.g. earth's curvature corrections
-        if 'TILT' in e:
-            vertical = abs(e['TILT'] - 0.5*_np.pi) < 0.02 * _np.pi
-        else:
-            vertical = False
-
-        # draw element
-        kw = e['KEYWORD']
-        params = {'colour' : _defaults[kw],
-                  'width' : defaultWidth,
-                  'height' : defaultWidth,
-                  'dx' : 0, # curvilinear x
-                  'dy' : 0, # curvilinear y
-                  'coil_length' : defaultCoilLength,
-                  'coil_width' : 0.7*defaultWidth,
-                  'coil_height' : 0,
-                  'coil_dx' : 0, # curvilinear x
-                  'coil_dy' : 0, # curvilinear x
-                  'coil_edge' : 0,
-                  'inside' : True,
-                  'style' : 'normal',
-                  }
-        params = _UpdateParams(e, params, insideFactor)
-        #params['coil_dx']# *= inside
-        c = params['colour']
-        w = params['width']
-        h = params['height']
-        th = e['THETA']
-        dx = params['dx']
-        dy = params['dy']
-        coils_this_mag = []
-        if vertical:
-            dx, dy = dy, dx
-
-        # for everything
-        if greyOut:
-            c = greyColour
-            alpha = 1.0
-
-        if name in funcDict:
-            # delegate function gives back list of polygons as x,y coords in plot
-            polygonList = funcDict[name](locals())
-            edges = _RotateTranslate(polygonList, th, _np.array([Zend, Xend]))
-            return _patches.Polygon(_Global(edges), color=c, fill=True, alpha=alpha)
-        elif kw == 'DRIFT':
-            # don't deal with pole faces - just put behind everything
-            if _pipeOn and buildPipes:
-                ignore = any([a <= e['S'] <= b for (a,b) in pipeMaskRanges])
-                if not ignore:
-                    pipes.append(_Rectangle(Zend, Xend, pipeRadius, l, th, c, alpha))
-        elif kw == 'QUADRUPOLE':
-            quads.append(_Rectangle(Zend, Xend, w, l, th, c, alpha, dx, dy))
-            coils_this_mag.extend(_CoilPolygonsQuad(Zend, Xend, l, th, alpha, params))
-        elif kw == 'RBEND':
-            a = 0 if vertical else 0.5*angle
-            bends.append(_Rectangle(Zend, Xend, w, l, th+0.5*a, c, alpha, dx, dy))
-            coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
-        # elif kw == 'SBEND':
-        #     bends.append(DrawBend(element, c, alpha, dx, dy)) #blue
-        #     coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
-        elif kw in ['HKICKER', 'VKICKER', 'KICKER']:
-            kickers.append(_Rectangle(Zend, Xend, w, l, th, c, alpha, dx, dy))
-            coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
-        elif kw == 'SOLENOID':
-            solenoids.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy))
-        elif kw in ['RCOLLIMATOR', 'ECOLLIMATOR', 'COLLIMATOR']:
-            if params['style'] == 'fancy':
-                cc = c if greyOut else u'#606060'
-                collimators.append(_Collimator(Zend, Xend, w, l, e['THETA'], cc, alpha))
-            else:
-                collimators.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha))
-        elif kw == 'SEXTUPOLE':
-            sextupoles.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy)) #yellow
-        elif kw == 'OCTUPOLE':
-            octupoles.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha, dx, dy)) #green
-        else:
-            #unknown so make light in alpha
-            if l > 0.1:
-                other.append(_Rectangle(Zend, Xend, w, l, e['THETA'], c, alpha)) #light grey
-
-        if len(coils_this_mag) > 0:
-            coils.extend(coils_this_mag)
-
-        # update the coords at the incoming end for the next loop iteration
-        X = Xend
-        Z = Zend
-
-    axisLine.extend([[Z, X]])
-
-    zo = zOffset * 30
-    ax.add_collection(_PatchCollection(bends, match_original=True, zorder=20+zo))
-    ax.add_collection(_PatchCollection(quads, match_original=True, zorder=19+zo))
-    ax.add_collection(_PatchCollection(kickers, match_original=True, zorder=18+zo))
-    ax.add_collection(_PatchCollection(collimators, match_original=True, zorder=16+zo))
-    ax.add_collection(_PatchCollection(sextupoles, match_original=True, zorder=15+zo))
-    ax.add_collection(_PatchCollection(octupoles, match_original=True, zorder=14+zo, edgecolor=None))
-    ax.add_collection(_PatchCollection(multipoles, match_original=True, zorder=13+zo, edgecolor=None))
-    ax.add_collection(_PatchCollection(other, match_original=True, zorder=12+zo, edgecolor=None))
-    ax.add_collection(_PatchCollection(solenoids, match_original=True, zorder=11+zo))
-    ax.add_collection(_PatchCollection(coils, match_original=True, zorder=10+zo))
-    ax.add_collection(_PatchCollection(pipes, match_original=True, zorder=9+zo))
-
-    # axis of machine over the top always
-    axisLine = _Global(_np.array(axisLine))
-    ax.plot(axisLine[:, 0], axisLine[:, 1], c='k', zorder=21+zo, alpha=0.5, lw=1)
-
-    _plt.suptitle(title, size='x-large')
-    _plt.xlabel('Z (m)')
-    _plt.ylabel('X (m)')
-    _plt.tight_layout()
-
-    if invisibleAxes:
-        ax.get_xaxis().set_visible(False)
-        ax.get_yaxis().set_visible(False)
-        ax.spines['top'].set_visible(False)
-        ax.spines['bottom'].set_visible(False)
-        ax.spines['left'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        # orientation arrows
-        fratio = f.get_size_inches()
-        xOverY = fratio[0]/fratio[1]
-        w = 0.003
-        ys = arrowsDy
-        xs = arrowsDx
-        _plt.arrow(0.02-0.5*w+xs, 0.02+ys, 0.07/xOverY, 0, width=w*xOverY, head_width=3*w*xOverY, head_length=1*w*xOverY, transform=ax.transAxes, color='k', capstyle='butt')
-        _plt.text(0.02+(0.13/xOverY)+xs, 0.02+ys, 'Z (m)', transform=ax.transAxes)
-        _plt.arrow(0.02+xs, 0.02-(0.5*w*xOverY)+ys, 0, 0.07, width=w, head_width=3*w, head_length=3*w*xOverY, transform=ax.transAxes, color='k', capstyle='butt')
-        _plt.text(0.02+xs, 0.13+ys, 'X (m)', transform=ax.transAxes)
-
-    if outputfilename is not None:
-        if 'png' in outputfilename:
-            _plt.savefig(outputfilename, dpi=500)
-        else:
-            _plt.savefig(outputfilename)
-
-    return f,ax
-
-
-def Survey2DZY(survey_tfsfile, ax=None, greyOut=False, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
-               ignoreNames=None, title='', outputfilename=None, resolution=0.1, defaultWidth=0.5, defaultCoilLength=0.15,
-               globalRotation=None, globalOffset=None, pipeRadius=None, pipeMaskRanges=None, zOffset=0, invisibleAxes=False,
-               arrowsDy=0, arrowsDx=0, defaultAlpha=None):
-    """
-    Plot the x and z coordinates from a tfs file.
-
-    :param tfsfiles: list of tfs files as strings or already loaded pymadx.Data.Tfs objects.
-    :type tfsfile: str, pymadx.Data.Tfs
-    :param title: optional title for plot
-    :type title: str
-    :param outputfilename: optional output file name including extension to plt.savefig
-    :type outputfilename: str
-
-    xwidth
-    ywidth
-    colour
-    """
-    survey = _Data.CheckItsTfs(survey_tfsfile)
-
-    # need these list / dicts but can't have a mutable type as a default argument
-    def _InitialiseList(var):
-        return [] if var is None else var
-    def _InitialiseDict(var):
-        return {} if var is None else var
-    elementDict = _InitialiseDict(elementDict)
-    typeDict = _InitialiseDict(typeDict)
-    funcDict = _InitialiseDict(funcDict)
-    maskNames = _InitialiseList(maskNames)
-    ignoreNames = _InitialiseList(ignoreNames)
-    greyColour = u'#c0c0c0'
-
-    if pipeMaskRanges is None:
-        pipeMaskRanges = [[survey[0]['S']-100, survey[0]['S']-99]]
-    buildPipes = pipeRadius is not None
-    _pipeOn = True
-
-    gr = globalRotation is not None
-    if gr:
-        grax = globalRotation[:2]
-        gran = globalRotation[-1]
-    gt = globalOffset is not None
-    if gt:
-        gtt = _np.array(globalOffset)
-
-    if not ax:
-        f = _plt.figure()
-        ax = f.add_subplot(111)
-    else:
-        f = ax.get_figure()
-
-    def _Rotate(points, angle, origin=None):
-        if origin is None:
-            origin = _np.array([[0, 0]])
-        c, s = _np.cos(-angle), _np.sin(-angle)
-        R = _np.array(((c, -s), (s, c)))
-        return (points - origin) @ R + origin
-
-    def _RotateTranslate(points, angle, offset):
-        c, s = _np.cos(-angle), _np.sin(-angle)
-        R = _np.array(((c, -s), (s, c)))
-        return points @ R + offset
-
-    def _CurvedLine(x0, y0, xydir, angle, arcLength, stepSize=0.1):
-        return [[x0, y0]]
-    def _SBend():
-        return None # polygon
-    def _Rectangle(xend, yend, width, length, rotation, colour, alpha, dx=0, dy=0):
-        """
-        dx, dy are in curvilinear x,y so are applied to plot y,x respectiviely for an ZX plot.
-        """
-        edges = _np.array([[0, 0.5*width+dy], [0, -0.5*width+dy], [-length, -0.5*width+dy], [-length, 0.5*width+dy]])
-        edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
-        return _patches.Polygon(_Global(edges), color=colour, fill=True, alpha=alpha)
-    def _Collimator(xend, yend, width, length, rotation, colour, alpha):
-        edges = _np.array([[0,            0.3*width], [0,           -0.3*width], [-0.3*length, -0.3*width],
-                           [-0.3*length, -0.5*width], [-0.7*length, -0.5*width], [-0.7*length, -0.3*width],
-                           [-length,     -0.3*width], [-length,      0.3*width], [-0.7*length,  0.3*width],
-                           [-0.7*length,  0.3*width], [-0.7*length,  0.5*width], [-0.3*length,  0.5*width],
-                           [-0.3*length,  0.3*width]])
-        edges = _RotateTranslate(edges, rotation, _np.array([xend, yend]))
-        return _patches.Polygon(_Global(edges), color=colour, fill=True, alpha=alpha)
-
-    def _Global(points):
-        if gr:
-            points = _Rotate(points, gran, grax)
-        if gt:
-            points += gtt
-        return points
-
-    def _CoilPolygonsQuad(xend, yend, length, rotation, alpha, coil_dict, colour="#b87333"):
-        if greyOut:
-            colour = greyColour
-        cl = coil_dict['coil_length']
-        if cl == 0:
-            return []
-        cw = coil_dict['coil_width']
-        arc1 = _np.array([[_np.sin(theta), _np.cos(theta)] for theta in _np.linspace(0, _np.pi/2, 5)])
-        r = 0.5*cl
-        arc_bot = arc1*r + _np.array([cl-r, -r])
-        arc_top = _np.array(arc_bot)
-        arc_top[:,1] *= -1
-        edges_out = _np.array([*arc_bot, [cl, -0.5*cw], [0, -0.5*cw], [0, 0.5*cw], [cl, 0.5*cw], *(arc_top[::-1])])
-        edges_in = _np.array(edges_out)
-        edges_in[:,0] *= -1 # flip x
-        edges_in[:,0] -= length
-        global_offset = _np.array([xend, yend])
-        edges_out = _Rotate(edges_out, rotation) + global_offset
-        edges_in = _Rotate(edges_in, rotation) + global_offset
-        return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
-                _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
-
-    def _CoilPolygonsDipoleH(xend, yend, length, rotation, alpha, dx, coil_dict, colour="#b87333"):
-        if greyOut:
-            colour = greyColour
-        cl = coil_dict['coil_length']
-        if cl == 0:
-            return []
-        cw = coil_dict['coil_width']
-        cdx = coil_dict['coil_dx']
-        arc1 = _np.array([[_np.sin(theta), _np.cos(theta)] for theta in _np.linspace(0, _np.pi/2, 5)])
-        r = 0.5*cl
-        arc_top = arc1*r + _np.array([cl-r, (0.5*cw) - r ])
-        arc_bot = _np.array(arc_top)[::-1]
-        arc_bot[:,1] *= -1 # flip y
-        coil_offset = _np.array([0, cdx + dx])
-        edges_out = _np.array([[0, 0.5*cw], *arc_top, *arc_bot, [0, -0.5*cw]]) + coil_offset
-        edges_in = _np.array(edges_out)
-        edges_in[:,0] *= -1 # flip x
-        edges_in[:,0] -= length
-        global_offset = _np.array([xend, yend])
-        edges_out = _Rotate(edges_out, rotation) + global_offset
-        edges_in = _Rotate(edges_in, rotation) + global_offset
-        return [_patches.Polygon(_Global(edges_out), color=colour, fill=True, alpha=alpha),
-                _patches.Polygon(_Global(edges_in), color=colour, fill=True, alpha=alpha)]
-
-    def _UpdateParams(element, params, insideFactor):
-        n = e['NAME']
-        allKeys = set(params.keys())
-        allowedTypeKeys = set(allKeys)
-        for k, prms in elementDict.items():
-            if k in n:
-                params.update(prms)
-                eleKeys = set(prms.keys())
-                allowedTypeKeys -= eleKeys
-                break
-        for k, prms in typeDict.items():
-            if k in n:
-                keysToTake = allowedTypeKeys.intersection(set(prms.keys()))
-                subDict = {l:prms[l] for l in keysToTake}
-                params.update(subDict)
-                break
-        insideFactor2 = 1 if params['inside'] else -1
-        params['dx'] *= insideFactor * insideFactor2
-        params['coil_dx'] *= insideFactor * insideFactor2
-        return params
-
-    Y, Z, ang = 0, 0, 0
-    XZdir = _np.array([0,1])
-    axisLine = []
-
-    # loop over elements and prepare patches
-    # patches are turned into patch collection which is more efficient later
-    quads, bends, kickers, collimators, sextupoles = [], [], [], [], []
-    octupoles, multipoles, solenoids, other, coils = [], [], [], [], []
-    pipes = []
-
-    _defaults = _defaultdict(lambda: r"#cccccc", defaultElementColours)  # default is grey
-
-    for i, e in enumerate(survey):
-        if i == 0:
-            Y = e['Y']
-            Z = e['Z']
-            ang = e['PHI']
-            axisLine.append([Z, Y])
-        l = e['L']
-        name = e['NAME']
-        if "BEGIN.VAC" in name or "BEG.VAC" in name:
-            _pipeOn = True
-        elif "END.VAC" in name:
-            _pipeOn = False
-
-        if l == 0:
-            continue
-
-        angle = e['ANGLE']
-        insideFactor = -1 * _np.sign(angle)
-        # draw line from previous point until now
-        Yend, Zend = e['Y'], e['Z']
-        pt = [[Zend, Yend]] if angle == 0 else _CurvedLine(Z, Y, XZdir, angle, l, resolution)
-        axisLine.extend(pt)
-
-        if name in ignoreNames:
-            continue
-
-        alpha = 0.1 if name in maskNames else 1.0
-        if defaultAlpha != None:
-            alpha = defaultAlpha
-        # tolerate very slight tilts, e.g. earth's curvature corrections
-        if 'TILT' in e:
-            vertical = abs(e['TILT'] - 0.5*_np.pi) < 0.02 * _np.pi
-        else:
-            vertical = False
-
-        # draw element
-        kw = e['KEYWORD']
-        params = {'colour' : _defaults[kw],
-                  'width' : defaultWidth,
-                  'height' : defaultWidth,
-                  'dx' : 0, # curvilinear x
-                  'dy' : 0, # curvilinear y
-                  'coil_length' : defaultCoilLength,
-                  'coil_width' : 0.7*defaultWidth,
-                  'coil_height' : 0,
-                  'coil_dx' : 0, # curvilinear x
-                  'coil_dy' : 0, # curvilinear x
-                  'coil_edge' : 0,
-                  'inside' : True,
-                  'style' : 'normal',
-                  }
-        params = _UpdateParams(e, params, insideFactor)
-        #params['coil_dx']# *= inside
-        c = params['colour']
-        w = params['width']
-        h = params['height']
-        th = e['THETA']
-        dx = params['dx']
-        dy = params['dy']
-        coils_this_mag = []
-        if vertical:
-            dx, dy = dy, dx
-
-        # for everything
-        if greyOut:
-            c = greyColour
-            alpha = 1.0
-
-        if name in funcDict:
-            # delegate function gives back list of polygons as x,y coords in plot
-            polygonList = funcDict[name](locals())
-            edges = _RotateTranslate(polygonList, th, _np.array([Zend, Yend]))
-            return _patches.Polygon(_Global(edges), color=c, fill=True, alpha=alpha)
-        elif kw == 'DRIFT':
-            # don't deal with pole faces - just put behind everything
-            if _pipeOn and buildPipes:
-                ignore = any([a <= e['S'] <= b for (a,b) in pipeMaskRanges])
-                if not ignore:
-                    pipes.append(_Rectangle(Zend, Yend, pipeRadius, l, th, c, alpha))
-        elif kw == 'QUADRUPOLE':
-            quads.append(_Rectangle(Zend, Yend, w, l, th, c, alpha, dx, dy))
-            coils_this_mag.extend(_CoilPolygonsQuad(Zend, Yend, l, th, alpha, params))
-        elif kw == 'RBEND':
-            a = 0 if vertical else 0.5*angle
-            bends.append(_Rectangle(Zend, Yend, w, l, th+0.5*a, c, alpha, dx, dy))
-            coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Yend, l, th, alpha, dx, params))
-        # elif kw == 'SBEND':
-        #     bends.append(DrawBend(element, c, alpha, dx, dy)) #blue
-        #     coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Xend, l, th, alpha, dx, params))
-        elif kw in ['HKICKER', 'VKICKER', 'KICKER']:
-            kickers.append(_Rectangle(Zend, Yend, w, l, th, c, alpha, dx, dy))
-            coils_this_mag.extend(_CoilPolygonsDipoleH(Zend, Yend, l, th, alpha, dx, params))
-        elif kw == 'SOLENOID':
-            solenoids.append(_Rectangle(Zend, Yend, w, l, e['THETA'], c, alpha, dx, dy))
-        elif kw in ['RCOLLIMATOR', 'ECOLLIMATOR', 'COLLIMATOR']:
-            if params['style'] == 'fancy':
-                cc = c if greyOut else u'#606060'
-                collimators.append(_Collimator(Zend, Yend, w, l, e['THETA'], cc, alpha))
-            else:
-                collimators.append(_Rectangle(Zend, Yend, w, l, e['THETA'], c, alpha))
-        elif kw == 'SEXTUPOLE':
-            sextupoles.append(_Rectangle(Zend, Yend, w, l, e['THETA'], c, alpha, dx, dy)) #yellow
-        elif kw == 'OCTUPOLE':
-            octupoles.append(_Rectangle(Zend, Yend, w, l, e['THETA'], c, alpha, dx, dy)) #green
-        else:
-            #unknown so make light in alpha
-            if l > 0.1:
-                other.append(_Rectangle(Zend, Yend, w, l, e['THETA'], c, alpha)) #light grey
-
-        if len(coils_this_mag) > 0:
-            coils.extend(coils_this_mag)
-
-        # update the coords at the incoming end for the next loop iteration
-        Y = Yend
-        Z = Zend
-
-    axisLine.extend([[Z, Y]])
-
-    zo = zOffset * 30
-    ax.add_collection(_PatchCollection(bends, match_original=True, zorder=20+zo))
-    ax.add_collection(_PatchCollection(quads, match_original=True, zorder=19+zo))
-    ax.add_collection(_PatchCollection(kickers, match_original=True, zorder=18+zo))
-    ax.add_collection(_PatchCollection(collimators, match_original=True, zorder=16+zo))
-    ax.add_collection(_PatchCollection(sextupoles, match_original=True, zorder=15+zo))
-    ax.add_collection(_PatchCollection(octupoles, match_original=True, zorder=14+zo, edgecolor=None))
-    ax.add_collection(_PatchCollection(multipoles, match_original=True, zorder=13+zo, edgecolor=None))
-    ax.add_collection(_PatchCollection(other, match_original=True, zorder=12+zo, edgecolor=None))
-    ax.add_collection(_PatchCollection(solenoids, match_original=True, zorder=11+zo))
-    ax.add_collection(_PatchCollection(coils, match_original=True, zorder=10+zo))
-    ax.add_collection(_PatchCollection(pipes, match_original=True, zorder=9+zo))
-
-    # axis of machine over the top always
-    axisLine = _Global(_np.array(axisLine))
-    ax.plot(axisLine[:, 0], axisLine[:, 1], c='k', zorder=21+zo, alpha=0.5, lw=1)
-
-    _plt.suptitle(title, size='x-large')
-    _plt.xlabel('Z (m)')
-    _plt.ylabel('Y (m)')
-    _plt.tight_layout()
-
-    if invisibleAxes:
-        ax.get_xaxis().set_visible(False)
-        ax.get_yaxis().set_visible(False)
-        ax.spines['top'].set_visible(False)
-        ax.spines['bottom'].set_visible(False)
-        ax.spines['left'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        # orientation arrows
-        fratio = f.get_size_inches()
-        xOverY = fratio[0]/fratio[1]
-        w = 0.003
-        ys = arrowsDy
-        xs = arrowsDx
-        _plt.arrow(0.02-0.5*w+xs, 0.02+ys, 0.07/xOverY, 0, width=w*xOverY, head_width=3*w*xOverY, head_length=1*w*xOverY, transform=ax.transAxes, color='k', capstyle='butt')
-        _plt.text(0.02+(0.13/xOverY)+xs, 0.02+ys, 'Z (m)', transform=ax.transAxes)
-        _plt.arrow(0.02+xs, 0.02-(0.5*w*xOverY)+ys, 0, 0.07, width=w, head_width=3*w, head_length=3*w*xOverY, transform=ax.transAxes, color='k', capstyle='butt')
-        _plt.text(0.02+xs, 0.13+ys, 'Y (m)', transform=ax.transAxes)
-
-    if outputfilename is not None:
-        if 'png' in outputfilename:
-            _plt.savefig(outputfilename, dpi=500)
-        else:
-            _plt.savefig(outputfilename)
-
-    return f,ax
-
 
 def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, squareroot=False, dispersionY=False,
          legendLoc="best"):
@@ -1210,7 +527,6 @@ def BetaMultiple(tfsfiles, labels=None, s_offsets=None, title='', outputfilename
         _plt.savefig(outputfilename+'.pdf')
         _plt.savefig(outputfilename+'.png')
 
-
 def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, ax=None, figsize=(9,5)):
     """
     Plot sqrt(beta x,y) as a function of S. By default, a machine diagram is shown at
@@ -1259,7 +575,6 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
             outputfilename = outputfilename.split('.')[0]
         _plt.savefig(outputfilename+'.pdf')
         _plt.savefig(outputfilename+'.png')
-
 
 def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertype=True):
     """
@@ -1315,7 +630,6 @@ def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertyp
         _plt.savefig(outputfilename+'.pdf')
         _plt.savefig(outputfilename+'.png')
 
-
 def ApertureN1(aperture, machine=None, outputfilename=None):
     """
     Plot the N1 aperture value from MADX.
@@ -1347,7 +661,6 @@ def ApertureN1(aperture, machine=None, outputfilename=None):
         _plt.savefig(outputfilename+'.pdf')
         _plt.savefig(outputfilename+'.png')
 
-
 def _ApertureTypeColourMap():
     #Some nice colors
     _colourCodes = ['#C03028',
@@ -1375,11 +688,9 @@ def _ApertureTypeColourMap():
     typeToCol = dict(list(zip(_madxAperTypes, _colourCodes)))
     return typeToCol
 
-
 def _HexToRGB(h):
     h = h.strip('#')
     return tuple(int(h[i:i+2], 16) for i in (0, 2 ,4))
-
 
 def _ApertureTypeToColour(apertype, cmap=_ApertureTypeColourMap()):
     colour = (0,0,0)
@@ -1390,13 +701,11 @@ def _ApertureTypeToColour(apertype, cmap=_ApertureTypeColourMap()):
 
     return colour
 
-
 def _AddColourLegend(colours, cmap=_ApertureTypeColourMap()):
     found_cols = set(colours)
     typemap = dict((v,k) for k,v in cmap.items()) #invert to get apertype from color
     for col in found_cols:
         _plt.scatter(None,None,color=col, label=typemap[col].lower())
-
 
 def _SetMachineAxesStyle(ax):
     ax.set_facecolor('none')
@@ -1408,7 +717,6 @@ def _SetMachineAxesStyle(ax):
     ax.spines['right'].set_visible(False)
     ax.margins(x=0.02)
 
-
 def _PrepareMachineAxes(figure):
     # create new machine axis with proportions 6 : 1
     gs = _gridspec.GridSpec(9,1)
@@ -1419,7 +727,6 @@ def _PrepareMachineAxes(figure):
     axmachine.set_facecolor('none') # make background transparent to allow scientific notation
     _SetMachineAxesStyle(axmachine)
     return axmachine
-
 
 def _AdjustExistingAxesAndAddMachineAxis(figure, fraction=0.9):
     """
@@ -1461,7 +768,6 @@ def _AdjustExistingAxesAndAddMachineAxis(figure, fraction=0.9):
         axi.set_subplotspec(gs[((i * multiple) + 1):(((i + 1) * multiple) + 1)])
 
     return axmachine
-
 
 def AddMachineLatticeToFigure(figure, tfsfile, reverse=False, offset=None):
     """
@@ -1530,7 +836,6 @@ def AddMachineLatticeToFigure(figure, tfsfile, reverse=False, offset=None):
     figure.canvas.mpl_connect('button_press_event', Click)
     return axmachine
 
-
 def MachineDiagram(tfsfile, title=None, reverse=False):
     """
     Plot just a machine diagram on its own. The S axis is shown.
@@ -1572,7 +877,6 @@ def MachineDiagram(tfsfile, title=None, reverse=False):
     if title:
         _plt.title(title)
     _plt.tight_layout()
-
 
 def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title=None, reverse=False):
     """
@@ -1630,7 +934,6 @@ def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title
     if title:
         _plt.title(title)
     _plt.tight_layout()
-
 
 def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None, useQuadStrength=True, maskNames=None,
                        flipQuads=False):
@@ -1745,7 +1048,6 @@ def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None
     ax.set_ylim(-0.2,0.2)
     ax.set_xlim(tfs.smin, tfs.smax)
 
-
 def RMatrixTableString(tfs, tablefmt='grid'):
     """
     :param tfs: TFS object to inspect.
@@ -1763,11 +1065,9 @@ def RMatrixTableString(tfs, tablefmt='grid'):
     s = _tabulate.tabulate(rmat, headers=rmat, tablefmt=tablefmt)
     return s
 
-
 def PrintRMatrixTable(tfs):
     s = RMatrixTableString(tfs)
     print(s)
-
 
 def RMatrixTableToPdf(tfs, outputfilename):
     """
