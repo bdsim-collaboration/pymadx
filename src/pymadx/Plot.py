@@ -576,6 +576,65 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
         _plt.savefig(outputfilename+'.pdf')
         _plt.savefig(outputfilename+'.png')
 
+
+def Envelopes(tfsfile, title='', outputfilename=None, machine=True, factors=(1,3,7), axX=None, axY=None, figsize=(9, 5)):
+    """
+    Plot 1, 3, 7 sigma with the centroid added on.
+
+    :param tfsfile: TFS file object or filename
+    :type tfsfile: pymadx.Data.Tfs, str
+    :param title: title of the figure
+    :type title: str
+    :param outputfilename: output filename
+    :type outputfilename: None, str
+    :param machine: whether machine diagram is shown
+    :type machine: bool
+    :param factors: numbers of sigmas to plot of envelopes
+    :type factors: tuple(float, ....), list(float, ...)
+    :param axX: axes to draw the horizontal envelopes into
+    :type axX: matplotlib.axes.Axes
+    :param axY: axes to draw the vertical envelopes into
+    :type axY: matplotlib.axes.Axes
+    :param figsize: figure size
+    :type figsize: tuple(float, float)
+
+    """
+    import pymadx.Data as _Data
+    madx = _Data.CheckItsTfs(tfsfile)
+    d = _GetOpticalDataFromTfs(madx)
+    smax = madx.smax
+
+    if axX is None and axY is None:
+        f, (axX, axY) = _plt.subplots(2, 1, sharex=True, figsize=figsize)
+    else:
+        f = axX.get_figure()
+
+    s  = d['s']
+    mx = d['x'] * 1e3
+    sx = d['sigmax'] * 1e3
+    my = d['y'] * 1e3
+    sy = d['sigmay'] * 1e3
+
+    axX.plot(s, mx, c='tab:blue')
+    axY.plot(s, my, c='tab:orange')
+    for fa in factors[::-1]:
+        axX.fill_between(s, mx - fa*sx, mx + fa*sx, color="tab:blue", alpha=0.2)
+        axY.fill_between(s, my - fa*sy, my + fa*sy, color="tab:orange", alpha=0.2)
+    axY.set_xlabel('S (m)')
+    axX.set_ylabel(r'$\sigma_x$ (mm)')
+    axY.set_ylabel(r'$\sigma_y$ (mm)')
+
+    if machine:
+        AddMachineLatticeToFigure(f, madx)
+
+    _plt.suptitle(title, size='x-large')
+    _plt.xlim((0 - 0.05 * smax, 1.05 * smax))
+    if outputfilename is not None:
+        if '.' in outputfilename:
+            outputfilename = outputfilename.split('.')[0]
+        _plt.savefig(outputfilename + '.pdf')
+        _plt.savefig(outputfilename + '.png')
+
 def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertype=True):
     """
     Plots the aperture extents vs. S from a pymadx.Data.Aperture instance.

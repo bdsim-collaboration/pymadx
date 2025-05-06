@@ -16,6 +16,7 @@ v3.0.0 - 2025 / 05 / XX
   a matplotlib plot such that :code:`plt.tight_layout()` still works after adding
   the new axes.
 * New ability to add a machine diagram from a cpymad instance.
+* New :code:`pyamdx.Plot.Envelopes` plotting function.
 
 
 v2.2.0 - 2024 / 03 / 26
