@@ -55,7 +55,7 @@ def _MakePlotter(plot_info_tuples, x_label, y_label, title):
 
 
 def _MakePlotterWithScale(plot_info_tuples, x_label, y_label, title, zeroLine=False):
-    def f_out(first, second, first_name=None, second_name=None, **kwargs):
+    def f_out(first, second, first_name=None, second_name=None, dSSecond=0, **kwargs):
         """first and second should be tfs files."""
         first, first_name = _LoadTfsInfput(first, first_name)
         second, second_name = _LoadTfsInfput(second, second_name)
@@ -68,7 +68,7 @@ def _MakePlotterWithScale(plot_info_tuples, x_label, y_label, title, zeroLine=Fa
                       c=cmap(2*i),
                       label="{}: {}".format(legend_name, first_name),
                       **kwargs)
-            _plt.plot(second.GetColumn('S'),
+            _plt.plot(second.GetColumn('S')+dSSecond,
                       second.GetColumn(var)*scale,
                       c=cmap(2*i + 1), ls='--',
                       label="{}: {}".format(legend_name, second_name),

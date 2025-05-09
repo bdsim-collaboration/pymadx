@@ -23,14 +23,14 @@ PlotHorizontal = _MakePlotterWithScale(_HORIZONTAL, "S / m", "x / mm", "Horizont
 PlotVertical   = _MakePlotterWithScale(_VERTICAL,   "S / m", "x / mm", "Vertical", zeroLine=True)
 
 def MadxVsMadxRMatrix(first, second, first_name=None,
-                      second_name=None, saveAll=True,
+                      second_name=None, sOffsetSecond=0, saveAll=True,
                       outputFileName=None, **kwargs):
     """
     Display vertical and horizontal RMatrix components for two files.
     """
     figures = [
-        PlotHorizontal(first, second, first_name=first_name,second_name=second_name, **kwargs),
-        PlotVertical(first, second, first_name=first_name, second_name=second_name, **kwargs)
+        PlotHorizontal(first, second, first_name, second_name, sOffsetSecond, **kwargs),
+        PlotVertical(first, second, first_name, second_name, sOffsetSecond, **kwargs)
     ]
 
     if saveAll:
