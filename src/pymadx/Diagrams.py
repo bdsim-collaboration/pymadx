@@ -267,6 +267,7 @@ class _SurveyDiagram:
 
         self._plane_global_angle = 0
         self._flip_geometry_parameters = False
+        self.ylabel = "X (m)"
 
     def _GetRTFromElement(self, offrot):
         raise NotImplementedError()
@@ -458,7 +459,7 @@ class _SurveyDiagram:
 
         _plt.suptitle(self.title, size='x-large')
         _plt.xlabel('Z (m)')
-        _plt.ylabel('X (m)')
+        _plt.ylabel(self.ylabel)
         _plt.tight_layout()
 
         if self.invisibleAxes:
@@ -479,7 +480,7 @@ class _SurveyDiagram:
             _plt.text(0.02+(0.13/xOverY)+xs, 0.02+ys, 'Z (m)', transform=self.ax.transAxes)
             _plt.arrow(0.02+xs, 0.02-(0.5*w*xOverY)+ys, 0, 0.07, width=w, head_width=3*w,
                        head_length=3*w*xOverY, transform=self.ax.transAxes, color='k', capstyle='butt')
-            _plt.text(0.02+xs, 0.13+ys, 'X (m)', transform=self.ax.transAxes)
+            _plt.text(0.02+xs, 0.13+ys, self.ylabel, transform=self.ax.transAxes)
 
         if self.outputfilename is not None:
             if 'png' in self.outputfilename:
@@ -495,6 +496,7 @@ class _SurveyDiagramZX(_SurveyDiagram):
         super(_SurveyDiagramZX, self).__init__(*args, **kwargs)
         self._plane_global_angle = 0
         self._flip_geometry_parameters = False
+        self.ylabel = "X (m)"
 
     def _GetRTFromElement(self, offrot):
         return self.survey.GetRotoTranslationFromElementZX(self.offsetRotoTranslation)
@@ -521,6 +523,7 @@ class _SurveyDiagramZY(_SurveyDiagram):
         super(_SurveyDiagramZY, self).__init__(*args, **kwargs)
         self._plane_global_angle = _np.pi * 0.5
         self._flip_geometry_parameters = True
+        self.ylabel = "Y (m)"
 
     def _GetRTFromElement(self, offrot):
         return self.survey.GetRotoTranslationFromElementZY(self.offsetRotoTranslation)
