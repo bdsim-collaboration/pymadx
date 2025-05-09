@@ -3,7 +3,7 @@ Version History
 ===============
 
 
-v3.0.0 - 2025 / 05 / XX
+v3.0.0 - 2025 / 05 / 09
 =======================
 
 * New :code:`pymadx.Diagrams` module to draw machine diagrams with coils and
@@ -17,6 +17,7 @@ v3.0.0 - 2025 / 05 / XX
   the new axes.
 * New ability to add a machine diagram from a cpymad instance.
 * New :code:`pyamdx.Plot.Envelopes` plotting function.
+* Support :code:`pathlib.Path` objects when loading a Tfs file.
 
 
 v2.2.0 - 2024 / 03 / 26

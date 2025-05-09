@@ -6,6 +6,7 @@ import bisect as _bisect
 import copy as _copy
 import gzip as _gzip
 import numpy as _np
+import pathlib as _pathlib
 import re as _re
 import string as _string
 import tarfile as _tarfile
@@ -49,6 +50,9 @@ class RotoTranslation2D:
 class Tfs:
     """
     MADX Tfs file reader
+
+    :param filename: filename of Tfs file
+    :type filename: str, pathlib.Path
 
     >>> a = Tfs()
     >>> a.Load('myfile.tfs')
@@ -101,19 +105,21 @@ class Tfs:
         self.nitems = 0
         self.nsegments = 0
         self.segments = []
-        self.filename = filename
+        self.filename = str(filename)
         self.smax = 0
         self.smin = 0
         self.ptctwiss = False # whether data was generated via ptctwiss
         self._verbose = False
         self.recalculateSifSliced = False
 
-        if isinstance(filename, str):
+        if isinstance(filename, (str, _pathlib.Path)):
             self.Load(filename, verbose=verbose)
         elif isinstance(filename, Tfs):
             self._DeepCopy(filename)
         elif str(type(filename)) == "<class 'cpymad.madx.Table'>":
             self.LoadFromCpymadTable(filename)
+        else:
+            raise ValueError("filename must be str, Path, or pymadx.Data.Tfs instance")
 
     def Clear(self):
         """
@@ -133,7 +139,7 @@ class Tfs:
             print('pymadx.Tfs.Load> zipped file')
             tar = _tarfile.open(filename, 'r')
             f = tar.extractfile(tar.getmember(tar.getnames()[-1])) # extract the last member
-        elif filename.endswith('.gz'): # gzipped file
+        elif str(filename).endswith('.gz'): # gzipped file
             print('pymadx.Tfs.Load> zipped file')
             f = _gzip.open(filename, 'r')
         else:
