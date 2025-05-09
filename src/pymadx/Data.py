@@ -118,6 +118,8 @@ class Tfs:
             self._DeepCopy(filename)
         elif str(type(filename)) == "<class 'cpymad.madx.Table'>":
             self.LoadFromCpymadTable(filename)
+        elif filename is None:
+            pass
         else:
             raise ValueError("filename must be str, Path, or pymadx.Data.Tfs instance")
 
