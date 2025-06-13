@@ -895,7 +895,7 @@ def AddMachineLatticeToFigure(figure, tfsfile, reverse=False, offset=None):
     figure.canvas.mpl_connect('button_press_event', Click)
     return axmachine
 
-def MachineDiagram(tfsfile, title=None, reverse=False):
+def MachineDiagram(tfsfile, title=None, reverse=False, figsize=(10, 3)):
     """
     Plot just a machine diagram on its own. The S axis is shown.
     
@@ -923,7 +923,7 @@ def MachineDiagram(tfsfile, title=None, reverse=False):
         else:
             useQuadStrength = False
 
-    f = _plt.figure(figsize=(10,2))
+    f = _plt.figure(figsize=figsize)
     ax = f.add_subplot(111)
     DrawMachineLattice(ax, tfs, reverse=reverse)
     _plt.xlabel('S (m)')
@@ -937,7 +937,7 @@ def MachineDiagram(tfsfile, title=None, reverse=False):
         _plt.title(title)
     _plt.tight_layout()
 
-def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title=None, reverse=False):
+def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title=None, reverse=False, figsize=(10, 3)):
     """
     Plot just a machine diagram on its own. The S axis is shown.
     
@@ -971,7 +971,7 @@ def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title
         else:
             useQuadStrength = False
     
-    f, (axt, axb) = _plt.subplots(2, 1, sharex=True, figsize=(10,3))
+    f, (axt, axb) = _plt.subplots(2, 1, sharex=True, figsize=figsize)
     DrawMachineLattice(axt, tfsT, reverse=reverse)
     DrawMachineLattice(axb, tfsB, reverse=reverse)
     axt.set_ylim(-0.3,0.3)
