@@ -360,7 +360,7 @@ def Survey(tfsfile, title='', outputfilename=None):
 
 def SurveyMultiple(tfsfiles, labels=None, title='', outputfilename=None):
     """
-    Plot the x and z coordinates from multiple tfs files on top of each other
+    Plot the X vs. Z and Y vs. Z coordinates from multiple tfs files on top of each other
 
     :param tfsfiles: list of tfs files as strings or already loaded pymadx.Data.Tfs objects.
     :type tfsfiles: [str,..], or [pymadx.Data.Tfs,...]
