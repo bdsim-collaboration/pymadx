@@ -403,6 +403,72 @@ def SurveyMultiple(tfsfiles, labels=None, title='', outputfilename=None):
     if outputfilename is not None:
         _plt.savefig(outputfilename)
 
+def SurveyMultipleVertical(tfsfiles, labels=None, title='', outputfilename=None):
+    """
+    Plot Y vs. Z coordinates from multiple tfs files on top of each other
+
+    :param tfsfiles: list of tfs files as strings or already loaded pymadx.Data.Tfs objects.
+    :type tfsfiles: [str,..], or [pymadx.Data.Tfs,...]
+    :param labels: optional list of labels that should match the length of tfsfiles
+    :type labels: [str,...]
+    :param title: optional title for plot
+    :type title: str
+    :param outputfilename: optional output file name including extension to plt.savefig
+    :type outputfilename: str
+    """
+    f = _plt.figure()
+    ax = f.add_subplot(111)
+    import pymadx.Data as _Data
+    if labels is None:
+        labels = tfsfiles
+
+    for tfs,l in zip(tfsfiles, labels):
+        madx = _Data.CheckItsTfs(tfs)
+        y = madx.GetColumn('Y')
+        z = madx.GetColumn('Z')
+        ax.plot(z, y, marker='.', label=l)
+
+    _plt.suptitle(title, size='x-large')
+    ax.set_xlabel('Z (m)')
+    ax.set_ylabel('Y (m)')
+    ax.legend()
+    _plt.tight_layout()
+    if outputfilename is not None:
+        _plt.savefig(outputfilename)
+
+def SurveyMultipleHorizontal(tfsfiles, labels=None, title='', outputfilename=None):
+    """
+    Plot X vs. Z coordinates from multiple tfs files on top of each other
+
+    :param tfsfiles: list of tfs files as strings or already loaded pymadx.Data.Tfs objects.
+    :type tfsfiles: [str,..], or [pymadx.Data.Tfs,...]
+    :param labels: optional list of labels that should match the length of tfsfiles
+    :type labels: [str,...]
+    :param title: optional title for plot
+    :type title: str
+    :param outputfilename: optional output file name including extension to plt.savefig
+    :type outputfilename: str
+    """
+    f = _plt.figure()
+    ax = f.add_subplot(111)
+    import pymadx.Data as _Data
+    if labels is None:
+        labels = tfsfiles
+
+    for tfs,l in zip(tfsfiles, labels):
+        madx = _Data.CheckItsTfs(tfs)
+        x = madx.GetColumn('X')
+        z = madx.GetColumn('Z')
+        ax.plot(z, x, marker='.', label=l)
+
+    _plt.suptitle(title, size='x-large')
+    ax.set_xlabel('X (m)')
+    ax.set_ylabel('Y (m)')
+    ax.legend()
+    _plt.tight_layout()
+    if outputfilename is not None:
+        _plt.savefig(outputfilename)
+
 def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, squareroot=False, dispersionY=False,
          legendLoc="best"):
     """
