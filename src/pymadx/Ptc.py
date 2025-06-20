@@ -81,12 +81,12 @@ def LoadInrays(fileName):
     # open file 
     f = open(fileName) 
     for l in f : 
-        inre_x  = _re.search('\s*x\s*=\s*([0-9.eE+-]+)\s*',l)
-        inre_px = _re.search('\s*px\s*=\s*([0-9.eE+-]+)\s*',l)
-        inre_y  = _re.search('\s*y\s*=\s*([0-9.eE+-]+)\s*',l)
-        inre_py = _re.search('\s*py\s*=\s*([0-9.eE+-]+)\s*',l)
-        inre_t  = _re.search(' t\s*=\s*([0-9.eE+-]+)\s*',l)
-        inre_pt = _re.search('\s*pt\s*=\s*([0-9.eE+-]+)\s*',l)
+        inre_x  = _re.search(r'\s*x\s*=\s*([0-9.eE+-]+)\s*',l)
+        inre_px = _re.search(r'\s*px\s*=\s*([0-9.eE+-]+)\s*',l)
+        inre_y  = _re.search(r'\s*y\s*=\s*([0-9.eE+-]+)\s*',l)
+        inre_py = _re.search(r'\s*py\s*=\s*([0-9.eE+-]+)\s*',l)
+        inre_t  = _re.search(r' t\s*=\s*([0-9.eE+-]+)\s*',l)
+        inre_pt = _re.search(r'\s*pt\s*=\s*([0-9.eE+-]+)\s*',l)
 
         if inre_x : 
             x = float(inre_x.group(1))

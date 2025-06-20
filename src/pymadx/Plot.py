@@ -312,7 +312,7 @@ def CentroidsAngle(tfsfile, title='', outputfilename=None, machine=True):
     axoptics.plot(d.GetColumn('S'), d.GetColumn('PX')*1e6, label='PX')
     axoptics.plot(d.GetColumn('S'), d.GetColumn('PY')*1e6, label='PY')
     axoptics.set_xlabel('S (m)')
-    axoptics.set_ylabel("Angle ($\mu$rad)")
+    axoptics.set_ylabel(r"Angle ($\mu$rad)")
     axoptics.legend(loc=0,fontsize='small') #best position
     axoptics.axhline(0, color='grey', alpha=0.5, ls='--')
     if machine:
