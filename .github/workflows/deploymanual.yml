@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
         id: checkout
 
-      - name: Install pybdsim
+      - name: Install pymadx
         run: |
           python -m pip install --upgrade pip
           pip install -e .[dev]   # or adjust to your needs
