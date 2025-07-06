@@ -1,0 +1,436 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Version History &mdash; pymadx 0.1.dev1+g5458dbb documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=780a3432"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Module Contents" href="moduledocs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pymadx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="licence.html">Licence &amp; Disclaimer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorship.html">Authorship</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tfsloading.html">TFS File Loading &amp; Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diagrams.html">Diagrams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building.html">Model Preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="converting.html">Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="moduledocs.html">Module Contents</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Version History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v3-0-2-2025-05-09">v3.0.2 - 2025 / 05 / 09</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v3-0-0-2025-05-09">v3.0.0 - 2025 / 05 / 09</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-2-0-2024-03-26">v2.2.0 - 2024 / 03 / 26</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-1-3-2024-03-24">v2.1.3 - 2024 / 03 / 24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-1-2-2024-01-31">v2.1.2 - 2024 / 01 / 31</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-1-1-2024-01-12">v2.1.1 - 2024 / 01 / 12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-1-0-2023-08-25">v2.1.0 - 2023 / 08 / 25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-0-1-2023-05-15">v2.0.1 - 2023 / 05 / 15</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-0-0-2023-03-16">v2.0.0 - 2023 / 03 / 16</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-8-2-2021-06-16">v1.8.2 - 2021 / 06 / 16</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-8-1-2020-12-16">v1.8.1 - 2020 / 12 / 16</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-8-0-2019-06-08">v1.8.0 - 2019 / 06 / 08</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new-features">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-7-1-2019-04-20">v1.7.1 - 2019 / 04 / 20</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Bug Fixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-7-2019-02-27">v1.7 - 2019 / 02 / 27</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#general">General</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-6-2018-12-12">v1.6 - 2018 / 12 / 12</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">General</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-5-2018-08-24">v1.5 - 2018 / 08 / 24</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">General</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Bug Fixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-4-2018-06-23">v1.4 - 2018 / 06 / 23</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">General</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-2-2018-05-23">v1.2 - 2018 / 05 / 23</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">General</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Bug Fixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-1-2018-04-10">v1.1 - 2018 / 04 / 10</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id12">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Bug Fixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-0-2017-12-05">v1.0 - 2017 / 12 / 05</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id14">New Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pymadx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Version History</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/version_history.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="version-history">
+<h1>Version History<a class="headerlink" href="#version-history" title="Link to this heading"></a></h1>
+<section id="v3-0-2-2025-05-09">
+<h2>v3.0.2 - 2025 / 05 / 09<a class="headerlink" href="#v3-0-2-2025-05-09" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Fix ylabel in diagrams.</p></li>
+<li><p>Fix Tfs slicing.</p></li>
+</ul>
+</section>
+<section id="v3-0-0-2025-05-09">
+<h2>v3.0.0 - 2025 / 05 / 09<a class="headerlink" href="#v3-0-0-2025-05-09" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>New <code class="code docutils literal notranslate"><span class="pre">pymadx.Diagrams</span></code> module to draw machine diagrams with coils and
+customisation from survey output. See <a class="reference internal" href="diagrams.html#diagrams"><span class="std std-ref">Diagrams</span></a> for instructions.</p></li>
+<li><p>Tfs class no longer recalculates S coordinate by default. Can be turned back on by
+setting the member variable <cite>recalculateSifSliced=True</cite>.</p></li>
+<li><p>New <code class="code docutils literal notranslate"><span class="pre">pymadx_rmatrix_plot</span></code> command line tool.</p></li>
+<li><p>Ability to apply an S offset in coordinates to an R-matrix plot.</p></li>
+<li><p>Fix <code class="code docutils literal notranslate"><span class="pre">pymadx.Plot.AddMachineLatticeToFigure</span></code> to correctly adjust axes in
+a matplotlib plot such that <code class="code docutils literal notranslate"><span class="pre">plt.tight_layout()</span></code> still works after adding
+the new axes.</p></li>
+<li><p>New ability to add a machine diagram from a cpymad instance.</p></li>
+<li><p>New <code class="code docutils literal notranslate"><span class="pre">pyamdx.Plot.Envelopes</span></code> plotting function.</p></li>
+<li><p>Support <code class="code docutils literal notranslate"><span class="pre">pathlib.Path</span></code> objects when loading a Tfs file.</p></li>
+</ul>
+</section>
+<section id="v2-2-0-2024-03-26">
+<h2>v2.2.0 - 2024 / 03 / 26<a class="headerlink" href="#v2-2-0-2024-03-26" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Introduce <code class="code docutils literal notranslate"><span class="pre">pymadx_rmatrix_print</span></code> and <code class="code docutils literal notranslate"><span class="pre">pymadx_rmatrix_pdf</span></code> as utility
+entry points (executable commands) for R-matrix functionality.</p></li>
+<li><p>Introduce functions for nicely listing an R-matrix from a TFS file.</p></li>
+</ul>
+</section>
+<section id="v2-1-3-2024-03-24">
+<h2>v2.1.3 - 2024 / 03 / 24<a class="headerlink" href="#v2-1-3-2024-03-24" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Fix beam string output to include alpha Twiss parameters.</p></li>
+<li><p>Optional axis to draw a beam sigma plot into and control over the figure size.</p></li>
+<li><p>Remove pytransport default print out.</p></li>
+</ul>
+</section>
+<section id="v2-1-2-2024-01-31">
+<h2>v2.1.2 - 2024 / 01 / 31<a class="headerlink" href="#v2-1-2-2024-01-31" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Fix for compatibility with Matplotlib 3.8 when plotting machine diagrams.</p></li>
+</ul>
+</section>
+<section id="v2-1-1-2024-01-12">
+<h2>v2.1.1 - 2024 / 01 / 12<a class="headerlink" href="#v2-1-1-2024-01-12" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Introduce control over plot legend location for Beta plot.</p></li>
+<li><p>Update copyright year.</p></li>
+</ul>
+</section>
+<section id="v2-1-0-2023-08-25">
+<h2>v2.1.0 - 2023 / 08 / 25<a class="headerlink" href="#v2-1-0-2023-08-25" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The function <cite>MADXVsMADX</cite> is now <cite>MadxVsMadx</cite> to be consistent with pybdsim.</p></li>
+<li><p>Updated R-Matrix plots.</p></li>
+<li><p>R-Matrix comparison plot.</p></li>
+<li><p>Optional vertical dispersion line in <code class="code docutils literal notranslate"><span class="pre">pybdsim.Plot.Beta</span></code>.</p></li>
+</ul>
+</section>
+<section id="v2-0-1-2023-05-15">
+<h2>v2.0.1 - 2023 / 05 / 15<a class="headerlink" href="#v2-0-1-2023-05-15" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Reduce Python version requirement to &gt;3.6 instead of 3.7.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pymadx[dev]</span></code> installation feature in pip to allow testing / manual requirements.</p></li>
+<li><p>Start of R-Matrix plots - in development.</p></li>
+</ul>
+</section>
+<section id="v2-0-0-2023-03-16">
+<h2>v2.0.0 - 2023 / 03 / 16<a class="headerlink" href="#v2-0-0-2023-03-16" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Move to Python 3 entirely. Require at least Python 3.7.</p></li>
+<li><p>Package layout and build system changed to more modern declarative package.
+All source code is now in <code class="code docutils literal notranslate"><span class="pre">pymadx/src/pymadx</span></code>. The version number
+throughout the code is dynamically generated from the git tag.</p></li>
+<li><p>Added plot for 1 or 2 machine diagrams only.</p></li>
+<li><p>Fix aperture plots due to typo in code.</p></li>
+<li><p>Fix string type comparison for modern Python (i.e. don’t use numpy internal alises).</p></li>
+</ul>
+</section>
+<section id="v1-8-2-2021-06-16">
+<h2>v1.8.2 - 2021 / 06 / 16<a class="headerlink" href="#v1-8-2-2021-06-16" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Fix for plot name filtering.</p></li>
+<li><p>Tweaked orange for solenoids.</p></li>
+</ul>
+</section>
+<section id="v1-8-1-2020-12-16">
+<h2>v1.8.1 - 2020 / 12 / 16<a class="headerlink" href="#v1-8-1-2020-12-16" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Fix for step size in Tfs slicing.</p></li>
+<li><p>More tolerant plotting for machine diagrams with just keyword, S and L as colums (ignoring K1L).</p></li>
+<li><p>Ensure machine diagram x limit is full machine length by default.</p></li>
+</ul>
+</section>
+<section id="v1-8-0-2019-06-08">
+<h2>v1.8.0 - 2019 / 06 / 08<a class="headerlink" href="#v1-8-0-2019-06-08" title="Link to this heading"></a></h2>
+<section id="new-features">
+<h3>New Features<a class="headerlink" href="#new-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Switch to Python 3. Should be Python 2.7 compatible.</p></li>
+<li><p>Venv support in Makefile thanks to Kyrre Ness Sjoebaek.</p></li>
+<li><p>Ability to write out a Tfs instance permitting comlete loading, editing and writing.</p></li>
+<li><p>Plus operator for Tfs instances to add them together.</p></li>
+</ul>
+</section>
+<section id="bug-fixes">
+<h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use exact Hamiltonian for PTC jobs prepared from pymadx as we commonly
+use it to compare larger amplitude particle tracking where the approximate
+Hamiltonian can be quite wrong.</p></li>
+<li><p>Tolerate minimal aperture columns. i.e. only APER_1. Have to do this
+as there’s no standard in writing out apertures and everyone picks their
+own with missing bits of information.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-7-1-2019-04-20">
+<h2>v1.7.1 - 2019 / 04 / 20<a class="headerlink" href="#v1-7-1-2019-04-20" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3>Bug Fixes<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Fix Data.Aperture.RemoveBelowValue logic, which also applies to GetNonZeroItems.</p></li>
+<li><p>Tolerate no pytransport at import.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-7-2019-02-27">
+<h2>v1.7 - 2019 / 02 / 27<a class="headerlink" href="#v1-7-2019-02-27" title="Link to this heading"></a></h2>
+<section id="id2">
+<h3>New Features<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Return PTC beam definition from the Beam class.</p></li>
+<li><p>Print basic beam summary from TFS file for given element.</p></li>
+<li><p>Ability to split an element loaded from a TFS file correctly.</p></li>
+</ul>
+</section>
+<section id="general">
+<h3>General<a class="headerlink" href="#general" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Update copyright for 2019.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-6-2018-12-12">
+<h2>v1.6 - 2018 / 12 / 12<a class="headerlink" href="#v1-6-2018-12-12" title="Link to this heading"></a></h2>
+<section id="id3">
+<h3>General<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Reimplemented machine diagram drawing to be more efficient when zooming and
+fix zordering so bends and then quadrupoles are always on top.</p></li>
+<li><p>Dispersion optional for optics plotting.</p></li>
+<li><p>H1 and H2 now passed through conversion of MADX TFS to PTC input format.</p></li>
+<li><p>Solenoid added to MADX TFS to PTC converter.</p></li>
+<li><p>Revised bend conversion for MADX TFS to PTC converter.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-5-2018-08-24">
+<h2>v1.5 - 2018 / 08 / 24<a class="headerlink" href="#v1-5-2018-08-24" title="Link to this heading"></a></h2>
+<section id="id4">
+<h3>New Features<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Support for tkicker.</p></li>
+<li><p>Support for kickers in MADX to PTC.</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>General<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Improved aperture handling.</p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>Bug Fixes<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Several bugs in Aperture class fixed.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-4-2018-06-23">
+<h2>v1.4 - 2018 / 06 / 23<a class="headerlink" href="#v1-4-2018-06-23" title="Link to this heading"></a></h2>
+<section id="id7">
+<h3>New Features<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Support of just gzipped files as well as tar gzipped.</p></li>
+</ul>
+</section>
+<section id="id8">
+<h3>General<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Improved SixTrack aperture handling.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-2-2018-05-23">
+<h2>v1.2 - 2018 / 05 / 23<a class="headerlink" href="#v1-2-2018-05-23" title="Link to this heading"></a></h2>
+<section id="id9">
+<h3>New Features<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Write a beam class instance to a separate file.</p></li>
+<li><p>Add ptc_track maximum aperture to a model.</p></li>
+<li><p>Concatenate TFS instances.</p></li>
+<li><p>N1 aperture plot as well as physical aperture plot.</p></li>
+<li><p>Output file naming for plots for MADX MADX comparison.</p></li>
+<li><p>MADX Transport comparison plots.</p></li>
+</ul>
+</section>
+<section id="id10">
+<h3>General<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Changes to some plot arguments.</p></li>
+<li><p>‘Plot’ removed from plot functions name as redundant.</p></li>
+<li><p>Transport conversion moved to pytransport.</p></li>
+</ul>
+</section>
+<section id="id11">
+<h3>Bug Fixes<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Machine plot now deals with ‘COLLIMATOR’ type correctly.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-1-2018-04-10">
+<h2>v1.1 - 2018 / 04 / 10<a class="headerlink" href="#v1-1-2018-04-10" title="Link to this heading"></a></h2>
+<section id="id12">
+<h3>New Features<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Improved options for writing PTC job for accurate comparison.</p></li>
+<li><p>Support for subrelativistic machines - correct MADX definition of dispersion.</p></li>
+<li><p>Plots for beam size including dispersion.</p></li>
+<li><p>MADX MADX Twiss comparison plots.</p></li>
+</ul>
+</section>
+<section id="id13">
+<h3>Bug Fixes<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Removal of reverse slicing as it didn’t work and is very difficult to support
+as MADX typically returns optical functions at the end of an element. Some
+columns however are element specific (such as L).</p></li>
+<li><p>Fixed exception catching.</p></li>
+<li><p>Fix beam size for subrelativistic machines. MADX really provides Dx/Beta.</p></li>
+<li><p>Fix index searching from S location.</p></li>
+<li><p>Fix PTC analysis.</p></li>
+<li><p>Fix conversion to PTC for fringe fields.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-0-2017-12-05">
+<h2>v1.0 - 2017 / 12 / 05<a class="headerlink" href="#v1-0-2017-12-05" title="Link to this heading"></a></h2>
+<section id="id14">
+<h3>New Features<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>GPL3 licence introduced.</p></li>
+<li><p>Compatability with PIP install system.</p></li>
+<li><p>Manual.</p></li>
+<li><p>Testing suite.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="moduledocs.html" class="btn btn-neutral float-left" title="Module Contents" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Royal Holloway, University of London 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

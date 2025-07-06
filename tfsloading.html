@@ -1,0 +1,315 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TFS File Loading &amp; Manipulation &mdash; pymadx 0.1.dev1+g5458dbb documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=780a3432"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plotting" href="plotting.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pymadx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="licence.html">Licence &amp; Disclaimer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorship.html">Authorship</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">TFS File Loading &amp; Manipulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tfs-class-features">Tfs Class Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#loading">Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#twiss-file-preparation">Twiss File Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#querying">Querying</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-information">Basic Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#indexing-and-slicing">Indexing and Slicing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#row-or-element">Row or Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#looping-iterating">Looping &amp; Iterating</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#beam-sizes">Beam Sizes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modification">Modification</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diagrams.html">Diagrams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building.html">Model Preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="converting.html">Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="moduledocs.html">Module Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pymadx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">TFS File Loading &amp; Manipulation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tfsloading.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tfs-file-loading-manipulation">
+<h1>TFS File Loading &amp; Manipulation<a class="headerlink" href="#tfs-file-loading-manipulation" title="Link to this heading"></a></h1>
+<p>MADX outputs Twiss information as well as PTC tracking data in their own Table
+File System (TFS). This is the only format used by MADX. pymadx includes a class
+called Tfs for the purpose of loading and manipulating this data.</p>
+<p>The TFS format is described in the MADX manual available from <a class="reference external" href="http://madx.web.cern.ch">the madx website</a>.
+The format
+roughly is described as a text file. The file contains first a header with key and
+value pairs for one-off definitions. This is proceeded by a line
+with column names and a line with the data type of each column. After this each line
+typically represents the values of the lattice for a particular element with each new
+line containing the values at a subsequent element in the lattice. We maintain the
+concept of this table and refer to ‘rows’ and ‘columns’.</p>
+<section id="tfs-class-features">
+<h2>Tfs Class Features<a class="headerlink" href="#tfs-class-features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Loading of TFS files.</p></li>
+<li><p>Loading of TFS files compressed with .gz suffix without decompressing.</p></li>
+<li><p>Report a count of all different element types.</p></li>
+<li><p>Get a particular column.</p></li>
+<li><p>Get a particular row.</p></li>
+<li><p>Get elements of a particular type.</p></li>
+<li><p>Get a numerical index from the name of the element.</p></li>
+<li><p>Find the curvilinear S coordinate of an element by name.</p></li>
+<li><p>Find the name of the nearest element at a given S coordinate.</p></li>
+<li><p>Plot an optics diagram.</p></li>
+<li><p>Roll a lattice to start from a different point.</p></li>
+<li><p>Calculate a beam size given the Twiss parameters, dispersion and emittance (in the header).</p></li>
+<li><p>Determining whether a given component perturbs the beam.</p></li>
+<li><p>Extract a ‘segment’ if PTC data is present.</p></li>
+<li><p>Slice a lattice (in the Python sense) with new S coordinates.</p></li>
+</ul>
+</section>
+<section id="loading">
+<h2>Loading<a class="headerlink" href="#loading" title="Link to this heading"></a></h2>
+<p>A file may be loading by constructing a Tfs instance from a file name.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pymadx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;myTwissFile.tfs&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The import will be assumed from now on in examples.</p>
+</div>
+<p>A file compressed using gzip may also be loaded without first decompressing
+without any difference in functionality. No temporary files are created:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gzip</span> <span class="n">myTwissFile</span><span class="o">.</span><span class="n">tfs</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pymadx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;myTwissFile.gz&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="twiss-file-preparation">
+<h2>Twiss File Preparation<a class="headerlink" href="#twiss-file-preparation" title="Link to this heading"></a></h2>
+<p>You may export twiss data from MADX with a choice of columns. We often find it beneficial
+to not specify any columns at all, which results in all available columns being written.
+This large number (~70) makes the file less human-readable but ensures no information is
+omitted. Such an export will also increase the file size, however, we recommend compressing
+the file with gzip as ASCII files compress very well with a typically compression
+ratio of over 10:1.</p>
+<p>The following MADX syntax in a MADX input script will prepare a Tfs file with all columns where
+“SEQUENCENAME” is the name of the sequence in MADX.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">select</span><span class="p">,</span><span class="n">flag</span><span class="o">=</span><span class="n">twiss</span><span class="p">,</span> <span class="n">clear</span><span class="p">;</span>
+<span class="n">twiss</span><span class="p">,</span><span class="n">sequence</span><span class="o">=</span><span class="n">SEQUENCENAME</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">outputfilename</span><span class="o">.</span><span class="n">tfs</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="querying">
+<h2>Querying<a class="headerlink" href="#querying" title="Link to this heading"></a></h2>
+<p>The Tfs class can be used to query the data in various ways.</p>
+<section id="basic-information">
+<h3>Basic Information<a class="headerlink" href="#basic-information" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>All data is stored in the <strong>data</strong> object inside the class</p></li>
+<li><p>The header information is stored in <strong>header</strong>.</p></li>
+<li><p>The names of all elements in order is stored in <strong>sequence</strong>.</p></li>
+<li><p>The names of all columns in the file is stored in <strong>columns</strong></p></li>
+</ul>
+</div></blockquote>
+<p>Generally, members beginning with small letters are objects and capital letters are functions.</p>
+<p>A nice summary of the file can be provided with the <cite>ReportPopulations</cite> function.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;mytwissfile.tar.gz&quot;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">ReportPopulations</span><span class="p">()</span>
+
+<span class="n">Filename</span> <span class="o">&gt;</span> <span class="n">twiss_v5</span><span class="mf">.2</span><span class="o">.</span><span class="n">tfs</span>
+<span class="n">Total</span> <span class="n">number</span> <span class="n">of</span> <span class="n">items</span> <span class="o">&gt;</span> <span class="mi">1032</span>
+<span class="n">Type</span><span class="o">...........</span> <span class="n">Population</span>
+<span class="n">MULTIPOLE</span><span class="o">......</span> <span class="mi">516</span>
+<span class="n">DRIFT</span><span class="o">..........</span> <span class="mi">201</span>
+<span class="n">QUADRUPOLE</span><span class="o">.....</span> <span class="mi">102</span>
+<span class="n">MARKER</span><span class="o">.........</span> <span class="mi">78</span>
+<span class="n">MONITOR</span><span class="o">........</span> <span class="mi">64</span>
+<span class="n">SBEND</span><span class="o">..........</span> <span class="mi">24</span>
+<span class="n">SEXTUPOLE</span><span class="o">......</span> <span class="mi">18</span>
+<span class="n">HKICKER</span><span class="o">........</span> <span class="mi">15</span>
+<span class="n">VKICKER</span><span class="o">........</span> <span class="mi">14</span>
+</pre></div>
+</div>
+</section>
+<section id="indexing-and-slicing">
+<h3>Indexing and Slicing<a class="headerlink" href="#indexing-and-slicing" title="Link to this heading"></a></h3>
+<p>The instance may be indexed like a normal Python iterable structure such as a list or a tuple.
+Square brackets with a number <em>i</em> will return the <em>ith</em> element in the sequence. A Python ‘slice’
+may also be used where a range of elements may be selected. If only one element is indexed a
+Python dictionary is returned for that element. If a range is required, another Tfs instance
+is returned:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;mytwissfile.tar.gz&quot;</span><span class="p">)</span>
+<span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>         <span class="c1"># 4th element in sequence (0,1,2,3!)</span>
+<span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>      <span class="c1"># 4th to 11th elements (tfs instance returned)</span>
+<span class="n">a</span><span class="p">[</span><span class="s1">&#39;IP1&#39;</span><span class="p">:</span><span class="mi">300</span><span class="p">]</span> <span class="c1"># find element named IP1 (exactly) and start from that until the #301th element</span>
+<span class="n">a</span><span class="p">[</span><span class="s1">&#39;IP3&#39;</span><span class="p">:]</span>    <span class="c1"># find element named IP3 (exactly) and take from there to the end of the file</span>
+<span class="n">a</span><span class="p">[</span><span class="s1">&#39;L230A&#39;</span><span class="p">]</span>   <span class="c1"># returns a Python dictionary for element named L230A</span>
+</pre></div>
+</div>
+<p>If you know the name of an element you can search for it and get the index from that.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">.</span><span class="n">IndexFromName</span><span class="p">(</span><span class="s1">&#39;L230A&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">995</span>
+</pre></div>
+</div>
+<p>You can also search by nearest curvilinear S coordinate along the beam line.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">.</span><span class="n">IndexFromNearestS</span><span class="p">(</span><span class="mf">34.4</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">225</span>
+<span class="n">a</span><span class="p">[</span><span class="mi">225</span><span class="p">][</span><span class="s1">&#39;NAME&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When ‘slicing’ an instance, a new column is added called “SORIGINAL”. If the
+member <code class="code docutils literal notranslate"><span class="pre">recalculateSifSliced</span></code> is set to <code class="code docutils literal notranslate"><span class="pre">True</span></code> (default <code class="code docutils literal notranslate"><span class="pre">False</span></code>)
+the <cite>S</cite> coordinate will be recalculated from 0 at the beginning of the new sequence.</p>
+</div>
+</section>
+<section id="row-or-element">
+<h3>Row or Element<a class="headerlink" href="#row-or-element" title="Link to this heading"></a></h3>
+<p>A row of data is an entry for a particular element. The Tfs class is conceptually a list of
+elements. Each element is represented by a Python dictionary that has a key for each column.
+The list of acceptable keys (i.e. names of columns) can be found in the member named ‘colums’.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">.</span><span class="n">columns</span> <span class="c1">#prints out list of column names</span>
+</pre></div>
+</div>
+<p>If a single element is indexed, a dictionary is returned and can be accessed - even in one step.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">123</span><span class="p">]</span>
+<span class="n">d</span><span class="p">[</span><span class="s1">&#39;NAME&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;MQD8X&#39;</span>
+<span class="n">a</span><span class="p">[</span><span class="mi">123</span><span class="p">][</span><span class="s1">&#39;NAME&#39;</span><span class="p">]</span> <span class="c1"># equivalent</span>
+</pre></div>
+</div>
+</section>
+<section id="looping-iterating">
+<h3>Looping &amp; Iterating<a class="headerlink" href="#looping-iterating" title="Link to this heading"></a></h3>
+<p>The Tfs class may be iterated over like a list in Python. For each iteration a dictionary
+for that element is returned.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">el</span><span class="p">[</span><span class="s1">&#39;NAME&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="beam-sizes">
+<h3>Beam Sizes<a class="headerlink" href="#beam-sizes" title="Link to this heading"></a></h3>
+<p>For convenience the beam size is calculated from the Beta amplitude functions, the emittance
+and dispersion if they are present. The emittance is defined by ‘EX’ and ‘EY’ in the header.
+These are calculated according to</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\sigma_x &amp;= \sqrt{ \beta_x \epsilon_x + D(S)^2 \frac{\sigma_{E}^{2}}{\beta_{\mathrm{Lorentz}}^{2}}} \\
+\sigma_y &amp;= \sqrt{ \beta_y \epsilon_y + D(S)^2 \frac{\sigma_{E}^{2}}{\beta_{\mathrm{Lorentz}}^{2}}}\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(\sigma_E\)</span> in MADX is fractional. Here we use the relation</p>
+<div class="math notranslate nohighlight">
+\[\sigma_E = \frac{\Delta E}{E} = \beta_{\mathrm{Lorentz}}^{2} \frac{\Delta p}{p}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>MADX input files often don’t have a sensible emittance defined as it is not always
+required. Ensure the emittance is what you intended it to be in the Tfs file.</p>
+</div>
+</section>
+<section id="modification">
+<h3>Modification<a class="headerlink" href="#modification" title="Link to this heading"></a></h3>
+<p>It is not recommended to modify the data structures inside the Tfs class. Of course one can,
+but one must be careful of Python’s copying behaviour. Often a ‘deep copy’ is required or
+care must be taken to modify the original and not a reference to a particular variable.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plotting.html" class="btn btn-neutral float-right" title="Plotting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Royal Holloway, University of London 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

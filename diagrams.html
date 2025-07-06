@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagrams &mdash; pymadx 0.1.dev1+g5458dbb documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=780a3432"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Model Preparation" href="building.html" />
+    <link rel="prev" title="Plotting" href="plotting.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pymadx
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="licence.html">Licence &amp; Disclaimer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorship.html">Authorship</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tfsloading.html">TFS File Loading &amp; Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Diagrams</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#z-x-plane">Z-X Plane</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#offsetting">Offsetting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-machines">Multiple Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#z-y-plane">Z-Y Plane</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Offsetting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Multiple Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#styling">Styling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="building.html">Model Preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="converting.html">Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="moduledocs.html">Module Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pymadx</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Diagrams</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/diagrams.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="diagrams">
+<span id="id1"></span><h1>Diagrams<a class="headerlink" href="#diagrams" title="Link to this heading"></a></h1>
+<p>The <code class="code docutils literal notranslate"><span class="pre">pymadx.Diagrams</span></code> module provides machine diagrams. These use a MADX
+survey output file (TFS format) and require all columns to be present. i.e. do
+not select individual columns. For example, in MADX:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">select</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="n">survey</span><span class="p">,</span> <span class="n">clear</span><span class="p">;</span>
+<span class="n">survey</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="s2">&quot;survey-h6-from-zero.tfs&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The following examples are based on survey output for various machines at CERN
+from MADX. The TFS format survey files can be found in <cite>pymadx/tests/test_input</cite>.</p>
+<section id="z-x-plane">
+<h2>Z-X Plane<a class="headerlink" href="#z-x-plane" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h6-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZX</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will use the default colours and widths for the various components.</p>
+<figure class="align-center" id="id4">
+<img alt="_images/diagrams_zx.png" src="_images/diagrams_zx.png" />
+<figcaption>
+<p><span class="caption-text">Default style ZX diagram.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<section id="offsetting">
+<h3>Offsetting<a class="headerlink" href="#offsetting" title="Link to this heading"></a></h3>
+<p>An overall global offset and rotation can be specified in two ways. Firstly,
+by naming an element. Secondly, by providing a roto-translation yourself, potentially
+from another survey if combining machine diagrams.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h6-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZX</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">offsetRotoTranslation</span><span class="o">=</span><span class="s2">&quot;XWCA.X0410404&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h6-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">offset</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">GetRotoTranslationFromElementZX</span><span class="p">(</span><span class="s2">&quot;XWCA.X0410404&quot;</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZX</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">offsetRotoTranslation</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id5">
+<img alt="_images/diagrams_zx_offset.png" src="_images/diagrams_zx_offset.png" />
+<figcaption>
+<p><span class="caption-text">Offset by name for element XWCA.X0410404.</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="multiple-machines">
+<h3>Multiple Machines<a class="headerlink" href="#multiple-machines" title="Link to this heading"></a></h3>
+<p>More than one machine diagram can be combined by providing a matplotlib axis
+instance to draw into. The z-order can also be specified with a higher integer
+number meaning in front.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h6</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h6-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">h8</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h6-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZX</span><span class="p">(</span><span class="n">h6</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZX</span><span class="p">(</span><span class="n">h8</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">zOffset</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id6">
+<img alt="_images/diagrams_zx_multiple.png" src="_images/diagrams_zx_multiple.png" />
+<figcaption>
+<p><span class="caption-text">Beamlines H6, H8 at CERN shown overlapped.</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="z-y-plane">
+<h2>Z-Y Plane<a class="headerlink" href="#z-y-plane" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h6-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZY</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will use the default colours and widths for the various components.</p>
+<figure class="align-center" id="id7">
+<img alt="_images/diagrams_zy.png" src="_images/diagrams_zy.png" />
+<figcaption>
+<p><span class="caption-text">Default style ZY diagram.</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<section id="id2">
+<h3>Offsetting<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>An overall global offset and rotation can be specified in two ways. Firstly,
+by naming an element. Secondly, by providing a roto-translation yourself, potentially
+from another survey if combining machine diagrams.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h6-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZY</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">offsetRotoTranslation</span><span class="o">=</span><span class="s2">&quot;XWCA.X0410404&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h6-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">offset</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">GetRotoTranslationFromElementZX</span><span class="p">(</span><span class="s2">&quot;XWCA.X0410404&quot;</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZY</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">offsetRotoTranslation</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id8">
+<img alt="_images/diagrams_zy_offset.png" src="_images/diagrams_zy_offset.png" />
+<figcaption>
+<p><span class="caption-text">Offset by name for element XWCA.X0410404.</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id3">
+<h3>Multiple Machines<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>More than one machine diagram can be combined by providing a matplotlib axis
+instance to draw into. The z-order can also be specified with a higher integer
+number meaning in front.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h6</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h6-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">h8</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h6-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZX</span><span class="p">(</span><span class="n">h6</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZY</span><span class="p">(</span><span class="n">h8</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">zOffset</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id9">
+<img alt="_images/diagrams_zy_multiple.png" src="_images/diagrams_zy_multiple.png" />
+<figcaption>
+<p><span class="caption-text">Beamlines H6, H8 at CERN shown overlapped.</span><a class="headerlink" href="#id9" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="styling">
+<h2>Styling<a class="headerlink" href="#styling" title="Link to this heading"></a></h2>
+<p>The diagram can be customised by supplying a dictionary of parameters. The parameters
+are matched up with a substring part of element name in the file. The following parameters
+are accepted:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Parameter</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>‘width’</p></td>
+<td><p>full horizontal width in reality of magnet (m)</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘height’</p></td>
+<td><p>full vertical height in reality of magnet (m)</p></td>
+</tr>
+<tr class="row-even"><td><p>‘dx’</p></td>
+<td><p>offset in horizontal of magnet from axis (m)</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘dy’</p></td>
+<td><p>offset in vertical of magnet from axis (m)</p></td>
+</tr>
+<tr class="row-even"><td><p>‘coil_length’</p></td>
+<td><p>full length coils stick out at end of magnet (m)</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘coil_width’</p></td>
+<td><p>full width of coils (m)</p></td>
+</tr>
+<tr class="row-even"><td><p>‘coil_height’</p></td>
+<td><p>full height of (both) coils at end of magnet (m)</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘coil_dx’</p></td>
+<td><p>horizontal shift of coils from axis (m)</p></td>
+</tr>
+<tr class="row-even"><td><p>‘coil_dy’,</p></td>
+<td><p>vertical shift of coils form axis (m)</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘inside’</p></td>
+<td><p>if the c-shaped yoke is on the inside of the bend (True / False)</p></td>
+</tr>
+<tr class="row-even"><td><p>‘style’</p></td>
+<td><p>‘normal’ or ‘fancy’ - only applies to collimators</p></td>
+</tr>
+</tbody>
+</table>
+<p>The customisation can be done on a specifically named element basis and also in a more
+general naming matching ‘type’ basis. These are done with the <code class="code docutils literal notranslate"><span class="pre">elementDict</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">typeDict</span></code> dictionaries respectively. An example is given below of full customisation.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">elemDict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;MBXHC.X0410117&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;inside&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="s1">&#39;MBXHC.X0410121&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;inside&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="s1">&#39;MBXHC.X0410124&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;inside&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="s1">&#39;MBXHC.X0410132&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;inside&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="s1">&#39;MBXHC.X0410135&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;inside&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="s1">&#39;MBXHC.X0410139&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;inside&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="p">}</span>
+<span class="n">typeDict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;MCA&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">1.25</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">1.25</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span> <span class="mf">0.14</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;#a7d9b0&#39;</span><span class="p">,</span> <span class="s1">&#39;coil_length&#39;</span><span class="p">:</span> <span class="mf">0.31</span><span class="p">,</span>
+                     <span class="s1">&#39;coil_width&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;coil_dx&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.14</span><span class="p">},</span>
+            <span class="s1">&#39;MSN&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.47</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span> <span class="mf">0.11</span><span class="p">,</span> <span class="s1">&#39;coil_length&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;coil_width&#39;</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;coil_dx&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.11</span><span class="p">},</span>
+            <span class="s1">&#39;MTN&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">1.2</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">0.69</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span><span class="sa">r</span><span class="s1">&#39;#b2d6c0&#39;</span><span class="p">,</span> <span class="s1">&#39;coil_length&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;coil_width&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">},</span>
+            <span class="s1">&#39;MBXHC&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">1.246</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">1.25</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;#a7d9b0&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span> <span class="mf">0.141</span><span class="p">,</span>
+                       <span class="s1">&#39;coil_length&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;coil_width&#39;</span><span class="p">:</span><span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;coil_edge&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;coil_dx&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.141</span><span class="p">},</span>
+            <span class="s1">&#39;MBNV&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">1.1</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;#f29010&#39;</span><span class="p">,</span> <span class="s1">&#39;coil_length&#39;</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">,</span> <span class="s1">&#39;coil_width&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;coil_height&#39;</span><span class="p">:</span> <span class="mf">0.64</span><span class="p">},</span>
+            <span class="s1">&#39;MBNH&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">1.1</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;#f29010&#39;</span><span class="p">,</span> <span class="s1">&#39;coil_length&#39;</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">,</span> <span class="s1">&#39;coil_width&#39;</span><span class="p">:</span> <span class="mf">0.64</span><span class="p">},</span> <span class="s1">&#39;coil_height&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span>
+            <span class="s1">&#39;MBW&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.88</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">0.47</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;#d4340c&#39;</span><span class="p">,</span> <span class="s1">&#39;coil_length&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;coil_width&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
+            <span class="s1">&#39;MCWH&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;#a7d9b0&#39;</span><span class="p">,</span> <span class="s1">&#39;coil_length&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;coil_width&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">},</span>
+            <span class="s1">&#39;MCWV&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;#a7d9b0&#39;</span><span class="p">,</span> <span class="s1">&#39;coil_length&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;coil_width&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">},</span>
+            <span class="s1">&#39;QNL&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;#fcd34c&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;QPL&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">1.1</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">1.1</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;#1e84eb&#39;</span><span class="p">,</span> <span class="s1">&#39;coil_length&#39;</span><span class="p">:</span> <span class="mf">0.23</span><span class="p">,</span> <span class="s1">&#39;coil_width&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;coil_height&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">},</span>
+            <span class="s1">&#39;QSL&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.32</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">0.52</span><span class="p">},</span>
+            <span class="s1">&#39;QTS&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;#82bdb9&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;QWL&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.66</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mf">0.84</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;#d4340c&#39;</span><span class="p">,</span> <span class="s1">&#39;coil_length&#39;</span><span class="p">:</span> <span class="mf">0.14</span><span class="p">,</span> <span class="s1">&#39;coil_width&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">},</span>
+            <span class="s1">&#39;LSX&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span><span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span><span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;colour&#39;</span><span class="p">:</span><span class="sa">r</span><span class="s1">&#39;#ddc8e9&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;XCHV&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;style&#39;</span><span class="p">:</span> <span class="s1">&#39;fancy&#39;</span><span class="p">}}</span>
+<span class="n">typeDict</span><span class="p">[</span><span class="s1">&#39;MCB&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">typeDict</span><span class="p">[</span><span class="s1">&#39;MCA&#39;</span><span class="p">])</span> <span class="c1"># copy it</span>
+<span class="n">typeDict</span><span class="p">[</span><span class="s1">&#39;MBXGD&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">typeDict</span><span class="p">[</span><span class="s1">&#39;MCWV&#39;</span><span class="p">])</span>
+
+<span class="n">h6</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h6-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">maskRanges</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">9.2</span><span class="p">,</span> <span class="mf">20.1</span><span class="p">]]</span>
+<span class="n">h8</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;h8-survey.tfs&quot;</span><span class="p">)</span>
+<span class="n">p42</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">Tfs</span><span class="p">(</span><span class="s2">&quot;p42-survey.tfs&quot;</span><span class="p">)</span>
+
+<span class="n">f1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZX</span><span class="p">(</span><span class="n">h6</span><span class="p">,</span> <span class="n">typeDict</span><span class="o">=</span><span class="n">typeDict</span><span class="p">,</span> <span class="n">elementDict</span><span class="o">=</span><span class="n">elemDict</span><span class="p">,</span> <span class="n">pipeRadius</span><span class="o">=</span><span class="mf">0.07</span><span class="p">,</span> <span class="n">pipeMaskRanges</span><span class="o">=</span><span class="n">maskRanges</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZX</span><span class="p">(</span><span class="n">h8</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">typeDict</span><span class="o">=</span><span class="n">typeDict</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZX</span><span class="p">(</span><span class="n">p42</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">typeDict</span><span class="o">=</span><span class="n">typeDict</span><span class="p">)</span>
+
+<span class="n">f2</span><span class="p">,</span> <span class="n">ax2</span> <span class="o">=</span> <span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZY</span><span class="p">(</span><span class="n">h6</span><span class="p">,</span> <span class="n">typeDict</span><span class="o">=</span><span class="n">typeDict</span><span class="p">,</span> <span class="n">elementDict</span><span class="o">=</span><span class="n">elemDict</span><span class="p">,</span> <span class="n">pipeRadius</span><span class="o">=</span><span class="mf">0.07</span><span class="p">,</span> <span class="n">pipeMaskRanges</span><span class="o">=</span><span class="n">maskRanges</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZY</span><span class="p">(</span><span class="n">h8</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">typeDict</span><span class="o">=</span><span class="n">typeDict</span><span class="p">)</span>
+<span class="n">pymadx</span><span class="o">.</span><span class="n">Diagrams</span><span class="o">.</span><span class="n">Survey2DZY</span><span class="p">(</span><span class="n">p42</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">typeDict</span><span class="o">=</span><span class="n">typeDict</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This example produces the following diagrams.</p>
+<figure class="align-center" id="id10">
+<img alt="_images/diagrams_zx_fancy.png" src="_images/diagrams_zx_fancy.png" />
+<figcaption>
+<p><span class="caption-text">Beamlines H6, H8 and P42 at CERN shown overlapped with customisation.</span><a class="headerlink" href="#id10" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id11">
+<img alt="_images/diagrams_zy_fancy.png" src="_images/diagrams_zy_fancy.png" />
+<figcaption>
+<p><span class="caption-text">Beamlines H6, H8 and P42 at CERN shown overlapped with customisation.</span><a class="headerlink" href="#id11" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>And zooming in, we can see the detail in the coils.</p>
+<figure class="align-center" id="id12">
+<img alt="_images/diagrams_zx_fancy_zoom.png" src="_images/diagrams_zx_fancy_zoom.png" />
+<figcaption>
+<p><span class="caption-text">Beamlines H6, H8 and P42 at CERN shown overlapped with customisation.</span><a class="headerlink" href="#id12" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id13">
+<img alt="_images/diagrams_zy_fancy_zoom.png" src="_images/diagrams_zy_fancy_zoom.png" />
+<figcaption>
+<p><span class="caption-text">Beamlines H6, H8 at CERN shown overlapped with customisation.</span><a class="headerlink" href="#id13" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plotting.html" class="btn btn-neutral float-left" title="Plotting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="building.html" class="btn btn-neutral float-right" title="Model Preparation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Royal Holloway, University of London 2024.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
