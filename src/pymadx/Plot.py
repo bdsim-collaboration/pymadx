@@ -178,7 +178,8 @@ def GetHorizontalVerticalMaskNames(tfs, collimatorHRegex=None, collimatorVRegex=
     return toMaskInHorizontal, toMaskInVertical
 
 def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True,
-                   collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True, s_offset=None):
+                   collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True, s_offset=None,
+                   machineFile=None):
     """
     Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently.
     :param dx: displacement in x in mm that is propagated
@@ -198,6 +199,9 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     import pymadx.Data as _Data
     tfs = _Data.CheckItsTfs(tfsfile)
     d = _GetRMatrixDataFromTfs(tfs)
+    machine = tfs
+    if machineFile is not None:
+        machine = _Data.CheckItsTfs(machineFile)
 
     toMaskInHorizontal, toMaskInVertical = GetHorizontalVerticalMaskNames(tfs, collimatorHRegex, collimatorVRegex)
 
@@ -215,8 +219,10 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
 
     if grid:
         ds = 5.0
-        smax = _math.ceil(tfs.smax / ds) * ds
-        sMinor = _np.arange(tfs.smin, smax, ds)
+        if s_offset is None:
+            s_offset = 0
+        smax = _math.ceil((tfs.smax + s_offset) / ds) * ds
+        sMinor = _np.arange(tfs.smin + s_offset, smax, ds)
         axx.set_xticks(sMinor, minor=True)
         axy.set_xticks(sMinor, minor=True)
         axx.grid(visible=True, color='grey', alpha=0.1, which='both')
@@ -230,7 +236,7 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
         ax.spines['left'].set_visible(False)
         ax.spines['right'].set_visible(False)
 
-    DrawMachineLattice(axMachineX, tfs, maskNames=toMaskInHorizontal, offset=s_offset)
+    DrawMachineLattice(axMachineX, machine, maskNames=toMaskInHorizontal)
     ds = 0.0 if s_offset is None else s_offset
     _StyleMachineAxes(axMachineX)
     axx.plot(d['s']+ds, d['re11'] * dx, '-', label=xlabel, color='red')
@@ -244,7 +250,7 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     yplabel = "$y$' = " + str(round(dpy, 3)) + ' mrad'
     ydplabel = 'd$P$ = ' + str(round(dP, 3)) + ' %'
 
-    DrawMachineLattice(axMachineY, tfs, maskNames=toMaskInVertical, flipQuads=True, offset=s_offset)
+    DrawMachineLattice(axMachineY, machine, maskNames=toMaskInVertical, flipQuads=True)
     _StyleMachineAxes(axMachineY)
     axy.plot(d['s']+ds, d['re33'] * dy, '-', label=ylabel, color='red')
     axy.plot(d['s']+ds, d['re34'] * dpy, '--', label=yplabel, color='blue')
