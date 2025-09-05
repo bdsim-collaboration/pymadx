@@ -1223,10 +1223,12 @@ def CheckItsTfs(tfsfile):
 
     tfsfile can be either a tfs instance or a string.
     """
-    if type(tfsfile) == str:
+    if isinstance(tfsfile, (str, _pathlib.Path)):
         madx = Tfs(tfsfile)
     elif isinstance(tfsfile, Tfs):
         madx = tfsfile
+    elif str(type(tfsfile)) == "<class 'cpymad.madx.Table'>":
+        madx = Tfs(tfsfile)
     else:
         raise IOError("Not pymadx.Data.Tfs file type: "+str(tfsfile))
     return madx
