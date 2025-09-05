@@ -16,6 +16,9 @@ from ._General import Cast as _Cast
 
 
 class RotoTranslation2D:
+    """
+    A class to hold a 2D rotation about an offset point.
+    """
     def __init__(self, rotationAngle=0, translation=(0,0), rotationOrigin=None):
         self.angle = rotationAngle
         self.origin = _np.array([[0, 0]]) if rotationOrigin is None else rotationOrigin
@@ -658,10 +661,11 @@ class Tfs:
         
         f.close()
 
-    def NameFromIndex(self,index):
+    def NameFromIndex(self, index):
         """
-        NameFromIndex(integerindex)
-
+        :param index: index of element
+        :type index: int
+        :return: str
         return the name of the beamline element at index
         """
         return self.sequence[index]
@@ -677,8 +681,9 @@ class Tfs:
 
     def IndexFromNearestS(self, S):
         """
-        IndexFromNearestS(S)
-
+        :param S: curvilinear cumulative distance along the machine
+        :type S: float
+        :return: int
         return the index of the beamline element which CONTAINS the
         position S.
 
@@ -705,13 +710,16 @@ class Tfs:
         else:
             return value
 
-    def IndexFromName(self,namestring):
+    def IndexFromName(self, name):
         """
-        Return the index of the element named namestring.  Raises
+        :param name: name of element in the sequence
+        :type name: str
+        :return: int
+        Return the index of the element named name.  Raises
         ValueError if not found.
 
         """
-        return self.sequence.index(namestring)
+        return self.sequence.index(name)
 
     def ColumnIndex(self,columnstring):
         """
@@ -723,39 +731,38 @@ class Tfs:
         """
         return self.columns.index(columnstring)
 
-    def GetColumn(self,columnstring):
+    def GetColumn(self, column_string):
         """
-        Return a numpy array of the values in columnstring in order
+        Return a numpy array of the values in column_string in order
         as they appear in the beamline
         """
-        i = self.ColumnIndex(columnstring)
+        i = self.ColumnIndex(column_string)
         return _np.array([self.data[name][i] for name in self.sequence])
 
-    def GetColumnDict(self,columnstring):
+    def GetColumnDict(self, column_string):
         """
-        GetColumnDict(columnstring)
         return all data from one column in a dictionary
 
         note not in order
         """
-        i = self.ColumnIndex(columnstring)
+        i = self.ColumnIndex(column_string)
         d = dict((k,v[i]) for (k,v) in self.data.items())
         #note we construct the dictionary comprehension in a weird way
         #here because SL6 uses python2.6 which doesn't have dict comprehension
         return d
 
-    def GetRow(self,elementname):
+    def GetRow(self, element_name):
         """
         Return all data from one row as a list
         """
         try:
-            d = self[elementname]
+            d = self[element_name]
         except KeyError:
-            print('No such item',elementname,' in this tfs file')
+            print('No such item', element_name, ' in this tfs file')
             return None
         return [d[key] for key in self.columns]
 
-    def GetRowDict(self,elementname):
+    def GetRowDict(self, element_name):
         """
         Return a dictionary of all parameters for a specifc element
         given by element name.
@@ -763,20 +770,20 @@ class Tfs:
         note not in order
         """
         #no dictionary comprehension in python2.6 on SL6
-        d = dict(list(zip(self.columns,self.data[elementname])))
+        d = dict(list(zip(self.columns, self.data[element_name])))
         return d
 
-    def GetSegment(self,segmentnumber):
-        if type(segmentnumber) is str:
-            segmentnumber = self.segments.index(segmentnumber)+1
-        if segmentnumber not in list(range(1,len(self.segments)+1)):
-            raise ValueError("Invalid segment number "+str(segmentnumber))
+    def GetSegment(self, segment_number):
+        if type(segment_number) is str:
+            segment_number = self.segments.index(segment_number) + 1
+        if segment_number not in list(range(1, len(self.segments) + 1)):
+            raise ValueError("Invalid segment number " + str(segment_number))
         a = Tfs()
         a._CopyMetaData(self)
         segmentindex = self.columns.index('SEGMENT')
         hasname = 'NAME' in self.columns
         for key in self.sequence:
-            if self.data[key][segmentindex] == segmentnumber:
+            if self.data[key][segmentindex] == segment_number:
                 a._AppendDataEntry(key,self.data[key])
         return a
 
@@ -791,22 +798,26 @@ class Tfs:
         componentName = self.sequence[index]
         self.data[componentName][variableIndex] = value
 
-    def InterrogateItem(self,itemname):
+    def InterrogateItem(self, itemname):
         """
-        InterrogateItem(itemname)
+        :param itemname: the element in the sequence to print out
+        :type itemname: str
 
         Print out all the parameters and their names for a
-        particlular element in the sequence identified by name.
+        particular element in the sequence identified by name.
         """
         for i,parameter in enumerate(self.columns):
             print(parameter.ljust(10,'.'),self.data[itemname][i])
 
     def GetElementNamesOfType(self,typename):
         """
-        GetElementNamesOfType(typename)
+        :param typename: name of type to return or list of them
+        :type typename: str, list(str)
 
         Returns a list of the names of elements of a certain type. Typename can
         be a single string or a tuple or list of strings.
+
+        :return: list(str)
 
         Examples:
 
@@ -823,12 +834,13 @@ class Tfs:
             i = 0
         return [name for name in self.sequence if self.data[name][i] in typename]
 
-    def GetElementsOfType(self,typename):
+    def GetElementsOfType(self, typename):
         """
+        :param typename: string of MADX type to match or list of strings
+        :type typename: str, list(str)
         Returns a Tfs instance containing only the elements of a certain type.
-        Typename can be a sintlge string or a tuple or list of strings.
-
-        This returns a Tfs instance with all the same capabilities as this one.
+        Typename can be a single string or a tuple or list of strings.
+        :return: pymadx.Data.Tfs
         """
         names = self.GetElementNamesOfType(typename)
         a = Tfs()
@@ -841,6 +853,7 @@ class Tfs:
         """
         Returns a Tfs instance containing any type of collimator (including
         COLLLIMATOR, RCOLLIMATOR and ECOLLIMATOR).
+        :return pymadx.Data.Tfs:
         """
         if 'KEYWORD' in self.columns:
             i = self.ColumnIndex('KEYWORD')
@@ -856,10 +869,12 @@ class Tfs:
 
     def GetElementsWithTextInName(self, text):
         """
+        :param text: string or list of strings to match a subset of for each component
+        :type text: str, list(str)
         Returns a Tfs instance containing only the elements with the string in
-        text in the their name.
+        text in their name.
 
-        This returns a Tfs instance with all the same capabilities as this one.
+        :return: pymadx.Data.Tfs
         """
         a = Tfs()
         a._CopyMetaData(self)
