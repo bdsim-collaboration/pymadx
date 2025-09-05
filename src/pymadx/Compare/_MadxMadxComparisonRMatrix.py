@@ -23,8 +23,8 @@ PlotHorizontal = _MakePlotterWithScale(_HORIZONTAL, "S / m", "x / mm", "Horizont
 PlotVertical   = _MakePlotterWithScale(_VERTICAL,   "S / m", "x / mm", "Vertical", zeroLine=True)
 
 def MadxVsMadxRMatrix(first, second, first_name=None,
-                      second_name=None, sOffsetSecond=0, saveAll=True,
-                      outputFileName=None, **kwargs):
+                      second_name=None, sOffsetSecond=0,
+                      output_filename=None, **kwargs):
     """
     Display vertical and horizontal RMatrix components for two files.
     """
@@ -33,16 +33,15 @@ def MadxVsMadxRMatrix(first, second, first_name=None,
         PlotVertical(first, second, first_name, second_name, sOffsetSecond, **kwargs)
     ]
 
-    if saveAll:
-        if outputFileName is not None:
-            output_filename = outputFileName
+    if output_filename is not None:
+        if 'pdf' in output_filename:
+            with _PdfPages(output_filename) as pdf:
+                for figure in figures:
+                    pdf.savefig(figure)
+                d = pdf.infodict()
+                d['Title'] = "{} VS {} RMatrix Optical Comparison".format(first_name, second_name)
+                d['CreationDate'] = _datetime.datetime.today()
+            print("Written ", output_filename)
         else:
-            output_filename = "optics-rmatrix-report.pdf"
-
-        with _PdfPages(output_filename) as pdf:
-            for figure in figures:
-                pdf.savefig(figure)
-            d = pdf.infodict()
-            d['Title'] = "{} VS {} RMatrix Optical Comparison".format(first_name, second_name)
-            d['CreationDate'] = _datetime.datetime.today()
-        print("Written ", output_filename)
+            for figure, label in zip(figures, ['x', 'y']):
+                figure.savefig(output_filename+label+".png", dpi=500)
