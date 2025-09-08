@@ -649,6 +649,45 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
         _plt.savefig(outputfilename+'.png')
 
 
+def PhaseAdvance(tfsfile, title='', outputfilename=None, machine=True, ax=None, figsize=(9,5)):
+    """
+    Plot mu x,y as a function of S. By default, a machine diagram is shown at
+    the top of the plot.
+
+    Optionally turn off machine overlay at top with machine=False
+    Specify outputfilename (without extension) to save the plot as both pdf and png.
+    """
+    import pymadx.Data as _Data
+    d = _Data.Tfs(tfsfile)
+    s = d.GetColumn('S')
+    mux = d.GetColumn('MUX')
+    muy = d.GetColumn('MUY')
+    smax = _np.max(s)
+
+    if ax is None:
+        f = _plt.figure(figsize=figsize)
+        axoptics = f.add_subplot(111)
+    else:
+        f = _plt.gcf()
+        axoptics = ax
+
+    axoptics.plot(s, mux, 'b-', label='x')
+    axoptics.plot(s, muy, 'g-', label='y')
+    axoptics.set_xlabel('S (m)')
+    axoptics.set_ylabel(r'$\mu / 2\pi$')
+    axoptics.legend(loc=0, fontsize='small')  # best position
+
+    if machine:
+        AddMachineLatticeToFigure(f, d)
+
+    _plt.suptitle(title, size='x-large')
+    _plt.xlim((0 - 0.05 * smax, 1.05 * smax))
+    if outputfilename != None:
+        if '.' in outputfilename:
+            outputfilename = outputfilename.split('.')[0]
+        _plt.savefig(outputfilename + '.pdf')
+        _plt.savefig(outputfilename + '.png')
+
 def Envelopes(tfsfile, title='', outputfilename=None, machine=True, factors=(1,3,7), axX=None, axY=None, figsize=(9, 5)):
     """
     Plot 1, 3, 7 sigma with the centroid added on.
