@@ -216,7 +216,7 @@ class _SurveyDiagram:
     def __init__(self, survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=None, title='', outputfilename=None,
                  zOffset=0, defaultWidth=0.5, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
                  ignoreNames=None, resolution=0.1, defaultCoilLength=0.15, pipeRadius=None, pipeMaskRanges=None,
-                 invisibleAxes=False, arrowsDy=0, arrowsDx=0, defaultAlpha=None):
+                 invisibleAxes=False, arrowsDy=0, arrowsDx=0, defaultAlpha=None, drawXLabel=True):
         self.survey = _Data.CheckItsTfs(survey_tfsfile)
 
         if not ax:
@@ -259,6 +259,7 @@ class _SurveyDiagram:
         self.arrowsDy = arrowsDy
         self.arrowsDx = arrowsDx
         self.defaultAlpha = defaultAlpha
+        self.drawXLabel = drawXLabel
 
         self.greyColour = u'#c0c0c0'
 
@@ -458,8 +459,9 @@ class _SurveyDiagram:
         self.ax.plot(axisLine[:, 0], axisLine[:, 1], c='k', zorder=21+zo, alpha=0.5, lw=1)
 
         _plt.suptitle(self.title, size='x-large')
-        _plt.xlabel('Z (m)')
-        _plt.ylabel(self.ylabel)
+        if self.drawXLabel:
+            self.ax.set_xlabel('Z (m)')
+        self.ax.set_ylabel(self.ylabel)
         _plt.tight_layout()
 
         if self.invisibleAxes:
@@ -548,7 +550,7 @@ class _SurveyDiagramZY(_SurveyDiagram):
 def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=None, title='', outputfilename=None,
                zOffset=0, defaultWidth=0.5, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
                ignoreNames=None, resolution=0.1, defaultCoilLength=0.15, pipeRadius=None, pipeMaskRanges=None,
-               invisibleAxes=False, arrowsDy=0, arrowsDx=0, defaultAlpha=None):
+               invisibleAxes=False, arrowsDy=0, arrowsDx=0, defaultAlpha=None, drawXLabel=True):
     """
     Draw a schematic of a beamline in the Z-X plane. Allow styling of different elements by type or by name.
 
@@ -594,6 +596,8 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=Non
     :type arrowsDx: float
     :param defaultAlpha: default alpha value to use for the whole beamline if not otherwise specified per element
     :type defaultAlpha: None, float
+    :param drawXLabel: whether to draw the x-axis label on the axis
+    :type drawXLabel: bool
 
     Order of precedence is: funcDict, elementDict, typeDict. i.e. funcDict replaces any information given
     in the other two. An elementDict always overrides any typeDict information.
@@ -602,14 +606,14 @@ def Survey2DZX(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=Non
     a = _SurveyDiagramZX(survey_tfsfile, ax, greyOut, offsetRotoTranslation, title, outputfilename,
                          zOffset, defaultWidth, elementDict, typeDict, funcDict, maskNames,
                          ignoreNames, resolution, defaultCoilLength, pipeRadius, pipeMaskRanges,
-                         invisibleAxes, arrowsDy, arrowsDx, defaultAlpha)
+                         invisibleAxes, arrowsDy, arrowsDx, defaultAlpha, drawXLabel)
     return a.Plot()
 
 
 def Survey2DZY(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=None, title='', outputfilename=None,
                zOffset=0, defaultWidth=0.5, elementDict=None, typeDict=None, funcDict=None, maskNames=None,
                ignoreNames=None, resolution=0.1, defaultCoilLength=0.15, pipeRadius=None, pipeMaskRanges=None,
-               invisibleAxes=False, arrowsDy=0, arrowsDx=0, defaultAlpha=None):
+               invisibleAxes=False, arrowsDy=0, arrowsDx=0, defaultAlpha=None, drawXLabel=True):
     """
     Draw a schematic of a beamline in the Z-Y plane. Allow styling of different elements by type or by name.
 
@@ -655,6 +659,8 @@ def Survey2DZY(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=Non
     :type arrowsDx: float
     :param defaultAlpha: default alpha value to use for the whole beamline if not otherwise specified per element
     :type defaultAlpha: None, float
+    :param drawXLabel: whether to draw the x-axis label on the axis
+    :type drawXLabel: bool
 
     Order of precedence is: funcDict, elementDict, typeDict. i.e. funcDict replaces any information given
     in the other two. An elementDict always overrides any typeDict information.
@@ -663,5 +669,5 @@ def Survey2DZY(survey_tfsfile, ax=None, greyOut=False, offsetRotoTranslation=Non
     a = _SurveyDiagramZY(survey_tfsfile, ax, greyOut, offsetRotoTranslation, title, outputfilename,
                          zOffset, defaultWidth, elementDict, typeDict, funcDict, maskNames,
                          ignoreNames, resolution, defaultCoilLength, pipeRadius, pipeMaskRanges,
-                         invisibleAxes, arrowsDy, arrowsDx, defaultAlpha)
+                         invisibleAxes, arrowsDy, arrowsDx, defaultAlpha, drawXLabel)
     return a.Plot()
