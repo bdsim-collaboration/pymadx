@@ -900,25 +900,27 @@ def _AdjustExistingAxesAndAddMachineAxis(figure, fraction=0.9):
 
     return axmachine
 
-def AddMachineLatticeToFigure(figure, tfsfile, reverse=False, offset=None):
+def AddMachineLatticeToFigure(figure, tfsfile, reverse=False, offset=None, s_offset=0.0):
     """
     Add a diagram above the current graph in the figure that represents the
     accelerator based on a madx twiss file in tfs format.
 
-    Note you can use matplotlib's gcf() 'get current figure' as an argument.
+    :param figure: matplot figure
+    :type figure: matplotlib.figure.Figure
+    :param tfsfile: path to madx file
+    :type tfsfile: str, pymadx.Data.Tfs
+    :param reverse: whether to reverse the order of the diagram
+    :type reverse: bool
+    :param offset: name of element in sequence to cycle the machine diagram about
+    :type offset: None, str
+    :param s_offset: apply this S offset to the diagram
+    :type s_offset: float, int
 
     >>> pymadx.Plot.AddMachineLatticeToFigure(gcf(), 'afile.tfs')
 
-    A :meth:`pymadx.Data.Tfs` class instance or a string specifying a tfs file can be
-    supplied as the second argument interchangeably.
-
     If the reverse flag is used, the lattice is plotted in reverse only. The tfs
-    instance doesn't change.
-    
-    Offset can optionally be the name of an object in the lattice (exact name match).
-
-    If both offset and reverse are used, reverse happens first. The right click searching
-    works with the reverse and offset similarly.
+    instance doesn't change. If both offset and reverse are used, reverse happens
+    first. The right click searching works with the reverse and offset similarly.
     """
     import pymadx.Data as _Data
     tfs = _Data.CheckItsTfs(tfsfile) #load the machine description
@@ -939,7 +941,7 @@ def AddMachineLatticeToFigure(figure, tfsfile, reverse=False, offset=None):
     axoptics = figure.get_axes()[0]
     axmachine = _AdjustExistingAxesAndAddMachineAxis(figure)
 
-    DrawMachineLattice(axmachine, tfs, reverse, offset, useQuadStrength)
+    DrawMachineLattice(axmachine, tfs, reverse, offset, useQuadStrength, s_offset=s_offset)
 
     #put callbacks for linked scrolling
     def MachineXlim(ax):
@@ -951,11 +953,11 @@ def AddMachineLatticeToFigure(figure, tfsfile, reverse=False, offset=None):
             try:
                 x = a.xdata
                 if reverse:
-                    x = tfs.smax - x
+                    x = tfs.smax + s_offset - x
                 if offset:
                     ind = tfs.sequence.index(offset)
                     xoffset = tfs[ind]['S']
-                    x += xoffset
+                    x += xoffset + s_offset
                     if x > tfs.smax:
                         x -= tfs.smax
                 print('Closest element: ',tfs.NameFromNearestS(x))
@@ -1067,7 +1069,7 @@ def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title
     _plt.tight_layout()
 
 def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None, useQuadStrength=True, maskNames=None,
-                       flipQuads=False):
+                       flipQuads=False, s_offset=0.0):
     ax  = axesinstance #handy shortcut
     tfs = pymadxtfsobject
 
@@ -1075,7 +1077,7 @@ def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None
         maskNames = []
     quadFactor = -1.0 if flipQuads else 1.0
 
-    s0 = 0 #accumulated length variable that will be used by functions
+    s0 = s_offset #accumulated length variable that will be used by functions
     l = 0 #length variable that will be used by functions
     #NOTE madx defines S as the end of the element by default
     #define temporary functions to draw individual objects
@@ -1175,9 +1177,9 @@ def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None
 
     # plot beam line - make extra long in case of reversal
     # set zorder on top
-    ax.plot([tfs.smin,tfs.smax],[0,0],'k-',lw=1, zorder=100)
+    ax.plot([tfs.smin+s_offset, tfs.smax+s_offset],[0,0],'k-',lw=1, zorder=100)
     ax.set_ylim(-0.2,0.2)
-    ax.set_xlim(tfs.smin, tfs.smax)
+    ax.set_xlim(tfs.smin+s_offset, tfs.smax+s_offset)
 
 def RMatrixTableString(tfs, tablefmt='grid'):
     """

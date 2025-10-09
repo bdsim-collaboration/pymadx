@@ -2,6 +2,15 @@
 Version History
 ===============
 
+v3.1.0 - 2025 / XX / XX
+=======================
+
+* Ability to plot multiple survey diagrams overlaid.
+* Better control over RMatrix comparison plot saving.
+* Docstring improvement throughout.
+* Add missing images in manual.
+* Ability to offset the machine diagram S.
+
 v3.0.2 - 2025 / 05 / 09
 =======================
 
