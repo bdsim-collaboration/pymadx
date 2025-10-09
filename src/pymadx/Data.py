@@ -1225,6 +1225,22 @@ class Tfs:
         di = self[elementName]
         return RotoTranslation2D(di['PHI'], _np.array([di['Z'], di['Y']]))
 
+    def to_dataframe(self, only_original_columns=True):
+        """
+        This will only work if pandas is available at run time. It is not a formal dependency
+        of this package.
+        """
+        import pandas as pd
+        if only_original_columns:
+            d = [[v for v, b in zip(self.GetRow(i), self._original_columns) if b] for i in range(self.nitems)]
+            c = [ci for ci, b in zip(self.columns, self._original_columns) if b]
+        else:
+            d = [self.GetRow(i) for i in range(self.nitems)]
+            c = self.columns
+
+        df = pd.DataFrame(d, columns=c)
+        return df
+
 
 def CheckItsTfs(tfsfile):
     """
