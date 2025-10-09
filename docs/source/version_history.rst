@@ -10,6 +10,9 @@ v3.1.0 - 2025 / XX / XX
 * Docstring improvement throughout.
 * Add missing images in manual.
 * Ability to offset the machine diagram S.
+* :code:`pymadx.Data.Tfs` now has the function :code:`to_pandas` to return
+  a Pandas DataFrame object. Only works if Pandas available locally as not
+  a formal dependency.
 
 v3.0.2 - 2025 / 05 / 09
 =======================
