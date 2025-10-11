@@ -102,6 +102,7 @@ class Tfs:
         self.header = {}
         self.headerformats = {}
         self.columns = []
+        self._original_columns = [] # boolean list to match self.columns
         self.formats = []
         self.data = {}
         self.sequence = []
@@ -182,8 +183,10 @@ class Tfs:
         # We use the fact we only manually append these two columns to
         # check at the end if loading the tfs failed.
         self.columns.append("SEGMENT")
+        self._original_columns.append(False)
         self.formats.append("%d")
         self.columns.append("SEGMENTNAME")
+        self._original_columns.append(False)
         self.formats.append("%s")
 
         namecolumnindex = 0
@@ -215,6 +218,7 @@ class Tfs:
             elif line[0] == '*':
                 #name
                 self.columns.extend(sl[1:]) #miss *
+                self._original_columns.extend([True]*len(sl[1:]))
                 if "NAME" in self.columns:
                     namecolumnindex = self.columns.index("NAME")
             elif line[0] == '$':
@@ -272,15 +276,19 @@ class Tfs:
                 self.data[name].append(name)
                 self.data[name].append(i)
             self.columns.append('SORIGINAL')
+            self._original_columns.append(False)
             self.formats.append('%le')
             self.columns.append('SMID')
+            self._original_columns.append(False)
             self.formats.append('%le')
             # Additional column which is just the name used to define
             # the sequence in self.sequence.
             self.columns.append("UNIQUENAME")
+            self._original_columns.append(False)
             self.formats.append("%s")
             assert len(set(self.GetColumn("UNIQUENAME"))) == len(self)
             self.columns.append("INDEX")
+            self._original_columns.append(False)
             self.formats.append("%le")
             assert (self.GetColumn("INDEX") == self.index).all()
         else:
@@ -339,6 +347,7 @@ class Tfs:
                 if not madxName in self.columns:
                     self.formats.extend(['%le'])
                     self.columns.extend([madxName])
+                    self._original_columns.append(False)
                     ptcIndex = self.ColumnIndex(ptcName)
                     for elementname in self.sequence:
                         d = self.data[elementname]
@@ -411,6 +420,7 @@ class Tfs:
             newcolumns.extend(['DPXBETA', 'DPYBETA', 'SIGMAXP', 'SIGMAYP'])
             self.formats.extend(['%le','%le','%le','%le'])
         self.columns.extend(newcolumns)
+        self._original_columns.extend([False]*len(newcolumns))
 
         for elementname in self.sequence:
             # beam size calculations (using relation deltaE/E = beta^2 * deltaP/P)
@@ -1214,6 +1224,22 @@ class Tfs:
         """
         di = self[elementName]
         return RotoTranslation2D(di['PHI'], _np.array([di['Z'], di['Y']]))
+
+    def to_dataframe(self, only_original_columns=True):
+        """
+        This will only work if pandas is available at run time. It is not a formal dependency
+        of this package.
+        """
+        import pandas as pd
+        if only_original_columns:
+            d = [[v for v, b in zip(self.GetRow(i), self._original_columns) if b] for i in range(self.nitems)]
+            c = [ci for ci, b in zip(self.columns, self._original_columns) if b]
+        else:
+            d = [self.GetRow(i) for i in range(self.nitems)]
+            c = self.columns
+
+        df = pd.DataFrame(d, columns=c)
+        return df
 
 
 def CheckItsTfs(tfsfile):
