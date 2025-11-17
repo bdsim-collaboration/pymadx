@@ -383,6 +383,8 @@ def SurveyMultiple(tfsfiles, labels=None, title='', outputfilename=None):
 
     import pymadx.Data as _Data
 
+    if type(tfsfiles) is not list:
+        raise ValueError("argument 'tfsfiles' must be a list")
     if labels is None:
         labels = tfsfiles
 
