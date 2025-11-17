@@ -39,9 +39,9 @@ PlotBeta   = _MakePlotter(_BETA, "S / m", r"$\beta_{x,y}$ / m", "Beta")
 PlotAlpha  = _MakePlotter(_ALPHA, "S / m", r"$\alpha_{x,y}$ / m", "Alpha")
 PlotDisp   = _MakePlotter(_DISP, "S / m", r"$D_{x,y} / m$", "Dispersion")
 PlotDispP  = _MakePlotter(_DISP_P, "S / m", r"$D_{p_{x},p_{y}}$ / m", "Momentum_Dispersion")
-PlotSigma  = _MakePlotter(_SIGMA, "S / m", r"$\sigma_{x,y}$ / m", "Sigma")
-PlotSigmaP = _MakePlotter(_SIGMA_P, "S / m", r"$\sigma_{xp,yp}$ / rad", "SigmaP")
-PlotMean   = _MakePlotter(_MEAN, "S / m", r"$\bar{x}, \bar{y}$ / m", "Mean")
+PlotSigma  = _MakePlotter(_SIGMA, "S / m", r"$\sigma_{x,y}$ / mm", "Sigma", 1000.0)
+PlotSigmaP = _MakePlotter(_SIGMA_P, "S / m", r"$\sigma_{xp,yp}$ / mrad", "SigmaP", 1000.0)
+PlotMean   = _MakePlotter(_MEAN, "S / m", r"$\bar{x}, \bar{y}$ / mm", "Mean", 1000.0)
 
 def MadxVsMadx(first, second, first_name=None,
                second_name=None, saveAll=True, 
