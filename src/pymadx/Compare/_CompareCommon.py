@@ -27,7 +27,7 @@ def _LoadTfsInfput(tfs_in, name):
 
 # use closure to avoid tonnes of boilerplate code as happened with
 # MadxBdsimComparison.py
-def _MakePlotter(plot_info_tuples, x_label, y_label, title):
+def _MakePlotter(plot_info_tuples, x_label, y_label, title, factor=1.0):
     def f_out(first, second, first_name=None, second_name=None, **kwargs):
         """first and second should be tfs files."""
         first, first_name = _LoadTfsInfput(first, first_name)
@@ -37,9 +37,9 @@ def _MakePlotter(plot_info_tuples, x_label, y_label, title):
         # Loop over the variables in plot_info_tuples and draw the plots.
         colours = ["tab:blue", "tab:orange"]
         for colour, (var, legend_name) in zip(colours, plot_info_tuples):
-            _plt.plot(first.GetColumn('S'), first.GetColumn(var), c=colour,
+            _plt.plot(first.GetColumn('S'), first.GetColumn(var)*factor, c=colour,
                       label="{}: {}".format(legend_name, first_name), **kwargs)
-            _plt.plot(second.GetColumn('S'), second.GetColumn(var), '--', c=colour,
+            _plt.plot(second.GetColumn('S'), second.GetColumn(var)*factor, '--', c=colour,
                       label="{}: {}".format(legend_name, second_name), **kwargs)
 
         # Set axis labels and draw legend
