@@ -1,6 +1,8 @@
 name: pypi deploy
 
 on:
+  release:
+    types: [ created ]
   push:
     tags:
       - 'v*'  # Trigger only on tags like v1.2.3
