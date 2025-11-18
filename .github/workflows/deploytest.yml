@@ -1,17 +1,17 @@
-name: pypi deploy
+name: pypi-test deploy
 
 on:
   push:
     tags:
-      - 'v*'  # Trigger only on tags like v1.2.3
+      - 'v*-rc'  # Trigger only on tags like v1.2.3-rc
 
 jobs:
-  build-and-publish:
+  publish-to-testpypi:
     runs-on: ubuntu-latest
 
     environment:
-      name: pypi
-      url: https://pypi.org/p/pymadx
+      name: testpypi
+      url: https://test.pypi.org/p/pymadx
 
     permissions:
       id-token: write
@@ -37,4 +37,4 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
 #        with:
-#          password: ${{ secrets.PYPI_API_TOKEN }}
+#          password: ${{ secrets.ACTIONS_DEPLOY_KEY }}
