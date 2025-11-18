@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Module Contents &mdash; pymadx 0.1.dev1+gd6605b5 documentation</title>
+  <title>Module Contents &mdash; pymadx 3.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=81104243"></script>
+      <script src="_static/documentation_options.js?v=dd1205ac"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -170,6 +170,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#pymadx.Data.Tfs.SplitElement"><code class="docutils literal notranslate"><span class="pre">Tfs.SplitElement()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pymadx.Data.Tfs.Write"><code class="docutils literal notranslate"><span class="pre">Tfs.Write()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pymadx.Data.Tfs.next"><code class="docutils literal notranslate"><span class="pre">Tfs.next()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pymadx.Data.Tfs.to_dataframe"><code class="docutils literal notranslate"><span class="pre">Tfs.to_dataframe()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -194,6 +195,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#pymadx.Plot.Envelopes"><code class="docutils literal notranslate"><span class="pre">Envelopes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pymadx.Plot.GetHorizontalVerticalMaskNames"><code class="docutils literal notranslate"><span class="pre">GetHorizontalVerticalMaskNames()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pymadx.Plot.MachineDiagram"><code class="docutils literal notranslate"><span class="pre">MachineDiagram()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pymadx.Plot.PhaseAdvance"><code class="docutils literal notranslate"><span class="pre">PhaseAdvance()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pymadx.Plot.PrintRMatrixTable"><code class="docutils literal notranslate"><span class="pre">PrintRMatrixTable()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pymadx.Plot.RMatrixOptics"><code class="docutils literal notranslate"><span class="pre">RMatrixOptics()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pymadx.Plot.RMatrixOptics2"><code class="docutils literal notranslate"><span class="pre">RMatrixOptics2()</span></code></a></li>
@@ -699,6 +701,7 @@ four aperture parameters.</p>
 <dt class="sig sig-object py" id="pymadx.Data.RotoTranslation2D">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymadx.Data.</span></span><span class="sig-name descname"><span class="pre">RotoTranslation2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rotationAngle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotationOrigin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.RotoTranslation2D" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to hold a 2D rotation about an offset point.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.RotoTranslation2D.Inverse">
 <span class="sig-name descname"><span class="pre">Inverse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.RotoTranslation2D.Inverse" title="Link to this definition"></a></dt>
@@ -798,19 +801,20 @@ for as to whether it perturbs.</p>
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.GetCollimators">
 <span class="sig-name descname"><span class="pre">GetCollimators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetCollimators" title="Link to this definition"></a></dt>
 <dd><p>Returns a Tfs instance containing any type of collimator (including
-COLLLIMATOR, RCOLLIMATOR and ECOLLIMATOR).</p>
+COLLLIMATOR, RCOLLIMATOR and ECOLLIMATOR).
+:return pymadx.Data.Tfs:</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.GetColumn">
-<span class="sig-name descname"><span class="pre">GetColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columnstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetColumn" title="Link to this definition"></a></dt>
-<dd><p>Return a numpy array of the values in columnstring in order
+<span class="sig-name descname"><span class="pre">GetColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetColumn" title="Link to this definition"></a></dt>
+<dd><p>Return a numpy array of the values in column_string in order
 as they appear in the beamline</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.GetColumnDict">
-<span class="sig-name descname"><span class="pre">GetColumnDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columnstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetColumnDict" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">GetColumnDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetColumnDict" title="Link to this definition"></a></dt>
 <dd><p>return all data from one column in a dictionary</p>
 <p>note not in order</p>
 </dd></dl>
@@ -818,8 +822,18 @@ as they appear in the beamline</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.GetElementNamesOfType">
 <span class="sig-name descname"><span class="pre">GetElementNamesOfType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetElementNamesOfType" title="Link to this definition"></a></dt>
-<dd><p>Returns a list of the names of elements of a certain type. Typename can
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>typename</strong> (<em>str</em><em>, </em><em>list</em><em>(</em><em>str</em><em>)</em>) – name of type to return or list of them</p>
+</dd>
+</dl>
+<p>Returns a list of the names of elements of a certain type. Typename can
 be a single string or a tuple or list of strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list(str)</p>
+</dd>
+</dl>
 <p>Examples:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GetElementsOfType</span><span class="p">(</span><span class="s1">&#39;SBEND&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">GetElementsOfType</span><span class="p">([</span><span class="s1">&#39;SBEND&#39;</span><span class="p">,</span><span class="s1">&#39;RBEND&#39;</span><span class="p">])</span>
@@ -831,17 +845,31 @@ be a single string or a tuple or list of strings.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.GetElementsOfType">
 <span class="sig-name descname"><span class="pre">GetElementsOfType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetElementsOfType" title="Link to this definition"></a></dt>
-<dd><p>Returns a Tfs instance containing only the elements of a certain type.
-Typename can be a sintlge string or a tuple or list of strings.</p>
-<p>This returns a Tfs instance with all the same capabilities as this one.</p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>typename</strong> (<em>str</em><em>, </em><em>list</em><em>(</em><em>str</em><em>)</em>) – string of MADX type to match or list of strings</p>
+</dd>
+</dl>
+<p>Returns a Tfs instance containing only the elements of a certain type.
+Typename can be a single string or a tuple or list of strings.
+:return: pymadx.Data.Tfs</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.GetElementsWithTextInName">
 <span class="sig-name descname"><span class="pre">GetElementsWithTextInName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetElementsWithTextInName" title="Link to this definition"></a></dt>
-<dd><p>Returns a Tfs instance containing only the elements with the string in
-text in the their name.</p>
-<p>This returns a Tfs instance with all the same capabilities as this one.</p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em><em>, </em><em>list</em><em>(</em><em>str</em><em>)</em>) – string or list of strings to match a subset of for each component</p>
+</dd>
+</dl>
+<p>Returns a Tfs instance containing only the elements with the string in
+text in their name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pymadx.Data.Tfs</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -874,13 +902,13 @@ this element in the survey (at its end usually).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.GetRow">
-<span class="sig-name descname"><span class="pre">GetRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elementname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetRow" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">GetRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetRow" title="Link to this definition"></a></dt>
 <dd><p>Return all data from one row as a list</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.GetRowDict">
-<span class="sig-name descname"><span class="pre">GetRowDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elementname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetRowDict" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">GetRowDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetRowDict" title="Link to this definition"></a></dt>
 <dd><p>Return a dictionary of all parameters for a specifc element
 given by element name.</p>
 <p>note not in order</p>
@@ -888,7 +916,7 @@ given by element name.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.GetSegment">
-<span class="sig-name descname"><span class="pre">GetSegment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segmentnumber</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetSegment" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">GetSegment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segment_number</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.GetSegment" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -906,15 +934,31 @@ verbose      :    prints out matching name indices and S locations.
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.IndexFromName">
-<span class="sig-name descname"><span class="pre">IndexFromName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">namestring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.IndexFromName" title="Link to this definition"></a></dt>
-<dd><p>Return the index of the element named namestring.  Raises
+<span class="sig-name descname"><span class="pre">IndexFromName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.IndexFromName" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – name of element in the sequence</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+<p>Return the index of the element named name.  Raises
 ValueError if not found.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.IndexFromNearestS">
 <span class="sig-name descname"><span class="pre">IndexFromNearestS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.IndexFromNearestS" title="Link to this definition"></a></dt>
-<dd><p>return the index of the beamline element which CONTAINS the
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>S</strong> (<em>float</em>) – curvilinear cumulative distance along the machine</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+<p>return the index of the beamline element which CONTAINS the
 position S.</p>
 <p>Note:  For small values beyond smax, the index returned will
 be -1 (i.e. the last element).</p>
@@ -923,8 +967,13 @@ be -1 (i.e. the last element).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.InterrogateItem">
 <span class="sig-name descname"><span class="pre">InterrogateItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">itemname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.InterrogateItem" title="Link to this definition"></a></dt>
-<dd><p>Print out all the parameters and their names for a
-particlular element in the sequence identified by name.</p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>itemname</strong> (<em>str</em>) – the element in the sequence to print out</p>
+</dd>
+</dl>
+<p>Print out all the parameters and their names for a
+particular element in the sequence identified by name.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -945,8 +994,16 @@ the filename, the file will be opened still compressed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymadx.Data.Tfs.NameFromIndex">
-<span class="sig-name descname"><span class="pre">NameFromIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">integerindex</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.NameFromIndex" title="Link to this definition"></a></dt>
-<dd><p>return the name of the beamline element at index</p>
+<span class="sig-name descname"><span class="pre">NameFromIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.NameFromIndex" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – index of element</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+<p>return the name of the beamline element at index</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1022,6 +1079,13 @@ YOUR LATTICE.  YOUR OPTICS WILL BE WRONG!</p>
 <span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.next" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pymadx.Data.Tfs.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">only_original_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Data.Tfs.to_dataframe" title="Link to this definition"></a></dt>
+<dd><p>This will only work if pandas is available at run time. It is not a formal dependency
+of this package.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -1071,7 +1135,7 @@ YOUR LATTICE.  YOUR OPTICS WILL BE WRONG!</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pymadx.Diagrams.Survey2DZX">
-<span class="sig-prename descclassname"><span class="pre">pymadx.Diagrams.</span></span><span class="sig-name descname"><span class="pre">Survey2DZX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">survey_tfsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">greyOut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetRotoTranslation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputfilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zOffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultWidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elementDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">funcDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultCoilLength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeRadius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeMaskRanges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invisibleAxes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowsDy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowsDx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultAlpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Diagrams.Survey2DZX" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pymadx.Diagrams.</span></span><span class="sig-name descname"><span class="pre">Survey2DZX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">survey_tfsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">greyOut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetRotoTranslation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputfilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zOffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultWidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elementDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">funcDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultCoilLength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeRadius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeMaskRanges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invisibleAxes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowsDy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowsDx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultAlpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drawXLabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Diagrams.Survey2DZX" title="Link to this definition"></a></dt>
 <dd><p>Draw a schematic of a beamline in the Z-X plane. Allow styling of different elements by type or by name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1097,6 +1161,7 @@ YOUR LATTICE.  YOUR OPTICS WILL BE WRONG!</p>
 <li><p><strong>arrowsDy</strong> (<em>float</em>) – fraction of figure height to move the orientation arrows (positive is up in the plot)</p></li>
 <li><p><strong>arrowsDx</strong> (<em>float</em>) – fraction of figure width to move the orientation arrows (positive is down in the plot)</p></li>
 <li><p><strong>defaultAlpha</strong> (<em>None</em><em>, </em><em>float</em>) – default alpha value to use for the whole beamline if not otherwise specified per element</p></li>
+<li><p><strong>drawXLabel</strong> (<em>bool</em>) – whether to draw the x-axis label on the axis</p></li>
 </ul>
 </dd>
 </dl>
@@ -1106,7 +1171,7 @@ in the other two. An elementDict always overrides any typeDict information.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pymadx.Diagrams.Survey2DZY">
-<span class="sig-prename descclassname"><span class="pre">pymadx.Diagrams.</span></span><span class="sig-name descname"><span class="pre">Survey2DZY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">survey_tfsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">greyOut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetRotoTranslation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputfilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zOffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultWidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elementDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">funcDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultCoilLength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeRadius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeMaskRanges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invisibleAxes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowsDy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowsDx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultAlpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Diagrams.Survey2DZY" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pymadx.Diagrams.</span></span><span class="sig-name descname"><span class="pre">Survey2DZY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">survey_tfsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">greyOut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetRotoTranslation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputfilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zOffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultWidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elementDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">funcDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultCoilLength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeRadius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeMaskRanges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invisibleAxes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowsDy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowsDx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultAlpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drawXLabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Diagrams.Survey2DZY" title="Link to this definition"></a></dt>
 <dd><p>Draw a schematic of a beamline in the Z-Y plane. Allow styling of different elements by type or by name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1132,6 +1197,7 @@ in the other two. An elementDict always overrides any typeDict information.</p>
 <li><p><strong>arrowsDy</strong> (<em>float</em>) – fraction of figure height to move the orientation arrows (positive is up in the plot)</p></li>
 <li><p><strong>arrowsDx</strong> (<em>float</em>) – fraction of figure width to move the orientation arrows (positive is down in the plot)</p></li>
 <li><p><strong>defaultAlpha</strong> (<em>None</em><em>, </em><em>float</em>) – default alpha value to use for the whole beamline if not otherwise specified per element</p></li>
+<li><p><strong>drawXLabel</strong> (<em>bool</em>) – whether to draw the x-axis label on the axis</p></li>
 </ul>
 </dd>
 </dl>
@@ -1145,20 +1211,26 @@ in the other two. An elementDict always overrides any typeDict information.</p>
 <p>Various plots for madx TFS files using the pymadx Tfs class</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pymadx.Plot.AddMachineLatticeToFigure">
-<span class="sig-prename descclassname"><span class="pre">pymadx.Plot.</span></span><span class="sig-name descname"><span class="pre">AddMachineLatticeToFigure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tfsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Plot.AddMachineLatticeToFigure" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pymadx.Plot.</span></span><span class="sig-name descname"><span class="pre">AddMachineLatticeToFigure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tfsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Plot.AddMachineLatticeToFigure" title="Link to this definition"></a></dt>
 <dd><p>Add a diagram above the current graph in the figure that represents the
 accelerator based on a madx twiss file in tfs format.</p>
-<p>Note you can use matplotlib’s gcf() ‘get current figure’ as an argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em>) – matplot figure</p></li>
+<li><p><strong>tfsfile</strong> (<em>str</em><em>, </em><a class="reference internal" href="#pymadx.Data.Tfs" title="pymadx.Data.Tfs"><em>pymadx.Data.Tfs</em></a>) – path to madx file</p></li>
+<li><p><strong>reverse</strong> (<em>bool</em>) – whether to reverse the order of the diagram</p></li>
+<li><p><strong>offset</strong> (<em>None</em><em>, </em><em>str</em>) – name of element in sequence to cycle the machine diagram about</p></li>
+<li><p><strong>s_offset</strong> (<em>float</em><em>, </em><em>int</em>) – apply this S offset to the diagram</p></li>
+</ul>
+</dd>
+</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pymadx</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">AddMachineLatticeToFigure</span><span class="p">(</span><span class="n">gcf</span><span class="p">(),</span> <span class="s1">&#39;afile.tfs&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>A <a class="reference internal" href="#pymadx.Data.Tfs" title="pymadx.Data.Tfs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pymadx.Data.Tfs()</span></code></a> class instance or a string specifying a tfs file can be
-supplied as the second argument interchangeably.</p>
 <p>If the reverse flag is used, the lattice is plotted in reverse only. The tfs
-instance doesn’t change.</p>
-<p>Offset can optionally be the name of an object in the lattice (exact name match).</p>
-<p>If both offset and reverse are used, reverse happens first. The right click searching
-works with the reverse and offset similarly.</p>
+instance doesn’t change. If both offset and reverse are used, reverse happens
+first. The right click searching works with the reverse and offset similarly.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1226,7 +1298,7 @@ machine        - if True (default) add machine diagram to top of plot</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pymadx.Plot.DrawMachineLattice">
-<span class="sig-prename descclassname"><span class="pre">pymadx.Plot.</span></span><span class="sig-name descname"><span class="pre">DrawMachineLattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axesinstance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pymadxtfsobject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useQuadStrength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flipQuads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Plot.DrawMachineLattice" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pymadx.Plot.</span></span><span class="sig-name descname"><span class="pre">DrawMachineLattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axesinstance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pymadxtfsobject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useQuadStrength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flipQuads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Plot.DrawMachineLattice" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -1270,6 +1342,15 @@ machine        - if True (default) add machine diagram to top of plot</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pymadx.Plot.PhaseAdvance">
+<span class="sig-prename descclassname"><span class="pre">pymadx.Plot.</span></span><span class="sig-name descname"><span class="pre">PhaseAdvance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tfsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputfilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">machine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(9,</span> <span class="pre">5)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Plot.PhaseAdvance" title="Link to this definition"></a></dt>
+<dd><p>Plot mu x,y as a function of S. By default, a machine diagram is shown at
+the top of the plot.</p>
+<p>Optionally turn off machine overlay at top with machine=False
+Specify outputfilename (without extension) to save the plot as both pdf and png.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pymadx.Plot.PrintRMatrixTable">
 <span class="sig-prename descclassname"><span class="pre">pymadx.Plot.</span></span><span class="sig-name descname"><span class="pre">PrintRMatrixTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tfs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Plot.PrintRMatrixTable" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -1292,7 +1373,7 @@ machine        - if True (default) add machine diagram to top of plot</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pymadx.Plot.RMatrixOptics2">
-<span class="sig-prename descclassname"><span class="pre">pymadx.Plot.</span></span><span class="sig-name descname"><span class="pre">RMatrixOptics2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tfsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dP</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputfilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">machine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collimatorHRegex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collimatorVRegex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(12,</span> <span class="pre">8)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Plot.RMatrixOptics2" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pymadx.Plot.</span></span><span class="sig-name descname"><span class="pre">RMatrixOptics2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tfsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dP</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputfilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">machine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collimatorHRegex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collimatorVRegex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(12,</span> <span class="pre">8)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">machineFile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymadx.Plot.RMatrixOptics2" title="Link to this definition"></a></dt>
 <dd><p>Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently.
 :param dx: displacement in x in mm that is propagated
 :type dx: float

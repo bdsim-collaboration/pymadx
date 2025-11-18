@@ -2,6 +2,24 @@
 Version History
 ===============
 
+v3.1.0 - 2025 / 11 / 17
+=======================
+
+* Ability to plot multiple survey diagrams overlaid.
+* Better control over RMatrix comparison plot saving.
+* Docstring improvement throughout.
+* Add missing images in manual.
+* Ability to offset the machine diagram S.
+* :code:`pymadx.Data.Tfs` now has the function :code:`to_pandas` to return
+  a Pandas DataFrame object. Only works if Pandas available locally as not
+  a formal dependency.
+* Internally, the Tfs class now keeps a record of which columns are extra
+  ones added by pymadx (e.g. sigma) and which are original.
+* Fixed toplevel README and documentation from pybdsim names.
+* Fixed handling of pathlib Path objects in data loading.
+* PhaseAdvance plot.
+
+
 v3.0.2 - 2025 / 05 / 09
 =======================
 

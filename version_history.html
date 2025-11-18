@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Version History &mdash; pymadx 0.1.dev1+gd6605b5 documentation</title>
+  <title>Version History &mdash; pymadx 3.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=81104243"></script>
+      <script src="_static/documentation_options.js?v=dd1205ac"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -53,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="converting.html">Conversion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="moduledocs.html">Module Contents</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Version History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v3-1-0-2025-11-17">v3.1.0 - 2025 / 11 / 17</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v3-0-2-2025-05-09">v3.0.2 - 2025 / 05 / 09</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v3-0-0-2025-05-09">v3.0.0 - 2025 / 05 / 09</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v2-2-0-2024-03-26">v2.2.0 - 2024 / 03 / 26</a></li>
@@ -138,6 +139,24 @@
              
   <section id="version-history">
 <h1>Version History<a class="headerlink" href="#version-history" title="Link to this heading"></a></h1>
+<section id="v3-1-0-2025-11-17">
+<h2>v3.1.0 - 2025 / 11 / 17<a class="headerlink" href="#v3-1-0-2025-11-17" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Ability to plot multiple survey diagrams overlaid.</p></li>
+<li><p>Better control over RMatrix comparison plot saving.</p></li>
+<li><p>Docstring improvement throughout.</p></li>
+<li><p>Add missing images in manual.</p></li>
+<li><p>Ability to offset the machine diagram S.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pymadx.Data.Tfs</span></code> now has the function <code class="code docutils literal notranslate"><span class="pre">to_pandas</span></code> to return
+a Pandas DataFrame object. Only works if Pandas available locally as not
+a formal dependency.</p></li>
+<li><p>Internally, the Tfs class now keeps a record of which columns are extra
+ones added by pymadx (e.g. sigma) and which are original.</p></li>
+<li><p>Fixed toplevel README and documentation from pybdsim names.</p></li>
+<li><p>Fixed handling of pathlib Path objects in data loading.</p></li>
+<li><p>PhaseAdvance plot.</p></li>
+</ul>
+</section>
 <section id="v3-0-2-2025-05-09">
 <h2>v3.0.2 - 2025 / 05 / 09<a class="headerlink" href="#v3-0-2-2025-05-09" title="Link to this heading"></a></h2>
 <ul class="simple">
