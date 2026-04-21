@@ -84,6 +84,7 @@ def _MakePlotterWithScale(plot_info_tuples, x_label, y_label, title, zeroLine=Fa
         axes.legend(loc='best')
 
         _Plot.AddMachineLatticeToFigure(plot, first)
+        _plt.tight_layout()
         _plt.show(block=False)
         return plot
     return f_out
