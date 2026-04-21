@@ -270,6 +270,105 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
 
     return f
 
+def SurveyPlusRMatrix(twisstfs, surveytfs, verticalRMatrixScale=0.05, horizontalRMatrixScale=0.05,
+                      dx=5.0, dpx=0.5, dP=1.0, dy=5.0, dpy=0.5, title=None, outputfilename=None, machine=True,
+                      collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True, s_offset=None,
+                      machineFile=None):
+    """
+    Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently.
+    :param dx: displacement in x in mm that is propagated
+    :type dx: float
+    :param dpx: displacement in px (component of unit vector) in 1e-3 (e.g. mrad in small angle).
+    :type dpx: float
+    :param dP: displacement in momentum as a percentage
+    :type dP: float
+    :param dy: displacement in x in mm that is propagated
+    :type dy: float
+    :param dyx: displacement in px (component of unit vector) in 1e-3 (e.g. mrad in small angle).
+    :type dyx: float
+    :param s_offset: S to add to coordinates and machine diagram
+    :type s_offset: None, float
+    """
+
+    import pymadx.Data as _Data
+    survey = _Data.CheckItsTfs(surveytfs)
+    tfs = _Data.CheckItsTfs(twisstfs)
+    d = _GetRMatrixDataFromTfs(tfs)
+    machine = tfs
+    if machineFile is not None:
+        machine = _Data.CheckItsTfs(machineFile)
+
+    toMaskInHorizontal, toMaskInVertical = GetHorizontalVerticalMaskNames(tfs, collimatorHRegex, collimatorVRegex)
+
+    xlabel = '$x$  = ' + str(round(dx, 3)) + ' mm'
+    xplabel = "$x'$ = " + str(round(dpx, 3)) + ' mrad'
+    xdplabel = 'd$P$ = ' + str(round(dP, 3)) + ' %'
+
+    f = _plt.figure(figsize=figsize)
+    gs = _matplotlib.gridspec.GridSpec(21, 1)
+
+    axMachineX = f.add_subplot(gs[0, :], projection="_My_Axes")
+    axx = f.add_subplot(gs[1:10, :], sharex=axMachineX)
+    axMachineY = f.add_subplot(gs[12, :], sharex=axMachineX, projection="_My_Axes")
+    axy = f.add_subplot(gs[13:, :], sharex=axMachineX)
+
+    if grid:
+        ds = 5.0
+        if s_offset is None:
+            s_offset = 0
+        smax = _math.ceil((tfs.smax + s_offset) / ds) * ds
+        sMinor = _np.arange(tfs.smin + s_offset, smax, ds)
+        axx.set_xticks(sMinor, minor=True)
+        axy.set_xticks(sMinor, minor=True)
+        axx.grid(visible=True, color='grey', alpha=0.1, which='both')
+        axy.grid(visible=True, color='grey', alpha=0.1, which='both')
+
+    def _StyleMachineAxes(ax):
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+    DrawMachineLattice(axMachineX, machine, maskNames=toMaskInHorizontal)
+    ds = 0.0 if s_offset is None else s_offset
+    _StyleMachineAxes(axMachineX)
+    hs = horizontalRMatrixScale
+    X = survey.GetColumn("X")
+    axx.plot(d['s']+ds, X + d['re11'] * dx * hs, '-', label=xlabel, color='red')
+    axx.plot(d['s']+ds, X + d['re12'] * dpx * hs, '--', label=xplabel, color='blue')
+    axx.plot(d['s']+ds, X + d['re16'] * dP * 10.0 * hs, '-.', label=xdplabel, color='green')
+    axx.plot(d['s'] + ds, X, c='grey', alpha=0.3)
+    axx.set_ylabel('$x$ in mm')
+    axx.legend()
+
+    ylabel = '$y$  = ' + str(round(dy, 3)) + ' mm'
+    yplabel = "$y$' = " + str(round(dpy, 3)) + ' mrad'
+    ydplabel = 'd$P$ = ' + str(round(dP, 3)) + ' %'
+
+    DrawMachineLattice(axMachineY, machine, maskNames=toMaskInVertical, flipQuads=True)
+    _StyleMachineAxes(axMachineY)
+    vs = verticalRMatrixScale
+    Y = survey.GetColumn("Y")
+    axy.plot(d['s']+ds, Y + d['re33'] * dy * vs, '-', label=ylabel, color='red')
+    axy.plot(d['s']+ds, Y + d['re34'] * dpy * vs, '--', label=yplabel, color='blue')
+    axy.plot(d['s']+ds, Y + d['re36'] * dP * 10.0 * vs, '-.', label=ydplabel, color='green')
+    axy.plot(d['s'] + ds, Y, c='grey', alpha=0.3)
+    _plt.xlabel('$S$ in m')
+    axy.set_ylabel('$y$ in mm')
+    axy.legend()
+
+    axMachineX.set_autoscale_on(False)
+    axMachineY.set_autoscale_on(False)
+
+    f.subplots_adjust(bottom=0.1, left=0.08, right=0.98, top=0.99)
+
+    if outputfilename:
+        f.savefig(outputfilename)
+
+    return f
+
 def Centroids(tfsfile, title='', outputfilename=None, machine=True):
     """
     Plot the centroid (mean) x and y from the Tfs file or :meth:`pymadx.Data.Tfs` instance.
