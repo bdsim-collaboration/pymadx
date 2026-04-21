@@ -20,7 +20,7 @@ _VERTICAL = [('RE33', 1.0,  'RE33 / mm'),
              ('RE36', 10.0, 'RE36 / %')]
 
 PlotHorizontal = _MakePlotterWithScale(_HORIZONTAL, "S / m", "x / mm", "Horizontal", zeroLine=True)
-PlotVertical   = _MakePlotterWithScale(_VERTICAL,   "S / m", "x / mm", "Vertical", zeroLine=True)
+PlotVertical   = _MakePlotterWithScale(_VERTICAL,   "S / m", "y / mm", "Vertical", zeroLine=True)
 
 def MadxVsMadxRMatrix(first, second, first_name=None,
                       second_name=None, sOffsetSecond=0,
