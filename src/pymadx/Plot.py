@@ -96,7 +96,7 @@ def _RegexMatchNames(tfsobject, regex):
     matchingNames = [item['NAME'] for item in t if _IsMatch(item['NAME'])]
     return matchingNames
 
-def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True, s_offset=None):
+def RMatrixOpticsSeparate(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True, s_offset=None):
     """
     Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently.
     :param dx: displacement in x in mm that is propagated
@@ -175,23 +175,37 @@ def GetHorizontalVerticalMaskNames(tfs, collimatorHRegex=None, collimatorVRegex=
     toMaskInVertical.extend(list(collsToMaskInVertical))
     return toMaskInHorizontal, toMaskInVertical
 
-def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True,
-                   collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True, s_offset=None,
-                   machineFile=None):
+def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, outputfilename=None,
+                  collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True,
+                  s_offset=None, machineFile=None, diagnosticS=None):
     """
-    Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently.
-    :param dx: displacement in x in mm that is propagated
+    Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently. Two plots
+    are given for horizontal and vertical planes in the same figure. The bends in the wrong
+    plane are greyed out. The optional collimator regex patterns can be used to do the same
+    for the collimators.
+
+    :param dx: displacement in x in mm
     :type dx: float
     :param dpx: displacement in px (component of unit vector) in 1e-3 (e.g. mrad in small angle).
     :type dpx: float
     :param dP: displacement in momentum as a percentage
     :type dP: float
-    :param dy: displacement in x in mm that is propagated
+    :param dy: displacement in x in mm
     :type dy: float
-    :param dyx: displacement in px (component of unit vector) in 1e-3 (e.g. mrad in small angle).
-    :type dyx: float
+    :param dpy: displacement in py (component of unit vector) in 1e-3 (e.g. mrad in small angle).
+    :type dpy: float
+    :param outputfilename: Optional name to save file to - will save to both pdf and png.
+    :type outputfilename: None, str
+    :param collimatorHRegex: Optional regular expression to match the collimator names in the horizontal.
+    :type collimatorHRegex: None, str
+    :param collimatorVRegex: Optional regular expression to match the collimator names in the vertical plane.
+    :type collimatorVRegex: None, str
     :param s_offset: S to add to coordinates and machine diagram
     :type s_offset: None, float
+    :param machineFile: Optional machine diagram file to override with, e.g. for tertiary optics.
+    :type machineFile: None, str
+    :param diagnosticS: List of S locations to plot a purple dotted line over as a diagnostics highlight.
+    :type diagnosticS: None, list(float)
     """
 
     import pymadx.Data as _Data
@@ -241,6 +255,9 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     axx.plot(d['s']+ds, d['re12'] * dpx, '--', label=xplabel, color='blue')
     axx.plot(d['s']+ds, d['re16'] * dP * 10.0, '-.', label=xdplabel, color='green')
     axx.plot([d['s'][0]+ds, d['s'][-1]], [0, 0], c='grey', alpha=0.3)
+    if diagnosticS is not None:
+        for s in diagnosticS:
+            axx.axvline(s, color='purple', linestyle='--', alpha=0.5)
     axx.set_ylabel('$x$ in mm')
     axx.legend()
 
@@ -254,6 +271,9 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     axy.plot(d['s']+ds, d['re34'] * dpy, '--', label=yplabel, color='blue')
     axy.plot(d['s']+ds, d['re36'] * dP * 10.0, '-.', label=ydplabel, color='green')
     axy.plot([d['s'][0]+ds, d['s'][-1]], [0, 0], c='grey', alpha=0.3)
+    if diagnosticS is not None:
+        for s in diagnosticS:
+            axy.axvline(s, color='purple', linestyle='--', alpha=0.5)
     _plt.xlabel('$S$ in m')
     axy.set_ylabel('$y$ in mm')
     axy.legend()
