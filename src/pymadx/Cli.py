@@ -33,4 +33,17 @@ def main_PlotRMatrix():
         outname += ".pdf"
 
     tfs = _pymadx.Data.Tfs(args.tfsfile)
-    _pymadx.Plot.RMatrixOptics2(args.tfsfile, outputfilename=outname)
+    _pymadx.Plot.RMatrixOptics2(tfs, outputfilename=outname)
+
+def main_PlotTwiss():
+    parser = _argparse.ArgumentParser()
+    parser.add_argument("tfsfile", type=str, help="TFS file name")
+    parser.add_argument("outputname", type=str, help="Output name for pdf")
+    args = parser.parse_args()
+
+    outname = str(args.outputname)
+    if not outname.endswith(".pdf"):
+        outname += ".pdf"
+
+    tfs = _pymadx.Data.Tfs(args.tfsfile)
+    _pymadx.Plot.Beta(tfs, outputfilename=outname)
