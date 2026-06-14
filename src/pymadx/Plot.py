@@ -371,34 +371,56 @@ def SurveyPlusRMatrix(twisstfs, surveytfs, verticalRMatrixScale=0.05, horizontal
 
     return f
 
-def Centroids(tfsfile, title='', outputfilename=None, machine=True):
+def Centroids(tfsfile, title=None, outputfilename=None, machine=True, units=1e3, grid=True, xtickmultiple=None):
     """
     Plot the centroid (mean) x and y from the Tfs file or :meth:`pymadx.Data.Tfs` instance.
 
-    tfsfile        - can be either a string or a :meth:`pymadx.Data.Tfs` instance.
-    title          - optional title for plot
-    outputfilename - optional name to save file to (extension determines format)
-    machine        - if True (default) add machine diagram to top of plot
+    :param tfsfile: Tfs file (twiss output).
+    :type tfsfile: str
+    :param title: Optional title of the plot
+    :type title: None, str
+    :param outputfilename: Optional name to save file to (extension determines format).
+    :type outputfilename: str
+    :param machine: Whether to draw a machine diagram at the top.
+    :type machine: bool
+    :param units: Optional factor to multiply by - default 1e3 for MADX m -> mm.
+    :type units: float
+    :param grid: Whether to draw a grid or not.
+    :type grid: bool
+
+    :return: figure instance
     """
     import pymadx.Data as _Data
-    madx = _Data.CheckItsTfs(tfsfile)
-    d    = _GetOpticalDataFromTfs(madx)
+    tfs = _Data.CheckItsTfs(tfsfile)
+    d = _GetOpticalDataFromTfs(tfs)
 
-    f    = _plt.figure(figsize=(9,5))
+    f = _plt.figure(figsize=(9,5))
     axoptics = f.add_subplot(111)
 
     #optics plots
-    axoptics.plot(d['s'],d['x'], label=r'$\mu_{x}$')
-    axoptics.plot(d['s'],d['y'], label=r'$\mu_{y}$')
+    unitname = {1e6 : r'$\mu$m', 1e3 : 'mm', 1 : 'm'}
+    axoptics.plot(d['s'], d['x']*units, label=r'$\mu_{x}$')
+    axoptics.plot(d['s'], d['y']*units, label=r'$\mu_{y}$')
     axoptics.set_xlabel('S (m)')
-    axoptics.set_ylabel(r'$\mu_{(x,y)}$ (m)')
+    un = unitname[units]
+    axoptics.set_ylabel(r'$\mu_{(x,y)}$ '+un)
     axoptics.legend(loc=0,fontsize='small') #best position
     axoptics.axhline(0, color='grey', alpha=0.5, ls='--')
+    if xtickmultiple:
+        loc = _plticker.MultipleLocator(base=xtickmultiple)
+        axoptics.xaxis.set_major_locator(loc)
+    if grid:
+        axoptics.grid(visible=True, color='grey', alpha=0.1, which='both')
+
     if machine:
-        AddMachineLatticeToFigure(f,madx)
-    _plt.suptitle(title,size='x-large')
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+        AddMachineLatticeToFigure(f, tfs)
+    if title:
+        _plt.suptitle(title, size='x-large')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
+    return f
 
 def CentroidsAngle(tfsfile, title='', outputfilename=None, machine=True):
     """
