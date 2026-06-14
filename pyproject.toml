@@ -40,6 +40,7 @@ dev = ["pytest", "sphinx", "sphinx-rtd-theme"]
 pymadx_rmatrix_print = "pymadx.Cli:main_PrintRMatrix"
 pymadx_rmatrix_pdf = "pymadx.Cli:main_PrintRMatrixPdf"
 pymadx_rmatrix_plot = "pymadx.Cli:main_PlotRMatrix"
+pymadx_twiss_plot = "pymadx.Cli:main_PlotTwiss"
 
 [project.urls]
 homepage = "http://www.pp.rhul.ac.uk/bdsim/pymadx"
