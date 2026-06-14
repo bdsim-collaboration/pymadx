@@ -588,8 +588,8 @@ def SurveyMultipleHorizontal(tfsfiles, labels=None, title='', outputfilename=Non
         _plt.savefig(p.with_suffix('.pdf'))
         _plt.savefig(p.with_suffix('.png'), dpi=300)
 
-def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, squareroot=False, dispersionY=False,
-         legendLoc="best"):
+def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, squareroot=False, dispersionY=True,
+         legendLoc="best", ax=None, figsize=(9,5)):
     """
     Plot Twiss Beta x,y as a function of S. By default, a machine diagram is shown at
     the top of the plot. Horizontal dispersion is included by default on a separate y-axis.
@@ -600,15 +600,15 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, 
     """
     import pymadx.Data as _Data
     madx = _Data.CheckItsTfs(tfsfile)
-
-    d = {}
-    d['s']    = madx.GetColumn('S')
-    d['betx'] = madx.GetColumn('BETX')
-    d['bety'] = madx.GetColumn('BETY')
+    d = _GetOpticalDataFromTfs(madx)
     smax = madx.smax
 
-    f = _plt.figure(figsize=(9,5))
-    axoptics = f.add_subplot(111)
+    if ax is None:
+        f = _plt.figure(figsize=figsize)
+        axoptics = f.add_subplot(111)
+    else:
+        f = _plt.gcf()
+        axoptics = ax
 
     #optics plots
     if squareroot:
