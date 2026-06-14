@@ -9,6 +9,8 @@ import matplotlib as _matplotlib
 import matplotlib.gridspec as _gridspec
 import matplotlib.patches as _patches
 import matplotlib.pyplot as _plt
+import matplotlib.ticker as _plticker
+import pathlib as _pathlib
 import re as _re
 import tabulate as _tabulate
 
@@ -148,15 +150,11 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None,
         AddMachineLatticeToFigure(f2, madx)
 
     if outputfilename:
-        if '.' in outputfilename:
-            outputFileNameWithout = outputfilename.split('.')[0]
-            extension = outputfilename.split('.')[1]
-        else:
-            outputFileNameWithout = outputfilename
-            extension = "pdf"
-
-        f1.savefig(outputFileNameWithout + '_x.' + extension)
-        f2.savefig(outputFileNameWithout + '_y.' + extension)
+        p = _pathlib.Path(outputfilename)
+        px = p.with_name(p.stem+'_x'+p.suffix)
+        py = p.with_name(p.stem+'_y'+p.suffix)
+        f1.savefig(px)
+        f2.savefig(py)
     return f1,f2
 
 
@@ -266,7 +264,9 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     f.subplots_adjust(bottom=0.1, left=0.08, right=0.98, top=0.99)
 
     if outputfilename:
-        f.savefig(outputfilename)
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
     return f
 
@@ -365,7 +365,9 @@ def SurveyPlusRMatrix(twisstfs, surveytfs, verticalRMatrixScale=0.05, horizontal
     f.subplots_adjust(bottom=0.1, left=0.08, right=0.98, top=0.99)
 
     if outputfilename:
-        f.savefig(outputfilename)
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
     return f
 
@@ -423,8 +425,10 @@ def CentroidsAngle(tfsfile, title='', outputfilename=None, machine=True):
     if machine:
         AddMachineLatticeToFigure(f, d)
     _plt.suptitle(title,size='x-large')
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def Survey(tfsfile, title='', outputfilename=None):
     """
@@ -460,8 +464,10 @@ def Survey(tfsfile, title='', outputfilename=None):
 
     _plt.tight_layout()
 
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def SurveyMultiple(tfsfiles, labels=None, title='', outputfilename=None):
     """
@@ -507,8 +513,10 @@ def SurveyMultiple(tfsfiles, labels=None, title='', outputfilename=None):
 
     _plt.tight_layout()
 
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def SurveyMultipleVertical(tfsfiles, labels=None, title='', outputfilename=None):
     """
@@ -540,8 +548,10 @@ def SurveyMultipleVertical(tfsfiles, labels=None, title='', outputfilename=None)
     ax.set_ylabel('Y (m)')
     ax.legend()
     _plt.tight_layout()
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def SurveyMultipleHorizontal(tfsfiles, labels=None, title='', outputfilename=None):
     """
@@ -573,8 +583,10 @@ def SurveyMultipleHorizontal(tfsfiles, labels=None, title='', outputfilename=Non
     ax.set_ylabel('Y (m)')
     ax.legend()
     _plt.tight_layout()
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, squareroot=False, dispersionY=False,
          legendLoc="best"):
@@ -638,11 +650,11 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, 
 
     _plt.suptitle(title,size='x-large')
     _plt.xlim((0 - 0.05*smax, 1.05*smax))
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename+'.pdf')
-        _plt.savefig(outputfilename+'.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
+    return f, axoptics, axDisp
 
 def BetaMultiple(tfsfiles, labels=None, s_offsets=None, title='', outputfilename=None, machine=True, dispersion=True,
                  squareroot=False, dispersionY=False, legendLoc="best"):
@@ -694,11 +706,10 @@ def BetaMultiple(tfsfiles, labels=None, s_offsets=None, title='', outputfilename
 
     _plt.suptitle(title,size='x-large')
     #_plt.xlim((0 - 0.05*smax, 1.05*smax))
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename+'.pdf')
-        _plt.savefig(outputfilename+'.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, ax=None, figsize=(9,5)):
     """
@@ -743,11 +754,10 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
 
     _plt.suptitle(title,size='x-large')
     _plt.xlim((0 - 0.05*smax, 1.05*smax))
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename+'.pdf')
-        _plt.savefig(outputfilename+'.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 
 def PhaseAdvance(tfsfile, title='', outputfilename=None, machine=True, ax=None, figsize=(9,5)):
@@ -783,11 +793,10 @@ def PhaseAdvance(tfsfile, title='', outputfilename=None, machine=True, ax=None, 
 
     _plt.suptitle(title, size='x-large')
     _plt.xlim((0 - 0.05 * smax, 1.05 * smax))
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename + '.pdf')
-        _plt.savefig(outputfilename + '.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def Envelopes(tfsfile, title='', outputfilename=None, machine=True, factors=(1,3,7), axX=None, axY=None, figsize=(9, 5)):
     """
@@ -841,11 +850,10 @@ def Envelopes(tfsfile, title='', outputfilename=None, machine=True, factors=(1,3
 
     _plt.suptitle(title, size='x-large')
     _plt.xlim((0 - 0.05 * smax, 1.05 * smax))
-    if outputfilename is not None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename + '.pdf')
-        _plt.savefig(outputfilename + '.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertype=True):
     """
@@ -895,11 +903,10 @@ def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertyp
     if machine != None:
         AddMachineLatticeToFigure(_plt.gcf(), machine)
 
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename+'.pdf')
-        _plt.savefig(outputfilename+'.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def ApertureN1(aperture, machine=None, outputfilename=None):
     """
@@ -926,11 +933,10 @@ def ApertureN1(aperture, machine=None, outputfilename=None):
     if machine != None:
         AddMachineLatticeToFigure(_plt.gcf(), machine)
 
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename+'.pdf')
-        _plt.savefig(outputfilename+'.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def _ApertureTypeColourMap():
     #Some nice colors
