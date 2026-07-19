@@ -950,6 +950,41 @@ def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertyp
         _plt.savefig(p.with_suffix('.pdf'))
         _plt.savefig(p.with_suffix('.png'), dpi=300)
 
+def ApertureSeparate(aperture, machine=None, outputfilename=None, ymax=None, figsize=(12,5)):
+    """
+    Plots the aperture extents vs. S from a pymadx.Data.Aperture instance.
+
+    Inputs:
+      aperture (pymadx.Data.Aperture) - the aperture model to plot from
+      machine (str or pymadx.Data.Tfs) - TFS file or TFS instance to plot a machine lattice from (default: None)
+      outputfilename (str) - Name without extension of the output file if desired (default: None)
+      plot (str) - Indicates which aperture to plot - 'x' for X, 'y' for Y and 'xy' for both (default: 'xy')
+      plotapertype (bool) - If enabled plots the aperture type at every defined aperture point as a color-coded dot (default: False)
+    """
+    import pymadx.Data as _Data
+    aper = _Data.CheckItsTfsAperture(aperture)
+    fig, (axy, axx) = _plt.subplots(2, 1, sharex=True, figsize=figsize)
+
+    s = aper.GetColumn('S')
+    x,y = aper.GetExtentAll()
+    axx.plot(s, x*1e3, 'b-', label='X')
+    axy.plot(s, y*1e3, 'g-', label='Y')
+    axx.set_xlabel('S (m)')
+    axx.set_ylabel('Horizontal Aperture (mm)')
+    axy.set_ylabel('Vertical Aperture (mm)')
+
+    if ymax is not None:
+        axx.set_ylim((0, ymax))
+        axy.set_ylim((0, ymax))
+    if machine != None:
+        AddMachineLatticeToFigure(_plt.gcf(), machine)
+
+    _plt.tight_layout()
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
+
 def ApertureN1(aperture, machine=None, outputfilename=None):
     """
     Plot the N1 aperture value from MADX.
@@ -990,7 +1025,8 @@ def _ApertureTypeColourMap():
                     '#F08030',
                     '#7038F8',
                     '#78C850',
-                    '#A8A878']
+                    '#A8A878',
+                    '#BCBCBC']
 
     #_colourCodes = [_HexToRGB(c) for c in _colourCodes]
 
@@ -1003,7 +1039,8 @@ def _ApertureTypeColourMap():
                       'MARGUERITE',
                       'RECTELLIPSE',
                       'RACETRACK',
-                      'OCTAGON']
+                      'OCTAGON',
+                      'NONE']
     typeToCol = dict(list(zip(_madxAperTypes, _colourCodes)))
     return typeToCol
 
@@ -1012,7 +1049,7 @@ def _HexToRGB(h):
     return tuple(int(h[i:i+2], 16) for i in (0, 2 ,4))
 
 def _ApertureTypeToColour(apertype, cmap=_ApertureTypeColourMap()):
-    colour = (0,0,0)
+    colour = '#BCBCBC'
     try:
         colour = cmap[apertype.upper()]
     except:
