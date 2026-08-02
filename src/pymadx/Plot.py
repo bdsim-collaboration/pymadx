@@ -9,6 +9,8 @@ import matplotlib as _matplotlib
 import matplotlib.gridspec as _gridspec
 import matplotlib.patches as _patches
 import matplotlib.pyplot as _plt
+import matplotlib.ticker as _plticker
+import pathlib as _pathlib
 import re as _re
 import tabulate as _tabulate
 
@@ -94,7 +96,7 @@ def _RegexMatchNames(tfsobject, regex):
     matchingNames = [item['NAME'] for item in t if _IsMatch(item['NAME'])]
     return matchingNames
 
-def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True, s_offset=None):
+def RMatrixOpticsSeparate(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True, s_offset=None):
     """
     Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently.
     :param dx: displacement in x in mm that is propagated
@@ -148,15 +150,11 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None,
         AddMachineLatticeToFigure(f2, madx)
 
     if outputfilename:
-        if '.' in outputfilename:
-            outputFileNameWithout = outputfilename.split('.')[0]
-            extension = outputfilename.split('.')[1]
-        else:
-            outputFileNameWithout = outputfilename
-            extension = "pdf"
-
-        f1.savefig(outputFileNameWithout + '_x.' + extension)
-        f2.savefig(outputFileNameWithout + '_y.' + extension)
+        p = _pathlib.Path(outputfilename)
+        px = p.with_name(p.stem+'_x'+p.suffix)
+        py = p.with_name(p.stem+'_y'+p.suffix)
+        f1.savefig(px)
+        f2.savefig(py)
     return f1,f2
 
 
@@ -177,9 +175,143 @@ def GetHorizontalVerticalMaskNames(tfs, collimatorHRegex=None, collimatorVRegex=
     toMaskInVertical.extend(list(collsToMaskInVertical))
     return toMaskInHorizontal, toMaskInVertical
 
-def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None, outputfilename=None, machine=True,
-                   collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True, s_offset=None,
-                   machineFile=None):
+def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, outputfilename=None,
+                  collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True,
+                  s_offset=None, machineFile=None, diagnosticS=None, aperture=None, apertureMinimum=1e-3):
+    """
+    Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently. Two plots
+    are given for horizontal and vertical planes in the same figure. The bends in the wrong
+    plane are greyed out. The optional collimator regex patterns can be used to do the same
+    for the collimators.
+
+    :param dx: displacement in x in mm
+    :type dx: float
+    :param dpx: displacement in px (component of unit vector) in 1e-3 (e.g. mrad in small angle).
+    :type dpx: float
+    :param dP: displacement in momentum as a percentage
+    :type dP: float
+    :param dy: displacement in x in mm
+    :type dy: float
+    :param dpy: displacement in py (component of unit vector) in 1e-3 (e.g. mrad in small angle).
+    :type dpy: float
+    :param outputfilename: Optional name to save file to - will save to both pdf and png.
+    :type outputfilename: None, str
+    :param collimatorHRegex: Optional regular expression to match the collimator names in the horizontal.
+    :type collimatorHRegex: None, str
+    :param collimatorVRegex: Optional regular expression to match the collimator names in the vertical plane.
+    :type collimatorVRegex: None, str
+    :param s_offset: S to add to coordinates and machine diagram
+    :type s_offset: None, float
+    :param machineFile: Optional machine diagram file to override with, e.g. for tertiary optics.
+    :type machineFile: None, str
+    :param diagnosticS: List of S locations to plot a purple dotted line over as a diagnostics highlight.
+    :type diagnosticS: None, list(float)
+    """
+
+    import pymadx.Data as _Data
+    tfs = _Data.CheckItsTfs(tfsfile)
+    d = _GetRMatrixDataFromTfs(tfs)
+    machine = tfs
+    if machineFile is not None:
+        machine = _Data.CheckItsTfs(machineFile)
+
+    toMaskInHorizontal, toMaskInVertical = GetHorizontalVerticalMaskNames(tfs, collimatorHRegex, collimatorVRegex)
+
+    xlabel = '$x$  = ' + str(round(dx, 3)) + ' mm'
+    xplabel = "$x'$ = " + str(round(dpx, 3)) + ' mrad'
+    xdplabel = 'd$P$ = ' + str(round(dP, 3)) + ' %'
+
+    f = _plt.figure(figsize=figsize)
+    gs = _matplotlib.gridspec.GridSpec(21, 1)
+
+    axMachineX = f.add_subplot(gs[0, :], projection="_My_Axes")
+    axx = f.add_subplot(gs[1:10, :], sharex=axMachineX)
+    axMachineY = f.add_subplot(gs[12, :], sharex=axMachineX, projection="_My_Axes")
+    axy = f.add_subplot(gs[13:, :], sharex=axMachineX)
+
+    if aperture is not None:
+        aperture = _Data.Aperture(aperture)
+        aperture = aperture.RemoveBelowValue(apertureMinimum)
+        a_s = aperture.GetColumn("S")
+        a_x, a_y = aperture.GetExtentAll()
+
+    if grid:
+        ds = 5.0
+        if s_offset is None:
+            s_offset = 0
+        smax = _math.ceil((tfs.smax + s_offset) / ds) * ds
+        sMinor = _np.arange(tfs.smin + s_offset, smax, ds)
+        axx.set_xticks(sMinor, minor=True)
+        axy.set_xticks(sMinor, minor=True)
+        axx.grid(visible=True, color='grey', alpha=0.1, which='both')
+        axy.grid(visible=True, color='grey', alpha=0.1, which='both')
+
+    def _StyleMachineAxes(ax):
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+    DrawMachineLattice(axMachineX, machine, maskNames=toMaskInHorizontal)
+    ds = 0.0 if s_offset is None else s_offset
+    _StyleMachineAxes(axMachineX)
+    axx.plot(d['s']+ds, d['re11'] * dx, '-', label=xlabel, color='red')
+    axx.plot(d['s']+ds, d['re12'] * dpx, '--', label=xplabel, color='blue')
+    axx.plot(d['s']+ds, d['re16'] * dP * 10.0, '-.', label=xdplabel, color='green')
+    axx.plot([d['s'][0]+ds, d['s'][-1]], [0, 0], c='grey', alpha=0.3)
+    xmax = _np.max([d['re11'] * dx, d['re12'] * dpx, d['re16'] * dP * 10.0])
+    if diagnosticS is not None:
+        for s in diagnosticS:
+            axx.axvline(s, color='purple', linestyle='--', alpha=0.5)
+    if aperture is not None:
+        axx.plot(a_s, a_x*1e3, c='k', alpha=0.5, lw=1)
+        axx.plot(a_s, a_x*-1e3, c='k', alpha=0.5, lw=1)
+        xmax = max(xmax, _np.mean(a_x*1e3))
+    axx.set_ylim(-xmax, xmax)
+    axx.set_ylabel('$x$ in mm')
+    axx.legend()
+
+    ylabel = '$y$  = ' + str(round(dy, 3)) + ' mm'
+    yplabel = "$y$' = " + str(round(dpy, 3)) + ' mrad'
+    ydplabel = 'd$P$ = ' + str(round(dP, 3)) + ' %'
+
+    DrawMachineLattice(axMachineY, machine, maskNames=toMaskInVertical, flipQuads=True)
+    _StyleMachineAxes(axMachineY)
+    axy.plot(d['s']+ds, d['re33'] * dy, '-', label=ylabel, color='red')
+    axy.plot(d['s']+ds, d['re34'] * dpy, '--', label=yplabel, color='blue')
+    axy.plot(d['s']+ds, d['re36'] * dP * 10.0, '-.', label=ydplabel, color='green')
+    axy.plot([d['s'][0]+ds, d['s'][-1]], [0, 0], c='grey', alpha=0.3)
+    ymax = _np.max([d['re33'] * dy, d['re34'] * dpy, d['re36'] * dP * 10.0])
+    if diagnosticS is not None:
+        for s in diagnosticS:
+            axy.axvline(s, color='purple', linestyle='--', alpha=0.5)
+    if aperture is not None:
+        axy.plot(a_s, a_y*1e3, c='k', alpha=0.5, lw=1)
+        axy.plot(a_s, a_y*-1e3, c='k', alpha=0.5, lw=1)
+        ymax = max(ymax, _np.mean(a_y * 1e3))
+    axy.set_ylim(-ymax, ymax)
+    _plt.xlabel('$S$ in m')
+    axy.set_ylabel('$y$ in mm')
+    axy.legend()
+
+    axMachineX.set_autoscale_on(False)
+    axMachineY.set_autoscale_on(False)
+
+    f.subplots_adjust(bottom=0.1, left=0.08, right=0.98, top=0.99)
+
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
+
+    return f
+
+def SurveyPlusRMatrix(twisstfs, surveytfs, verticalRMatrixScale=0.05, horizontalRMatrixScale=0.05,
+                      dx=5.0, dpx=0.5, dP=1.0, dy=5.0, dpy=0.5, title=None, outputfilename=None, machine=True,
+                      collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True, s_offset=None,
+                      machineFile=None):
     """
     Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently.
     :param dx: displacement in x in mm that is propagated
@@ -197,7 +329,8 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     """
 
     import pymadx.Data as _Data
-    tfs = _Data.CheckItsTfs(tfsfile)
+    survey = _Data.CheckItsTfs(surveytfs)
+    tfs = _Data.CheckItsTfs(twisstfs)
     d = _GetRMatrixDataFromTfs(tfs)
     machine = tfs
     if machineFile is not None:
@@ -239,10 +372,12 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     DrawMachineLattice(axMachineX, machine, maskNames=toMaskInHorizontal)
     ds = 0.0 if s_offset is None else s_offset
     _StyleMachineAxes(axMachineX)
-    axx.plot(d['s']+ds, d['re11'] * dx, '-', label=xlabel, color='red')
-    axx.plot(d['s']+ds, d['re12'] * dpx, '--', label=xplabel, color='blue')
-    axx.plot(d['s']+ds, d['re16'] * dP * 10.0, '-.', label=xdplabel, color='green')
-    axx.plot([d['s'][0]+ds, d['s'][-1]], [0, 0], c='grey', alpha=0.3)
+    hs = horizontalRMatrixScale
+    X = survey.GetColumn("X")
+    axx.plot(d['s']+ds, X + d['re11'] * dx * hs, '-', label=xlabel, color='red')
+    axx.plot(d['s']+ds, X + d['re12'] * dpx * hs, '--', label=xplabel, color='blue')
+    axx.plot(d['s']+ds, X + d['re16'] * dP * 10.0 * hs, '-.', label=xdplabel, color='green')
+    axx.plot(d['s'] + ds, X, c='grey', alpha=0.3)
     axx.set_ylabel('$x$ in mm')
     axx.legend()
 
@@ -252,10 +387,12 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
 
     DrawMachineLattice(axMachineY, machine, maskNames=toMaskInVertical, flipQuads=True)
     _StyleMachineAxes(axMachineY)
-    axy.plot(d['s']+ds, d['re33'] * dy, '-', label=ylabel, color='red')
-    axy.plot(d['s']+ds, d['re34'] * dpy, '--', label=yplabel, color='blue')
-    axy.plot(d['s']+ds, d['re36'] * dP * 10.0, '-.', label=ydplabel, color='green')
-    axy.plot([d['s'][0]+ds, d['s'][-1]], [0, 0], c='grey', alpha=0.3)
+    vs = verticalRMatrixScale
+    Y = survey.GetColumn("Y")
+    axy.plot(d['s']+ds, Y + d['re33'] * dy * vs, '-', label=ylabel, color='red')
+    axy.plot(d['s']+ds, Y + d['re34'] * dpy * vs, '--', label=yplabel, color='blue')
+    axy.plot(d['s']+ds, Y + d['re36'] * dP * 10.0 * vs, '-.', label=ydplabel, color='green')
+    axy.plot(d['s'] + ds, Y, c='grey', alpha=0.3)
     _plt.xlabel('$S$ in m')
     axy.set_ylabel('$y$ in mm')
     axy.legend()
@@ -266,38 +403,62 @@ def RMatrixOptics2(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, title=None
     f.subplots_adjust(bottom=0.1, left=0.08, right=0.98, top=0.99)
 
     if outputfilename:
-        f.savefig(outputfilename)
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
     return f
 
-def Centroids(tfsfile, title='', outputfilename=None, machine=True):
+def Centroids(tfsfile, title=None, outputfilename=None, machine=True, units=1e3, grid=True, xtickmultiple=None):
     """
     Plot the centroid (mean) x and y from the Tfs file or :meth:`pymadx.Data.Tfs` instance.
 
-    tfsfile        - can be either a string or a :meth:`pymadx.Data.Tfs` instance.
-    title          - optional title for plot
-    outputfilename - optional name to save file to (extension determines format)
-    machine        - if True (default) add machine diagram to top of plot
+    :param tfsfile: Tfs file (twiss output).
+    :type tfsfile: str
+    :param title: Optional title of the plot
+    :type title: None, str
+    :param outputfilename: Optional name to save file to (extension determines format).
+    :type outputfilename: str
+    :param machine: Whether to draw a machine diagram at the top.
+    :type machine: bool
+    :param units: Optional factor to multiply by - default 1e3 for MADX m -> mm.
+    :type units: float
+    :param grid: Whether to draw a grid or not.
+    :type grid: bool
+
+    :return: figure instance
     """
     import pymadx.Data as _Data
-    madx = _Data.CheckItsTfs(tfsfile)
-    d    = _GetOpticalDataFromTfs(madx)
+    tfs = _Data.CheckItsTfs(tfsfile)
+    d = _GetOpticalDataFromTfs(tfs)
 
-    f    = _plt.figure(figsize=(9,5))
+    f = _plt.figure(figsize=(9,5))
     axoptics = f.add_subplot(111)
 
     #optics plots
-    axoptics.plot(d['s'],d['x'], label=r'$\mu_{x}$')
-    axoptics.plot(d['s'],d['y'], label=r'$\mu_{y}$')
+    unitname = {1e6 : r'$\mu$m', 1e3 : 'mm', 1 : 'm'}
+    axoptics.plot(d['s'], d['x']*units, label=r'$\mu_{x}$')
+    axoptics.plot(d['s'], d['y']*units, label=r'$\mu_{y}$')
     axoptics.set_xlabel('S (m)')
-    axoptics.set_ylabel(r'$\mu_{(x,y)}$ (m)')
+    un = unitname[units]
+    axoptics.set_ylabel(r'$\mu_{(x,y)}$ '+un)
     axoptics.legend(loc=0,fontsize='small') #best position
     axoptics.axhline(0, color='grey', alpha=0.5, ls='--')
+    if xtickmultiple:
+        loc = _plticker.MultipleLocator(base=xtickmultiple)
+        axoptics.xaxis.set_major_locator(loc)
+    if grid:
+        axoptics.grid(visible=True, color='grey', alpha=0.1, which='both')
+
     if machine:
-        AddMachineLatticeToFigure(f,madx)
-    _plt.suptitle(title,size='x-large')
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+        AddMachineLatticeToFigure(f, tfs)
+    if title:
+        _plt.suptitle(title, size='x-large')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
+    return f
 
 def CentroidsAngle(tfsfile, title='', outputfilename=None, machine=True):
     """
@@ -324,8 +485,10 @@ def CentroidsAngle(tfsfile, title='', outputfilename=None, machine=True):
     if machine:
         AddMachineLatticeToFigure(f, d)
     _plt.suptitle(title,size='x-large')
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def Survey(tfsfile, title='', outputfilename=None):
     """
@@ -361,8 +524,10 @@ def Survey(tfsfile, title='', outputfilename=None):
 
     _plt.tight_layout()
 
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def SurveyMultiple(tfsfiles, labels=None, title='', outputfilename=None):
     """
@@ -408,8 +573,10 @@ def SurveyMultiple(tfsfiles, labels=None, title='', outputfilename=None):
 
     _plt.tight_layout()
 
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def SurveyMultipleVertical(tfsfiles, labels=None, title='', outputfilename=None):
     """
@@ -441,8 +608,10 @@ def SurveyMultipleVertical(tfsfiles, labels=None, title='', outputfilename=None)
     ax.set_ylabel('Y (m)')
     ax.legend()
     _plt.tight_layout()
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def SurveyMultipleHorizontal(tfsfiles, labels=None, title='', outputfilename=None):
     """
@@ -474,11 +643,13 @@ def SurveyMultipleHorizontal(tfsfiles, labels=None, title='', outputfilename=Non
     ax.set_ylabel('Y (m)')
     ax.legend()
     _plt.tight_layout()
-    if outputfilename is not None:
-        _plt.savefig(outputfilename)
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
-def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, squareroot=False, dispersionY=False,
-         legendLoc="best"):
+def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, squareroot=False, dispersionY=True,
+         legendLoc="best", ax=None, figsize=(9,5)):
     """
     Plot Twiss Beta x,y as a function of S. By default, a machine diagram is shown at
     the top of the plot. Horizontal dispersion is included by default on a separate y-axis.
@@ -489,15 +660,15 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, 
     """
     import pymadx.Data as _Data
     madx = _Data.CheckItsTfs(tfsfile)
-
-    d = {}
-    d['s']    = madx.GetColumn('S')
-    d['betx'] = madx.GetColumn('BETX')
-    d['bety'] = madx.GetColumn('BETY')
+    d = _GetOpticalDataFromTfs(madx)
     smax = madx.smax
 
-    f = _plt.figure(figsize=(9,5))
-    axoptics = f.add_subplot(111)
+    if ax is None:
+        f = _plt.figure(figsize=figsize)
+        axoptics = f.add_subplot(111)
+    else:
+        f = _plt.gcf()
+        axoptics = ax
 
     #optics plots
     if squareroot:
@@ -539,11 +710,11 @@ def Beta(tfsfile, title='', outputfilename=None, machine=True, dispersion=True, 
 
     _plt.suptitle(title,size='x-large')
     _plt.xlim((0 - 0.05*smax, 1.05*smax))
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename+'.pdf')
-        _plt.savefig(outputfilename+'.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
+    return f, axoptics, axDisp
 
 def BetaMultiple(tfsfiles, labels=None, s_offsets=None, title='', outputfilename=None, machine=True, dispersion=True,
                  squareroot=False, dispersionY=False, legendLoc="best"):
@@ -595,11 +766,10 @@ def BetaMultiple(tfsfiles, labels=None, s_offsets=None, title='', outputfilename
 
     _plt.suptitle(title,size='x-large')
     #_plt.xlim((0 - 0.05*smax, 1.05*smax))
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename+'.pdf')
-        _plt.savefig(outputfilename+'.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, ax=None, figsize=(9,5)):
     """
@@ -644,11 +814,10 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
 
     _plt.suptitle(title,size='x-large')
     _plt.xlim((0 - 0.05*smax, 1.05*smax))
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename+'.pdf')
-        _plt.savefig(outputfilename+'.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 
 def PhaseAdvance(tfsfile, title='', outputfilename=None, machine=True, ax=None, figsize=(9,5)):
@@ -684,11 +853,10 @@ def PhaseAdvance(tfsfile, title='', outputfilename=None, machine=True, ax=None, 
 
     _plt.suptitle(title, size='x-large')
     _plt.xlim((0 - 0.05 * smax, 1.05 * smax))
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename + '.pdf')
-        _plt.savefig(outputfilename + '.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def Envelopes(tfsfile, title='', outputfilename=None, machine=True, factors=(1,3,7), axX=None, axY=None, figsize=(9, 5)):
     """
@@ -742,11 +910,10 @@ def Envelopes(tfsfile, title='', outputfilename=None, machine=True, factors=(1,3
 
     _plt.suptitle(title, size='x-large')
     _plt.xlim((0 - 0.05 * smax, 1.05 * smax))
-    if outputfilename is not None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename + '.pdf')
-        _plt.savefig(outputfilename + '.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertype=True):
     """
@@ -796,11 +963,45 @@ def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertyp
     if machine != None:
         AddMachineLatticeToFigure(_plt.gcf(), machine)
 
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename+'.pdf')
-        _plt.savefig(outputfilename+'.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
+
+def ApertureSeparate(aperture, machine=None, outputfilename=None, ymax=None, figsize=(12,5)):
+    """
+    Plots the aperture extents vs. S from a pymadx.Data.Aperture instance.
+
+    Inputs:
+      aperture (pymadx.Data.Aperture) - the aperture model to plot from
+      machine (str or pymadx.Data.Tfs) - TFS file or TFS instance to plot a machine lattice from (default: None)
+      outputfilename (str) - Name without extension of the output file if desired (default: None)
+      plot (str) - Indicates which aperture to plot - 'x' for X, 'y' for Y and 'xy' for both (default: 'xy')
+      plotapertype (bool) - If enabled plots the aperture type at every defined aperture point as a color-coded dot (default: False)
+    """
+    import pymadx.Data as _Data
+    aper = _Data.CheckItsTfsAperture(aperture)
+    fig, (axy, axx) = _plt.subplots(2, 1, sharex=True, figsize=figsize)
+
+    s = aper.GetColumn('S')
+    x,y = aper.GetExtentAll()
+    axx.plot(s, x*1e3, 'b-', label='X')
+    axy.plot(s, y*1e3, 'g-', label='Y')
+    axx.set_xlabel('S (m)')
+    axx.set_ylabel('Horizontal Aperture (mm)')
+    axy.set_ylabel('Vertical Aperture (mm)')
+
+    if ymax is not None:
+        axx.set_ylim((0, ymax))
+        axy.set_ylim((0, ymax))
+    if machine != None:
+        AddMachineLatticeToFigure(_plt.gcf(), machine)
+
+    _plt.tight_layout()
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def ApertureN1(aperture, machine=None, outputfilename=None):
     """
@@ -827,11 +1028,10 @@ def ApertureN1(aperture, machine=None, outputfilename=None):
     if machine != None:
         AddMachineLatticeToFigure(_plt.gcf(), machine)
 
-    if outputfilename != None:
-        if '.' in outputfilename:
-            outputfilename = outputfilename.split('.')[0]
-        _plt.savefig(outputfilename+'.pdf')
-        _plt.savefig(outputfilename+'.png')
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
 
 def _ApertureTypeColourMap():
     #Some nice colors
@@ -843,7 +1043,8 @@ def _ApertureTypeColourMap():
                     '#F08030',
                     '#7038F8',
                     '#78C850',
-                    '#A8A878']
+                    '#A8A878',
+                    '#BCBCBC']
 
     #_colourCodes = [_HexToRGB(c) for c in _colourCodes]
 
@@ -856,7 +1057,8 @@ def _ApertureTypeColourMap():
                       'MARGUERITE',
                       'RECTELLIPSE',
                       'RACETRACK',
-                      'OCTAGON']
+                      'OCTAGON',
+                      'NONE']
     typeToCol = dict(list(zip(_madxAperTypes, _colourCodes)))
     return typeToCol
 
@@ -865,7 +1067,7 @@ def _HexToRGB(h):
     return tuple(int(h[i:i+2], 16) for i in (0, 2 ,4))
 
 def _ApertureTypeToColour(apertype, cmap=_ApertureTypeColourMap()):
-    colour = (0,0,0)
+    colour = '#BCBCBC'
     try:
         colour = cmap[apertype.upper()]
     except:
