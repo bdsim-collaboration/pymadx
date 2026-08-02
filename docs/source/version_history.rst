@@ -2,13 +2,16 @@
 Version History
 ===============
 
-v3.2.0 - 2026 / XX / XX
+v3.2.0 - 2026 / 08 / 02
 =======================
 
 * New SurveyPlusRMatrixPlot.
+* Optional aperture in R-Matrix plot.
 * Use pathlib throughout plotting functions to fix bugs in saving plots when they have '.' in the name.
 * New command line tool :code:`pymadx_twiss_plot`.
 * The plot function RMatrixOptics2 is now called RMatrixOptics, and RMatrixOptics is RMatrixOpticsSeparate.
+* Fix aperture plot exception.
+* Fix plot label.
 
 v3.1.0 - 2025 / 11 / 17
 =======================
