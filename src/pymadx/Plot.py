@@ -177,7 +177,7 @@ def GetHorizontalVerticalMaskNames(tfs, collimatorHRegex=None, collimatorVRegex=
 
 def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, outputfilename=None,
                   collimatorHRegex=None, collimatorVRegex=None, figsize=(12, 8), grid=True,
-                  s_offset=None, machineFile=None, diagnosticS=None):
+                  s_offset=None, machineFile=None, diagnosticS=None, aperture=None, apertureMinimum=1e-3):
     """
     Plot the propagation of 3 rays with dx, dy, dpx, dpy, and dE independently. Two plots
     are given for horizontal and vertical planes in the same figure. The bends in the wrong
@@ -229,6 +229,12 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, outputfilen
     axMachineY = f.add_subplot(gs[12, :], sharex=axMachineX, projection="_My_Axes")
     axy = f.add_subplot(gs[13:, :], sharex=axMachineX)
 
+    if aperture is not None:
+        aperture = _Data.Aperture(aperture)
+        aperture = aperture.RemoveBelowValue(apertureMinimum)
+        a_s = aperture.GetColumn("S")
+        a_x, a_y = aperture.GetExtentAll()
+
     if grid:
         ds = 5.0
         if s_offset is None:
@@ -255,9 +261,15 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, outputfilen
     axx.plot(d['s']+ds, d['re12'] * dpx, '--', label=xplabel, color='blue')
     axx.plot(d['s']+ds, d['re16'] * dP * 10.0, '-.', label=xdplabel, color='green')
     axx.plot([d['s'][0]+ds, d['s'][-1]], [0, 0], c='grey', alpha=0.3)
+    xmax = _np.max([d['re11'] * dx, d['re12'] * dpx, d['re16'] * dP * 10.0])
     if diagnosticS is not None:
         for s in diagnosticS:
             axx.axvline(s, color='purple', linestyle='--', alpha=0.5)
+    if aperture is not None:
+        axx.plot(a_s, a_x*1e3, c='k', alpha=0.5, lw=1)
+        axx.plot(a_s, a_x*-1e3, c='k', alpha=0.5, lw=1)
+        xmax = max(xmax, _np.mean(a_x*1e3))
+    axx.set_ylim(-xmax, xmax)
     axx.set_ylabel('$x$ in mm')
     axx.legend()
 
@@ -271,9 +283,15 @@ def RMatrixOptics(tfsfile, dx=1.0, dpx=1.0, dP=1.0, dy=1.0, dpy=1.0, outputfilen
     axy.plot(d['s']+ds, d['re34'] * dpy, '--', label=yplabel, color='blue')
     axy.plot(d['s']+ds, d['re36'] * dP * 10.0, '-.', label=ydplabel, color='green')
     axy.plot([d['s'][0]+ds, d['s'][-1]], [0, 0], c='grey', alpha=0.3)
+    ymax = _np.max([d['re33'] * dy, d['re34'] * dpy, d['re36'] * dP * 10.0])
     if diagnosticS is not None:
         for s in diagnosticS:
             axy.axvline(s, color='purple', linestyle='--', alpha=0.5)
+    if aperture is not None:
+        axy.plot(a_s, a_y*1e3, c='k', alpha=0.5, lw=1)
+        axy.plot(a_s, a_y*-1e3, c='k', alpha=0.5, lw=1)
+        ymax = max(ymax, _np.mean(a_y * 1e3))
+    axy.set_ylim(-ymax, ymax)
     _plt.xlabel('$S$ in m')
     axy.set_ylabel('$y$ in mm')
     axy.legend()
