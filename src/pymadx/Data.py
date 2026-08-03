@@ -1668,7 +1668,7 @@ def GetApertureExtent(aper1, aper2, aper3, aper4, aper_type):
     if aper_type == 'CIRCLE':
         x = aper1
         y = aper1
-    if aper_type in ['RECTANGLE', 'ELLIPSE', 'OCTAGON']:
+    if aper_type in ['RECTANGLE', 'ELLIPSE', 'OCTAGON', 'RACETRACK']:
         x = aper1
         y = aper2
     elif aper_type in ['LHCSCREEN', 'RECTCIRCLE', 'MARGUERITE']:
@@ -1677,9 +1677,6 @@ def GetApertureExtent(aper1, aper2, aper3, aper4, aper_type):
     if aper_type == 'RECTELLIPSE':
         x = min(aper1, aper3)
         y = min(aper2, aper4)
-    elif aper_type == 'RACETRACK':
-        x = aper1 + aper3
-        y = aper2 + aper3
 
     return x,y
 
