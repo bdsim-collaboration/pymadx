@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v3.2.1 - 2026 / 08 / 03
+=======================
+
+* Fix the extent of a racetrack aperture calculation.
+
 v3.2.0 - 2026 / 08 / 02
 =======================
 
@@ -26,7 +31,7 @@ v3.1.0 - 2025 / 11 / 17
   a formal dependency.
 * Internally, the Tfs class now keeps a record of which columns are extra
   ones added by pymadx (e.g. sigma) and which are original.
-* Fixed toplevel README and documentation from pybdsim names.
+* Fixed the top level README and documentation from pybdsim names.
 * Fixed handling of pathlib Path objects in data loading.
 * PhaseAdvance plot.
 
@@ -48,7 +53,7 @@ v3.0.0 - 2025 / 05 / 09
 * New :code:`pymadx_rmatrix_plot` command line tool.
 * Ability to apply an S offset in coordinates to an R-matrix plot.
 * Fix :code:`pymadx.Plot.AddMachineLatticeToFigure` to correctly adjust axes in
-  a matplotlib plot such that :code:`plt.tight_layout()` still works after adding
+  a Matplotlib plot such that :code:`plt.tight_layout()` still works after adding
   the new axes.
 * New ability to add a machine diagram from a cpymad instance.
 * New :code:`pyamdx.Plot.Envelopes` plotting function.
@@ -109,7 +114,7 @@ v2.0.0 - 2023 / 03 / 16
   throughout the code is dynamically generated from the git tag.
 * Added plot for 1 or 2 machine diagrams only.
 * Fix aperture plots due to typo in code.
-* Fix string type comparison for modern Python (i.e. don't use numpy internal alises).
+* Fix string type comparison for modern Python (i.e. don't use numpy internal aliases).
 
 
 v1.8.2 - 2021 / 06 / 16
@@ -123,7 +128,7 @@ v1.8.1 - 2020 / 12 / 16
 =======================
 
 * Fix for step size in Tfs slicing.
-* More tolerant plotting for machine diagrams with just keyword, S and L as colums (ignoring K1L).
+* More tolerant plotting for machine diagrams with just keyword, S and L as columns (ignoring K1L).
 * Ensure machine diagram x limit is full machine length by default.
 
 
@@ -135,7 +140,7 @@ New Features
 
 * Switch to Python 3. Should be Python 2.7 compatible.
 * Venv support in Makefile thanks to Kyrre Ness Sjoebaek.
-* Ability to write out a Tfs instance permitting comlete loading, editing and writing.
+* Ability to write out a Tfs instance permitting complete loading, editing and writing.
 * Plus operator for Tfs instances to add them together.
 
 Bug Fixes
@@ -181,8 +186,8 @@ v1.6 - 2018 / 12 / 12
 General
 -------
 
-* Reimplemented machine diagram drawing to be more efficient when zooming and
-  fix zordering so bends and then quadrupoles are always on top.
+* Re-implemented machine diagram drawing to be more efficient when zooming and
+  fix z-ordering so bends and then quadrupoles are always on top.
 * Dispersion optional for optics plotting.
 * H1 and H2 now passed through conversion of MADX TFS to PTC input format.
 * Solenoid added to MADX TFS to PTC converter.
@@ -278,6 +283,6 @@ New Features
 ------------
 
 * GPL3 licence introduced.
-* Compatability with PIP install system.
+* Compatibility with PIP install system.
 * Manual.
 * Testing suite.

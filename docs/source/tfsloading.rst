@@ -142,7 +142,7 @@ Row or Element
 
 A row of data is an entry for a particular element. The Tfs class is conceptually a list of
 elements. Each element is represented by a Python dictionary that has a key for each column.
-The list of acceptable keys (i.e. names of columns) can be found in the member named 'colums'.::
+The list of acceptable keys (i.e. names of columns) can be found in the member named 'columns'.::
 
   a.columns #prints out list of column names
 
