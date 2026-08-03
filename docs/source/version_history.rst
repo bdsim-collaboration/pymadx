@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v3.2.1 - 2026 / 08 / 03
+=======================
+
+* Fix the extent of a racetrack aperture calculation.
+
 v3.2.0 - 2026 / 08 / 02
 =======================
 
