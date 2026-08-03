@@ -37,7 +37,7 @@ then append a machine diagram at the end if they wish.::
   # user plotting commands here
   pymadx.Plot.AddMachineLatticeToFigure(f, "mytwissfile.tar.gz")
 
-`gcf()` is a matplotlib.pyplot function to get a reference to the current matplotlib
+`gcf()` is a matplotlib.pyplot function to get a reference to the current Matplotlib
 figure and can be used as the first argument.::
 
   pymadx.Plot.AddMachineLatticeToFigure(gcf(), "mytwissfile.tar.gz")
@@ -103,7 +103,7 @@ Each magnet is colour coded an positioned depending on its type and strength.
 Plot Interactivity
 ------------------
 
-With the adition of the machine axes, some extra interactivity is included to the matplotlib
+With the addition of the machine axes, some extra interactivity is included to the Matplotlib
 figures.
 
  * zooming - if the 'right-click and drag' zoom feature is used on the machine diagram, the
