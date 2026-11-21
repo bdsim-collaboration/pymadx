@@ -1362,6 +1362,11 @@ def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title
 
 def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None, useQuadStrength=True, maskNames=None,
                        flipQuads=False, s_offset=0.0):
+    """
+    This draws the machine diagram into the provided axis instance. This ignores the S coordinate
+    and simply starts from 0 + s_offset and adds the length of each component. Use the s_offset
+    argument to control exactly where the diagram starts.
+    """
     ax  = axesinstance #handy shortcut
     tfs = pymadxtfsobject
 
@@ -1469,9 +1474,9 @@ def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None
 
     # plot beam line - make extra long in case of reversal
     # set zorder on top
-    ax.plot([tfs.smin+s_offset, tfs.smax+s_offset],[0,0],'k-',lw=1, zorder=100)
-    ax.set_ylim(-0.2,0.2)
-    ax.set_xlim(tfs.smin+s_offset, tfs.smax+s_offset)
+    ax.plot([s_offset, s_offset+s0], [0,0], 'k-', lw=1, zorder=100)
+    ax.set_ylim(-0.2, 0.2)
+    ax.set_xlim(s_offset, s_offset+s0)
 
 def RMatrixTableString(tfs, tablefmt='grid'):
     """
