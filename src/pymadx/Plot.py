@@ -773,8 +773,13 @@ def BetaMultiple(tfsfiles, labels=None, s_offsets=None, title='', outputfilename
 
 def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, ax=None, figsize=(9,5)):
     """
-    Plot sqrt(beta x,y) as a function of S. By default, a machine diagram is shown at
-    the top of the plot.
+    Plot sigma as calculated by the Data.Tfs class as a function of S. By default,
+    machine diagram is shown at the top of the plot.
+
+    :param tfsfile: Name of Tfs file or object.
+    :type tfsfile: str, Path, pymadx.Data.Tfs
+    :param title: Plot title.
+    :type title: str
 
     Optionally set dispersion=True to plot x dispersion as second axis.
     Optionally turn off machine overlay at top with machine=False
