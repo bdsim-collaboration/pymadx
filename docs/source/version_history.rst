@@ -2,6 +2,12 @@
 Version History
 ===============
 
+v3.3.0 - 2026 / 11 / XX
+=======================
+
+* Add a plotting function for sigma plus aperture.
+* Fix the range of the central black line in the machine diagram plot if the machine is offset in S.
+
 v3.2.1 - 2026 / 08 / 03
 =======================
 
