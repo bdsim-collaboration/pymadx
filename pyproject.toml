@@ -1,6 +1,6 @@
 [project]
 name = "pymadx"
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 dynamic = ["version"]
 readme = "README.md"
 description = "Package for loading MADX output."
@@ -34,7 +34,7 @@ dependencies = [
 
 [project.optional-dependencies]
 pytransport = ["pytransport"]
-dev = ["pytest", "sphinx", "sphinx-rtd-theme"]
+dev = ["pytest", "sphinx", "sphinx-rtd-theme", "cpymad"]
 
 [project.scripts]
 pymadx_rmatrix_print = "pymadx.Cli:main_PrintRMatrix"
@@ -43,9 +43,9 @@ pymadx_rmatrix_plot = "pymadx.Cli:main_PlotRMatrix"
 pymadx_twiss_plot = "pymadx.Cli:main_PlotTwiss"
 
 [project.urls]
-homepage = "http://www.pp.rhul.ac.uk/bdsim/pymadx"
-documentation = "http://www.pp.rhul.ac.uk/bdsim/pymadx"
-repository = "https://bitbucket.org/jairhul/pymadx"
+homepage = "https://bdsim-collaboration.github.io/web/"
+documentation = "https://bdsim-collaboration.github.io/pymadx"
+repository = "https://github.com/bdsim-collaboration/pymadx"
 
 [build-system]
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]

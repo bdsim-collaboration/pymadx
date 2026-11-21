@@ -773,8 +773,13 @@ def BetaMultiple(tfsfiles, labels=None, s_offsets=None, title='', outputfilename
 
 def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False, ax=None, figsize=(9,5)):
     """
-    Plot sqrt(beta x,y) as a function of S. By default, a machine diagram is shown at
-    the top of the plot.
+    Plot sigma as calculated by the Data.Tfs class as a function of S. By default,
+    machine diagram is shown at the top of the plot.
+
+    :param tfsfile: Name of Tfs file or object.
+    :type tfsfile: str, Path, pymadx.Data.Tfs
+    :param title: Plot title.
+    :type title: str
 
     Optionally set dispersion=True to plot x dispersion as second axis.
     Optionally turn off machine overlay at top with machine=False
@@ -814,6 +819,55 @@ def Sigma(tfsfile, title='', outputfilename=None, machine=True, dispersion=False
 
     _plt.suptitle(title,size='x-large')
     _plt.xlim((0 - 0.05*smax, 1.05*smax))
+    if outputfilename:
+        p = _pathlib.Path(outputfilename)
+        _plt.savefig(p.with_suffix('.pdf'))
+        _plt.savefig(p.with_suffix('.png'), dpi=300)
+
+
+def SigmaPlusAperture(opticstfs, aperturetfs, title='', outputfilename=None, machine=True, ax=None, figsize=(9, 5)):
+    """
+    Plot sqrt(beta x,y) as a function of S. By default, a machine diagram is shown at
+    the top of the plot.
+
+    Optionally set dispersion=True to plot x dispersion as second axis.
+    Optionally turn off machine overlay at top with machine=False
+    Specify outputfilename (without extension) to save the plot as both pdf and png.
+    """
+    import pymadx.Data as _Data
+    optics = _Data.CheckItsTfs(opticstfs)
+    d = _GetOpticalDataFromTfs(optics)
+    smax = optics.smax
+
+    if ax is None:
+        f = _plt.figure(figsize=figsize)
+        axoptics = f.add_subplot(111)
+    else:
+        f = _plt.gcf()
+        axoptics = ax
+
+    yx = d['sigmax']
+    yy = d['sigmay']
+
+    axoptics.plot(d['s'], yx * 1e3, 'b-', label='x')
+    axoptics.plot(d['s'], yy * 1e3, 'g-', label='y')
+    if dispersion:
+        axoptics.plot([], [], 'r--', label=r'$\mathrm{D}_{x} / \beta (S)$')  # fake plot for legend
+    axoptics.set_xlabel('S (m)')
+    axoptics.set_ylabel(r'$\sigma$ (mm)')
+    axoptics.legend(loc=0, fontsize='small')  # best position
+
+    # plot dispersion - only in horizontal
+    if dispersion:
+        ax2 = axoptics.twinx()
+        ax2.plot(d['s'], d['dispx'], 'r--')
+        ax2.set_ylabel(r'Dispersion / $\beta$ (m)')
+
+    if machine:
+        AddMachineLatticeToFigure(f, madx)
+
+    _plt.suptitle(title, size='x-large')
+    _plt.xlim((0 - 0.05 * smax, 1.05 * smax))
     if outputfilename:
         p = _pathlib.Path(outputfilename)
         _plt.savefig(p.with_suffix('.pdf'))
@@ -915,7 +969,7 @@ def Envelopes(tfsfile, title='', outputfilename=None, machine=True, factors=(1,3
         _plt.savefig(p.with_suffix('.pdf'))
         _plt.savefig(p.with_suffix('.png'), dpi=300)
 
-def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertype=True):
+def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertype=True, scalingFactor=1):
     """
     Plots the aperture extents vs. S from a pymadx.Data.Aperture instance.
 
@@ -943,14 +997,14 @@ def Aperture(aperture, machine=None, outputfilename=None, plot="xy", plotapertyp
         c = list(_map(_ApertureTypeToColour, t))
 
     if "x" in plot.lower():
-        line1, = _plt.plot(s, x, 'b-', label='X', alpha=0.6)
+        line1, = _plt.plot(s, x*scalingFactor, 'b-', label='X', alpha=0.6)
         if plotapertype:
-            _plt.scatter(s, x, c=c, s=6)
+            _plt.scatter(s, x*scalingFactor, c=c, s=6)
 
     if "y" in plot.lower():
-        line2, = _plt.plot(s, y, 'g-', label='Y', alpha=0.6)
+        line2, = _plt.plot(s, y*scalingFactor, 'g-', label='Y', alpha=0.6)
         if plotapertype:
-            _plt.scatter(s, y, c=c, s=6)
+            _plt.scatter(s, y*scalingFactor, c=c, s=6)
 
     _plt.xlabel('S (m)')
     _plt.ylabel('Aperture (m)')
@@ -1313,6 +1367,11 @@ def TwoMachineDiagrams(tfsTop, tfsBottom, labelTop=None, labelBottom=None, title
 
 def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None, useQuadStrength=True, maskNames=None,
                        flipQuads=False, s_offset=0.0):
+    """
+    This draws the machine diagram into the provided axis instance. This ignores the S coordinate
+    and simply starts from 0 + s_offset and adds the length of each component. Use the s_offset
+    argument to control exactly where the diagram starts.
+    """
     ax  = axesinstance #handy shortcut
     tfs = pymadxtfsobject
 
@@ -1420,9 +1479,9 @@ def DrawMachineLattice(axesinstance, pymadxtfsobject, reverse=False, offset=None
 
     # plot beam line - make extra long in case of reversal
     # set zorder on top
-    ax.plot([tfs.smin+s_offset, tfs.smax+s_offset],[0,0],'k-',lw=1, zorder=100)
-    ax.set_ylim(-0.2,0.2)
-    ax.set_xlim(tfs.smin+s_offset, tfs.smax+s_offset)
+    ax.plot([s_offset, s_offset+s0], [0,0], 'k-', lw=1, zorder=100)
+    ax.set_ylim(-0.2, 0.2)
+    ax.set_xlim(s_offset, s_offset+s0)
 
 def RMatrixTableString(tfs, tablefmt='grid'):
     """
