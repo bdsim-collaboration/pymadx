@@ -142,14 +142,17 @@ class Tfs:
         the filename, the file will be opened still compressed.
         """
         if _tarfile.is_tarfile(filename): # assume compressed tarball of 1 file
-            print('pymadx.Tfs.Load> zipped file')
+            if verbose:
+                print('pymadx.Tfs.Load> zipped file')
             tar = _tarfile.open(filename, 'r')
             f = tar.extractfile(tar.getmember(tar.getnames()[-1])) # extract the last member
         elif str(filename).endswith('.gz'): # gzipped file
-            print('pymadx.Tfs.Load> zipped file')
+            if verbose:
+                print('pymadx.Tfs.Load> zipped file')
             f = _gzip.open(filename, 'r')
         else:
-            print('pymadx.Tfs.Load> normal file')
+            if verbose:
+                print('pymadx.Tfs.Load> normal file')
             f = open(filename, 'r')
 
         #first pass at file - need to check if it has 'NAME' column
