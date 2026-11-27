@@ -35,6 +35,9 @@ _SIGMA_P = [("SIGMAXP", r"$\sigma_{xp}$"),
 _MEAN = [("X", r"$\bar{x}$"),
          ("Y", r"$\bar{y}$")]
 
+_PHASE = [("MUX", r"$\mu_{x}$"),
+          ("MUY", r"$\mu_{y}$")]
+
 PlotBeta   = _MakePlotter(_BETA, "S / m", r"$\beta_{x,y}$ / m", "Beta")
 PlotAlpha  = _MakePlotter(_ALPHA, "S / m", r"$\alpha_{x,y}$ / m", "Alpha")
 PlotDisp   = _MakePlotter(_DISP, "S / m", r"$D_{x,y} / m$", "Dispersion")
@@ -42,6 +45,7 @@ PlotDispP  = _MakePlotter(_DISP_P, "S / m", r"$D_{p_{x},p_{y}}$ / m", "Momentum_
 PlotSigma  = _MakePlotter(_SIGMA, "S / m", r"$\sigma_{x,y}$ / mm", "Sigma", 1000.0)
 PlotSigmaP = _MakePlotter(_SIGMA_P, "S / m", r"$\sigma_{xp,yp}$ / mrad", "SigmaP", 1000.0)
 PlotMean   = _MakePlotter(_MEAN, "S / m", r"$\bar{x}, \bar{y}$ / mm", "Mean", 1000.0)
+PlotPhase  = _MakePlotter(_PHASE, "S / m", r"$\mu_{x}, \mu_{y}$ / $2\pi$", "Phase_Advance")
 
 def MadxVsMadx(first, second, first_name=None,
                second_name=None, saveAll=True, 
@@ -64,6 +68,8 @@ def MadxVsMadx(first, second, first_name=None,
                second_name=second_name, **kwargs),
     PlotMean(first, second, first_name=first_name,
              second_name=second_name, **kwargs),
+    PlotPhase(first, second, first_name=first_name,
+              second_name=second_name, **kwargs),
     ]
 
     if saveAll:
